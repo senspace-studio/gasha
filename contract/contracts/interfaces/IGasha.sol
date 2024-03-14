@@ -21,8 +21,7 @@ interface IGasha {
         uint256 quantity;
     }
 
-    function spin(
-        uint256 quantity,
-        bytes memory minterArguments
-    ) external payable;
+    function spin(uint256 quantity) external payable;
+
+    function setMinterArguments(bytes memory _minterArguments) external;
 }

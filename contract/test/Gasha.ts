@@ -6,18 +6,20 @@ import {
   ZoraCreator1155Impl,
   ZoraCreatorMerkleMinterStrategy,
 } from '../typechain-types'
-import { deployGashaContract } from './helper/gasha'
 import { zeroAddress } from 'viem'
-import {
-  addPermission,
-  callSaleForMerkleMinter,
-  createZoraCreator1155,
-  deployZoraCreatorERC1155Factory,
-} from './helper/zora'
 import { ethers } from 'hardhat'
 import { SignerWithAddress } from '@nomicfoundation/hardhat-ethers/signers'
 import { AbiCoder, keccak256, parseEther } from 'ethers'
 import MerkleTree from 'merkletreejs'
+import {
+  addPermission,
+  callSaleForMerkleMinter,
+  createZoraCreator1155,
+  deployGashaContract,
+  deployZoraCreatorERC1155Factory,
+  setMinterArguments,
+} from './helper'
+import { Console } from 'console'
 
 describe('Gasha', () => {
   let Gasha: Gasha
@@ -83,6 +85,8 @@ describe('Gasha', () => {
       )
       tree = merkleTree
     }
+
+    await setMinterArguments(Gasha, tree)
   })
 
   it('should add series item', async () => {
@@ -100,23 +104,10 @@ describe('Gasha', () => {
   })
 
   it('shoud spin', async () => {
-    const leafToVerify = keccak256(
-      new AbiCoder().encode(
-        ['address', 'uint256', 'uint256'],
-        [(await Gasha.getAddress()) as `0x${string}`, 100000, 0]
-      )
-    )
-    const proof = tree.getHexProof(leafToVerify)
-
-    const minterArguments = new AbiCoder().encode(
-      ['address', 'uint256', 'uint256', 'bytes32[]'],
-      [await Gasha.getAddress(), 100000, 0, proof]
-    )
-
     const amount = 100
     await expect(
-      Gasha.spin(amount, minterArguments, {
-        value: parseEther(String(0.000777 * 100)),
+      Gasha.spin(amount, {
+        value: parseEther(String(0.000777 * amount)),
       })
     ).emit(Gasha, 'Spin')
 

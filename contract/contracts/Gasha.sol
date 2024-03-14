@@ -12,6 +12,8 @@ contract Gasha is IGasha {
 
     address public mintReferral;
 
+    bytes internal minterArguments;
+
     SeriesItem[] public series;
 
     uint256 public seed;
@@ -28,11 +30,9 @@ contract Gasha is IGasha {
         seed = initialSeed;
     }
 
-    function spin(
-        uint256 quantity,
-        bytes calldata minterArguments
-    ) public payable {
+    function spin(uint256 quantity) public payable {
         require(quantity > 0 && quantity < 1000, "Gasha: quantity is invalid");
+        require(msg.value >= 777e12 * quantity, "Gasha: insufficient funds");
 
         uint256[] memory ids = new uint256[](series.length);
         uint256[] memory quantities = new uint256[](series.length);
@@ -99,6 +99,7 @@ contract Gasha is IGasha {
         revert("Gasha: failed to pick a random ball");
     }
 
+    // todo: onlyOwner
     function setNewSeriesItem(
         uint256 tokenId,
         Rareness rareness,
@@ -107,6 +108,7 @@ contract Gasha is IGasha {
         series.push(SeriesItem(tokenId, rareness, weight));
     }
 
+    // todo: onlyOwner
     function removeSeriesItem(uint256 tokenId) public {
         for (uint256 i = 0; i < series.length; i++) {
             if (series[i].tokenId == tokenId) {
@@ -117,6 +119,11 @@ contract Gasha is IGasha {
                 break;
             }
         }
+    }
+
+    // todo: onlyOwner
+    function setMinterArguments(bytes memory _minterArguments) external {
+        minterArguments = _minterArguments;
     }
 
     function onERC1155Received(
