@@ -53,7 +53,8 @@ describe('Gasha', () => {
     Gasha = await deployGashaContract(
       await ZoraCreator1155.getAddress(),
       await MerkelMinter.getAddress(),
-      fundRecipient.address
+      fundRecipient.address,
+      0.000777
     )
 
     for (const tokenId of [1, 2, 3]) {
@@ -104,7 +105,7 @@ describe('Gasha', () => {
   })
 
   it('shoud spin', async () => {
-    const amount = 100
+    let amount = 100
     await expect(
       Gasha.spin(amount, {
         value: parseEther(String(0.000777 * amount)),
@@ -114,7 +115,14 @@ describe('Gasha', () => {
     const balanceOfRewards = await ZoraProtocolRewards.balanceOf(
       fundRecipient.address
     )
-    console.log(balanceOfRewards)
+    expect(balanceOfRewards).to.equal(parseEther(String(0.000666 * amount)))
+
+    amount = 250
+    await expect(
+      Gasha.connect(fundRecipient).spin(amount, {
+        value: parseEther(String(0.000777 * amount)),
+      })
+    ).emit(Gasha, 'Spin')
   })
 
   it('remove series item', async () => {

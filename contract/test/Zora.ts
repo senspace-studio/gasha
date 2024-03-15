@@ -4,17 +4,17 @@ import {
   ZoraCreator1155Impl,
   ZoraCreatorMerkleMinterStrategy,
 } from '../typechain-types'
-import {
-  addPermission,
-  callSaleForMerkleMinter,
-  createZoraCreator1155,
-  deployZoraCreatorERC1155Factory,
-} from './helper/zora'
 import { ethers } from 'hardhat'
 import { SignerWithAddress } from '@nomicfoundation/hardhat-ethers/signers'
 import { AbiCoder, keccak256, parseEther } from 'ethers'
 import { MerkleTree } from 'merkletreejs'
 import { zeroAddress } from 'viem'
+import {
+  addPermission,
+  callSaleForMerkleMinter,
+  createZoraCreator1155,
+  deployZoraCreatorERC1155Factory,
+} from './helper'
 
 describe('Zora', () => {
   let ZoraCreator1155Factory: ZoraCreator1155FactoryImpl
@@ -37,7 +37,11 @@ describe('Zora', () => {
   })
 
   it('should create contract', async () => {
-    const address = await createZoraCreator1155(ZoraCreator1155Factory)
+    const address = await createZoraCreator1155(
+      ZoraCreator1155Factory,
+      admin.address,
+      funcRecipient.address
+    )
     ZoraCreator1155 = await ethers.getContractAt(
       'ZoraCreator1155Impl',
       address!

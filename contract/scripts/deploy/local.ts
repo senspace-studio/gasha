@@ -10,14 +10,15 @@ import { zeroAddress } from 'viem'
 import MerkleTree from 'merkletreejs'
 
 async function main() {
-  const [admin, fundRecipient] = await ethers.getSigners()
+  const [admin] = await ethers.getSigners()
+  const fundRecipientAddress = '0x70997970C51812dc3A010C7d01b50e0d17dc79C8'
 
   // Deploy Zora Families
   const contracts = await deployZoraCreatorERC1155Factory()
   const createZoraCreator1155Address = await createZoraCreator1155(
     contracts.zoraCreatorERC1155Factory,
     admin.address,
-    fundRecipient.address
+    fundRecipientAddress
   )
   const ZoraCreator1155 = await ethers.getContractAt(
     'ZoraCreator1155Impl',
@@ -28,7 +29,8 @@ async function main() {
   const gashaContract = await deployGashaContract(
     createZoraCreator1155Address!,
     await contracts.merkelMinter.getAddress(),
-    fundRecipient.address
+    fundRecipientAddress,
+    0.000777
   )
 
   // Setup Tokens
@@ -36,7 +38,7 @@ async function main() {
     let tx = await ZoraCreator1155.setupNewTokenWithCreateReferral(
       `https://zora.co/${tokenId}`,
       100000,
-      fundRecipient.address
+      fundRecipientAddress
     )
     await tx.wait()
     await addPermission(
@@ -58,7 +60,7 @@ async function main() {
       ZoraCreator1155,
       await contracts.merkelMinter.getAddress(),
       leaves,
-      fundRecipient.address,
+      fundRecipientAddress,
       tokenId
     )
     tree = merkleTree
@@ -73,6 +75,14 @@ async function main() {
   await tx.wait()
   tx = await gashaContract.setNewSeriesItem(3, 2, 50)
   await tx.wait()
+
+  console.log(
+    'ZoraCreator1155 deployed to:',
+    await ZoraCreator1155.getAddress()
+  )
+  console.log('Gasha deployed to:', await gashaContract.getAddress())
+
+  return
 }
 
 // We recommend this pattern to be able to use async/await everywhere
