@@ -1,22 +1,23 @@
 import { ethers } from 'hardhat'
 import MerkleTree from 'merkletreejs'
 import { Gasha } from '../../typechain-types'
-import { AbiCoder, keccak256 } from 'ethers'
+import { AbiCoder, keccak256, parseEther } from 'ethers'
 
 export const deployGashaContract = async (
   zoraCreator1155Address: string,
   merkleMinterAddress: string,
-  mintReferralAddress: string
+  mintReferralAddress: string,
+  unitPrice: number
 ) => {
   const gashaFactory = await ethers.getContractFactory('Gasha')
   const gasha = await gashaFactory.deploy(
     zoraCreator1155Address,
     merkleMinterAddress,
     mintReferralAddress,
-    10000
+    10000,
+    parseEther(unitPrice.toString())
   )
   await gasha.waitForDeployment()
-
   return gasha
 }
 

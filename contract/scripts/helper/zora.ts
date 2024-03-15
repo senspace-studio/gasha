@@ -82,7 +82,7 @@ export const createZoraCreator1155 = async (
   rewardsRecipient: string
 ) => {
   const tx = await factory.createContract(
-    'https://zora.co/1',
+    'ipfs://QmWdGS5HgfGjbXX851xzCd2f5WFnNxK4NjpmDnUCiY8EXz',
     'collection name',
     {
       royaltyMintSchedule: 0,
@@ -93,6 +93,8 @@ export const createZoraCreator1155 = async (
     []
   )
   const recipt = await tx.wait()
+
+  await new Promise((resolve) => setTimeout(resolve, 10000))
 
   // check tx emit event Created with tx hash
   const events = await factory.queryFilter(factory.filters.SetupNewContract)

@@ -1,0 +1,141 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "IRemovedZoraCreator1155PremintExecutorFunctions",
+  "sourceName": "contracts/zora/interfaces/IZoraCreator1155PremintExecutor.sol",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "contractAdmin",
+              "type": "address"
+            },
+            {
+              "internalType": "string",
+              "name": "contractURI",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "contractName",
+              "type": "string"
+            }
+          ],
+          "internalType": "struct ContractCreationConfig",
+          "name": "contractConfig",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "internalType": "string",
+                  "name": "tokenURI",
+                  "type": "string"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "maxSupply",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "maxTokensPerAddress",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint96",
+                  "name": "pricePerToken",
+                  "type": "uint96"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "mintStart",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "mintDuration",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint32",
+                  "name": "royaltyMintSchedule",
+                  "type": "uint32"
+                },
+                {
+                  "internalType": "uint32",
+                  "name": "royaltyBPS",
+                  "type": "uint32"
+                },
+                {
+                  "internalType": "address",
+                  "name": "royaltyRecipient",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "fixedPriceMinter",
+                  "type": "address"
+                }
+              ],
+              "internalType": "struct TokenCreationConfig",
+              "name": "tokenConfig",
+              "type": "tuple"
+            },
+            {
+              "internalType": "uint32",
+              "name": "uid",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "version",
+              "type": "uint32"
+            },
+            {
+              "internalType": "bool",
+              "name": "deleted",
+              "type": "bool"
+            }
+          ],
+          "internalType": "struct PremintConfig",
+          "name": "premintConfig",
+          "type": "tuple"
+        },
+        {
+          "internalType": "bytes",
+          "name": "signature",
+          "type": "bytes"
+        },
+        {
+          "internalType": "uint256",
+          "name": "quantityToMint",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "mintComment",
+          "type": "string"
+        }
+      ],
+      "name": "premint",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "newTokenId",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "payable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

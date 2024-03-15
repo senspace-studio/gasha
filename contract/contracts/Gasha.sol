@@ -18,21 +18,25 @@ contract Gasha is IGasha {
 
     uint256 public seed;
 
+    uint256 public unitPrice;
+
     constructor(
         address _zoraCreator1155,
         address _merkleMinter,
         address _mintReferral,
-        uint256 initialSeed
+        uint256 initialSeed,
+        uint256 _unitPrice
     ) {
         ZoraCreator1155 = IZoraCreator1155(_zoraCreator1155);
         MerkleMinter = IMinter1155(_merkleMinter);
         mintReferral = _mintReferral;
         seed = initialSeed;
+        unitPrice = _unitPrice;
     }
 
     function spin(uint256 quantity) public payable {
         require(quantity > 0 && quantity < 1000, "Gasha: quantity is invalid");
-        require(msg.value >= 777e12 * quantity, "Gasha: insufficient funds");
+        require(msg.value >= unitPrice * quantity, "Gasha: insufficient funds");
 
         uint256[] memory ids = new uint256[](series.length);
         uint256[] memory quantities = new uint256[](series.length);
@@ -53,7 +57,9 @@ contract Gasha is IGasha {
 
         for (uint256 i = 0; i < series.length; i++) {
             if (quantities[i] > 0) {
-                ZoraCreator1155.mintWithRewards{value: 777e12 * quantities[i]}(
+                ZoraCreator1155.mintWithRewards{
+                    value: unitPrice * quantities[i]
+                }(
                     MerkleMinter,
                     ids[i],
                     quantities[i],
