@@ -1,0 +1,62 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "IMinterErrors",
+  "sourceName": "contracts/zora/interfaces/IMinterErrors.sol",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "CallerNotZoraCreator1155",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "mintTo",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes32[]",
+          "name": "merkleProof",
+          "type": "bytes32[]"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "merkleRoot",
+          "type": "bytes32"
+        }
+      ],
+      "name": "InvalidMerkleProof",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "MinterContractAlreadyExists",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "MinterContractDoesNotExist",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "SaleEnded",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "SaleHasNotStarted",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "WrongValueSent",
+      "type": "error"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}
