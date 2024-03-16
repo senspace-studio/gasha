@@ -1,6 +1,6 @@
 import { FC, ReactNode } from 'react'
 import { Header } from './Header'
-import { Box } from '@chakra-ui/react'
+import { Box, Container } from '@chakra-ui/react'
 
 type Props = {
   children: ReactNode
@@ -8,7 +8,7 @@ type Props = {
 
 export const DefaultLayout: FC<Props> = ({ children }) => {
   return (
-    <Box backgroundColor="blue.400">
+    <Box backgroundColor="blue.400" minH="100vh">
       <Header />
       <main>{children}</main>
       <footer>

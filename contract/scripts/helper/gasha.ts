@@ -17,6 +17,11 @@ export const deployGashaContract = async (
     10000,
     parseEther(unitPrice.toString())
   )
+  console.log(zoraCreator1155Address)
+  console.log(merkleMinterAddress)
+  console.log(mintReferralAddress)
+  console.log(10000)
+  console.log(parseEther(unitPrice.toString()))
   await gasha.waitForDeployment()
   return gasha
 }

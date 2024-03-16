@@ -8,9 +8,7 @@ import { keccak256, maxUint64, zeroAddress } from 'viem'
 import { AbiCoder } from 'ethers'
 import MerkleTree from 'merkletreejs'
 
-export const deployZoraCreatorERC1155Factory = async () => {
-  const [admin] = await ethers.getSigners()
-
+export const deployZoraCreatorERC1155Factory = async (adminAddress: string) => {
   const zoraProtocolRewardsFactory = await ethers.getContractFactory(
     'ProtocolRewards'
   )
@@ -33,8 +31,8 @@ export const deployZoraCreatorERC1155Factory = async () => {
     }
   )
   const zoraCreator1155Impl = await zoraCreator1155ImplFactory.deploy(
-    admin.address,
-    admin.address,
+    adminAddress,
+    adminAddress,
     await zoraProtocolRewards.getAddress()
   )
   await zoraCreator1155Impl.waitForDeployment()
@@ -94,7 +92,7 @@ export const createZoraCreator1155 = async (
   )
   const recipt = await tx.wait()
 
-  await new Promise((resolve) => setTimeout(resolve, 10000))
+  await new Promise((resolve) => setTimeout(resolve, 15000))
 
   // check tx emit event Created with tx hash
   const events = await factory.queryFilter(factory.filters.SetupNewContract)
