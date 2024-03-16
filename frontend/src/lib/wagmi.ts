@@ -18,7 +18,7 @@ export const wagmiConfig = () => {
   return createConfig({
     chains: [chain],
     transports: {
-      [chain.id]: http('https://sepolia.rpc.zora.energy'),
+      [chain.id]: http(),
     },
   })
 }

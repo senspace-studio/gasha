@@ -21,6 +21,11 @@ export const GashaAbi = [
         name: 'initialSeed',
         type: 'uint256',
       },
+      {
+        internalType: 'uint256',
+        name: '_unitPrice',
+        type: 'uint256',
+      },
     ],
     stateMutability: 'nonpayable',
     type: 'constructor',
@@ -269,6 +274,19 @@ export const GashaAbi = [
     name: 'spin',
     outputs: [],
     stateMutability: 'payable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'unitPrice',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
     type: 'function',
   },
 ] as const

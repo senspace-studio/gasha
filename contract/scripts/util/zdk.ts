@@ -5,21 +5,15 @@ const main = async () => {
     endpoint: 'https://api.zora.co/graphql',
     networks: [
       {
-        network: ZDKNetwork.Zora,
-        chain: 'ZORA_SEPOLIA' as any,
+        network: ZDKNetwork.Base,
+        chain: ZDKChain.BaseMainnet,
       },
     ],
   })
 
   const events = await zdk.events({
     where: {
-      collectionAddresses: ['0xd12175C64D479e9e3d09B9B29889A36C0942bD4d'],
-    },
-    filter: {
-      timeFilter: {
-        startDate: '2024-03-14',
-        endDate: '2024-03-15',
-      },
+      collectionAddresses: ['0x5E48E48B0FEE255783b295214D6E375FF8bf8aCF'],
     },
   })
 
