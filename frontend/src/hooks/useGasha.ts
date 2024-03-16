@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useMultiReadGashaContract, useWriteGashaContract } from './useContract'
-import { parseEther, parseEventLogs } from 'viem'
-import { useTransactionReceipt } from 'wagmi'
+import { TransactionReceipt, parseEther, parseEventLogs } from 'viem'
+import { getTransactionReceipt } from '@wagmi/core'
 import { GashaAbi } from '@/abi/gasha'
+import { useConfig } from 'wagmi'
+import { useRouter } from 'next/router'
 
 enum RarenessLabel {
   Common = 0,
@@ -17,29 +19,51 @@ const rarenessLabel: Record<number, string> = {
 }
 
 export const useSpinGasha = () => {
-  const { sendTx, isPending, data } = useWriteGashaContract<'spin'>('spin')
-  const receipt = useTransactionReceipt({ hash: data })
+  const {
+    sendTx,
+    isPending,
+    data: txHash,
+  } = useWriteGashaContract<'spin'>('spin')
+  const config = useConfig()
+  const [receipt, setReceipt] = useState<TransactionReceipt>()
   const { seriesItems } = useSeriesItems()
   const [points, setPoints] = useState<number>()
+  const router = useRouter()
 
   const spinGasha = useCallback(
     async (quantity: number) => {
-      const a = await sendTx(
+      await sendTx(
         [BigInt(quantity)],
-        parseEther(String(quantity * 0.000777))
+        parseEther(
+          String(quantity * Number(process.env.NEXT_PUBLIC_UNIT_PRICE))
+        )
       )
     },
     [sendTx]
   )
+
+  useEffect(() => {
+    const fetchReceipt = setInterval(async () => {
+      if (txHash) {
+        const _receipt = await getTransactionReceipt(config, { hash: txHash })
+        if (_receipt?.logs.length > 0) {
+          setReceipt(_receipt)
+          clearInterval(fetchReceipt)
+        }
+      }
+    }, 1000)
+
+    return () => clearInterval(fetchReceipt)
+  }, [txHash])
 
   const result = useMemo(() => {
     if (receipt && receipt.status === 'success') {
       const topics = parseEventLogs({
         abi: GashaAbi,
         eventName: 'Spin',
-        logs: receipt.data.logs,
+        logs: receipt.logs,
       })
-      return topics[0].args.ids.map((id: bigint, index) => {
+      return topics[0]?.args.ids.map((id: bigint, index) => {
         const rareness: number =
           seriesItems?.find((i) => i.tokenId === Number(id))?.rareness || 0
         return {
@@ -54,7 +78,10 @@ export const useSpinGasha = () => {
   useEffect(() => {
     const calcPoints = async () => {
       if (result) {
-        setPoints(1000)
+        router.push({
+          pathname: '/result',
+          query: { result: JSON.stringify(result), points: 1000 },
+        })
       }
     }
     calcPoints()

@@ -14,7 +14,7 @@ async function main() {
   const fundRecipientAddress = '0x70997970C51812dc3A010C7d01b50e0d17dc79C8'
 
   // Deploy Zora Families
-  const contracts = await deployZoraCreatorERC1155Factory()
+  const contracts = await deployZoraCreatorERC1155Factory(admin.address)
   const createZoraCreator1155Address = await createZoraCreator1155(
     contracts.zoraCreatorERC1155Factory,
     admin.address,

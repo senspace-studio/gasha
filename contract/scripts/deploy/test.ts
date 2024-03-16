@@ -3,15 +3,21 @@ import {
   addPermission,
   callSaleForMerkleMinter,
   createZoraCreator1155,
+  deployZoraCreatorERC1155Factory,
 } from '../helper/zora'
 import { deployGashaContract, setMinterArguments } from '../helper/gasha'
 import { zeroAddress } from 'viem'
 import MerkleTree from 'merkletreejs'
 
 const main = async () => {
+  const adminAddress = '0x807C69F16456F92ab2bFc9De8f14AF31051f9678'
+  const fundRecipientAddress = '0x807C69F16456F92ab2bFc9De8f14AF31051f9678'
+
+  const contracts = await deployZoraCreatorERC1155Factory(adminAddress)
+
   const zoraCreator1155Factory = await ethers.getContractAt(
     'ZoraCreator1155FactoryImpl',
-    '0x777777C338d93e2C7adf08D102d45CA7CC4Ed021'
+    await contracts.zoraCreatorERC1155Factory.getAddress()
   )
 
   const zoraCreator1155Address = await createZoraCreator1155(
@@ -27,22 +33,22 @@ const main = async () => {
 
   const gashaContract = await deployGashaContract(
     zoraCreator1155Address!,
-    '0x5e5fd4b758076bad940db0284b711a67e8a3b88c',
-    '0x807C69F16456F92ab2bFc9De8f14AF31051f9678',
-    0.000005
+    await contracts.merkelMinter.getAddress(),
+    fundRecipientAddress,
+    0.000777
   )
 
   for (const tokenId of [1, 2, 3]) {
     let tx = await ZoraCreator1155.setupNewTokenWithCreateReferral(
       `ipfs://QmWdGS5HgfGjbXX851xzCd2f5WFnNxK4NjpmDnUCiY8EXz/${tokenId}.json`,
       100000,
-      '0x807C69F16456F92ab2bFc9De8f14AF31051f9678'
+      fundRecipientAddress
     )
     await tx.wait()
     await addPermission(
       ZoraCreator1155,
       tokenId,
-      '0x5e5fd4b758076bad940db0284b711a67e8a3b88c'
+      await contracts.merkelMinter.getAddress()
     )
   }
 
@@ -55,9 +61,9 @@ const main = async () => {
   for (const tokenId of [1, 2, 3]) {
     const { merkleTree } = await callSaleForMerkleMinter(
       ZoraCreator1155,
-      '0x5e5fd4b758076bad940db0284b711a67e8a3b88c',
+      await contracts.merkelMinter.getAddress(),
       leaves,
-      '0x807C69F16456F92ab2bFc9De8f14AF31051f9678',
+      fundRecipientAddress,
       tokenId
     )
     tree = merkleTree

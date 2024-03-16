@@ -30,9 +30,9 @@ const config: HardhatUserConfig = {
       accounts: [process.env.LOCAL_PRIVATE_KEY!],
       url: 'http://localhost:8545',
     },
-    sepolia: {
+    base_sepolia: {
       accounts: [process.env.TEST_PRIVATE_KEY!],
-      url: 'https://rpc-sepolia.rockx.com',
+      url: 'https://base-sepolia.g.alchemy.com/v2/5kVob7zDOtjcG4NjjhECSAFH15_LVZsk',
     },
     zora_sepolia: {
       accounts: [process.env.TEST_PRIVATE_KEY!],
@@ -52,9 +52,18 @@ const config: HardhatUserConfig = {
           browserURL: 'https://sepolia.zorascan.xyz',
         },
       },
+      {
+        network: 'base_sepolia',
+        chainId: 84532,
+        urls: {
+          apiURL: 'https://api-sepolia.basescan.org/api',
+          browserURL: 'https://sepolia.basescan.org',
+        },
+      },
     ],
     apiKey: {
       zora_sepolia: 'zora_sepolia',
+      base_sepolia: 'NFUIZFQWPD5UJ6VZ5HDHQ6M3P36Z7SJZZF',
     },
   },
 }
