@@ -1,36 +1,33 @@
-import Model from '@/components/models/File'
-import { Box, Container } from '@chakra-ui/react'
-import { OrbitControls, PerspectiveCamera } from '@react-three/drei'
-import { Canvas } from '@react-three/fiber'
-import { Suspense } from 'react'
+import { BasicCount } from '@/components/uiparts/BasicCount'
+import { SpinModule } from '@/components/uiparts/SpinModule'
+import { TopCount } from '@/components/uiparts/TopCount'
+import { Box, Container, VStack } from '@chakra-ui/react'
 
 export default function Home() {
   return (
-    <Container>
+    <>
+      <TopCount />
       <Box
+        width={300}
+        height={350}
+        backgroundColor="gray"
         margin="0 auto"
-        backgroundImage="url('/img/item_bg.png')"
-        w={500}
-        h={500}
-        backgroundSize="cover"
-      >
-        <Canvas style={{ width: 500, height: 500 }}>
-          <Suspense fallback={null}>
-            <Model />
-          </Suspense>
-          <PerspectiveCamera makeDefault position={[0, 0, 1]} />
-          <OrbitControls makeDefault />
-          <ambientLight intensity={1} />
-          <hemisphereLight intensity={1} />
-          <spotLight
-            position={[0, 0, 1.5]}
-            intensity={1}
-            angle={0.3}
-            penumbra={0.5}
-            castShadow
-          />
-        </Canvas>
+        mt={10}
+        mb={-10}
+        zIndex={1}
+        position="relative"
+      />
+      <Box backgroundColor="yellow.400" position="relative">
+        <Container pt="80px">
+          <SpinModule />
+
+          <VStack mt={20} pb={10} gap={5}>
+            <BasicCount number={99.9999} unit="MINTS" label="Total Mints" />
+            <BasicCount number={99.9999} unit="ETH" label="Total Rewards" />
+            <BasicCount number={99.9999} label="Time Remaining" />
+          </VStack>
+        </Container>
       </Box>
-    </Container>
+    </>
   )
 }
