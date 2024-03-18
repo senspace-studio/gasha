@@ -213,12 +213,28 @@ export class PointsController {
         special,
       }),
     );
-    return this.pointsService.calc(
+    address = address.toLowerCase();
+    const points = await this.pointsService.calc(
       address,
       BigInt(common || 0),
       BigInt(rare || 0),
       BigInt(special || 0),
       BigInt(new Date().getTime()),
     );
+    return {
+      address,
+      common: {
+        amount: `${points.common.amount}`,
+        points: `${points.common.points}`,
+      },
+      rare: {
+        amount: `${points.rare.amount}`,
+        points: `${points.rare.points}`,
+      },
+      special: {
+        amount: `${points.special.amount}`,
+        points: `${points.special.points}`,
+      },
+    };
   }
 }
