@@ -1,0 +1,175 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "IZoraCreator1155PremintExecutorV1",
+  "sourceName": "contracts/zora/interfaces/IZoraCreator1155PremintExecutor.sol",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "contractAdmin",
+              "type": "address"
+            },
+            {
+              "internalType": "string",
+              "name": "contractURI",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "contractName",
+              "type": "string"
+            }
+          ],
+          "internalType": "struct ContractCreationConfig",
+          "name": "contractConfig",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "internalType": "string",
+                  "name": "tokenURI",
+                  "type": "string"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "maxSupply",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "maxTokensPerAddress",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint96",
+                  "name": "pricePerToken",
+                  "type": "uint96"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "mintStart",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "mintDuration",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint32",
+                  "name": "royaltyMintSchedule",
+                  "type": "uint32"
+                },
+                {
+                  "internalType": "uint32",
+                  "name": "royaltyBPS",
+                  "type": "uint32"
+                },
+                {
+                  "internalType": "address",
+                  "name": "royaltyRecipient",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "fixedPriceMinter",
+                  "type": "address"
+                }
+              ],
+              "internalType": "struct TokenCreationConfig",
+              "name": "tokenConfig",
+              "type": "tuple"
+            },
+            {
+              "internalType": "uint32",
+              "name": "uid",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "version",
+              "type": "uint32"
+            },
+            {
+              "internalType": "bool",
+              "name": "deleted",
+              "type": "bool"
+            }
+          ],
+          "internalType": "struct PremintConfig",
+          "name": "premintConfig",
+          "type": "tuple"
+        },
+        {
+          "internalType": "bytes",
+          "name": "signature",
+          "type": "bytes"
+        },
+        {
+          "internalType": "uint256",
+          "name": "quantityToMint",
+          "type": "uint256"
+        },
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "mintRecipient",
+              "type": "address"
+            },
+            {
+              "internalType": "string",
+              "name": "mintComment",
+              "type": "string"
+            },
+            {
+              "internalType": "address[]",
+              "name": "mintRewardsRecipients",
+              "type": "address[]"
+            }
+          ],
+          "internalType": "struct IZoraCreator1155PremintExecutor.MintArguments",
+          "name": "mintArguments",
+          "type": "tuple"
+        }
+      ],
+      "name": "premintV1",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "contractAddress",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "tokenId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bool",
+              "name": "createdNewContract",
+              "type": "bool"
+            }
+          ],
+          "internalType": "struct IZoraCreator1155PremintExecutor.PremintResult",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "payable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}
