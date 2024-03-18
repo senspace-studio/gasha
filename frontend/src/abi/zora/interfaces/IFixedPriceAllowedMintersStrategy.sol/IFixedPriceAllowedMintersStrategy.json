@@ -1,0 +1,233 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "IFixedPriceAllowedMintersStrategy",
+  "sourceName": "contracts/zora/interfaces/IFixedPriceAllowedMintersStrategy.sol",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "ONLY_MINTER",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "tokenContract",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "quantity",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "comment",
+          "type": "string"
+        }
+      ],
+      "name": "MintComment",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "mediaContract",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "minter",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "allowed",
+          "type": "bool"
+        }
+      ],
+      "name": "MinterSet",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "mediaContract",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint64",
+              "name": "saleStart",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "saleEnd",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "maxTokensPerAddress",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint96",
+              "name": "pricePerToken",
+              "type": "uint96"
+            },
+            {
+              "internalType": "address",
+              "name": "fundsRecipient",
+              "type": "address"
+            }
+          ],
+          "indexed": false,
+          "internalType": "struct IFixedPriceAllowedMintersStrategy.SalesConfig",
+          "name": "salesConfig",
+          "type": "tuple"
+        }
+      ],
+      "name": "SaleSet",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "tokenContract",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "minter",
+          "type": "address"
+        }
+      ],
+      "name": "isMinter",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address[]",
+          "name": "minters",
+          "type": "address[]"
+        },
+        {
+          "internalType": "bool",
+          "name": "allowed",
+          "type": "bool"
+        }
+      ],
+      "name": "setMinters",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint64",
+              "name": "saleStart",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "saleEnd",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "maxTokensPerAddress",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint96",
+              "name": "pricePerToken",
+              "type": "uint96"
+            },
+            {
+              "internalType": "address",
+              "name": "fundsRecipient",
+              "type": "address"
+            }
+          ],
+          "internalType": "struct IFixedPriceAllowedMintersStrategy.SalesConfig",
+          "name": "salesConfig",
+          "type": "tuple"
+        }
+      ],
+      "name": "setSale",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

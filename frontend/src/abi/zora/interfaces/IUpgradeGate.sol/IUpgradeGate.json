@@ -1,0 +1,115 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "IUpgradeGate",
+  "sourceName": "contracts/zora/interfaces/IUpgradeGate.sol",
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [],
+      "name": "UpgradeGateSetup",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "baseImpl",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "upgradeImpl",
+          "type": "address"
+        }
+      ],
+      "name": "UpgradeRegistered",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "baseImpl",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "upgradeImpl",
+          "type": "address"
+        }
+      ],
+      "name": "UpgradeRemoved",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "baseImpl",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "upgradeImpl",
+          "type": "address"
+        }
+      ],
+      "name": "isRegisteredUpgradePath",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address[]",
+          "name": "baseImpls",
+          "type": "address[]"
+        },
+        {
+          "internalType": "address",
+          "name": "upgradeImpl",
+          "type": "address"
+        }
+      ],
+      "name": "registerUpgradePath",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "baseImpl",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "upgradeImpl",
+          "type": "address"
+        }
+      ],
+      "name": "removeUpgradePath",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}
