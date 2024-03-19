@@ -8,10 +8,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { EventEntity } from 'src/entities/event.entity';
 import { AccountEntity } from 'src/entities/account.entity';
 import { TotalEntity } from 'src/entities/total.entity';
+import { LogicEntity } from 'src/entities/logic.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([EventEntity, AccountEntity, TotalEntity]),
+    TypeOrmModule.forFeature([
+      EventEntity,
+      AccountEntity,
+      TotalEntity,
+      LogicEntity,
+    ]),
     NeynarModule,
     ZoraModule,
     ViemModule,

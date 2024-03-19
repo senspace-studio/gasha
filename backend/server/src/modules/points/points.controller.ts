@@ -35,18 +35,6 @@ export class PointsController {
       Number(page || 1),
       20,
     );
-    // return await this.pointsService.getAllPoints();
-    return {
-      data: [
-        {
-          address: '0x1234....',
-          points: 3000,
-        },
-      ],
-      page: 3,
-      pageCount: 10,
-      total: 104,
-    };
   }
 
   // 全アドレスの合計ポイントを返却
@@ -58,8 +46,10 @@ export class PointsController {
 
   @Get('/update')
   async updatePointData() {
+    this.logger.log(this.getTotalPoint.name);
     const timestamps: { [hash: Address]: number } = {};
     const total = await this.pointsService.getTotal();
+    const seriesItems = await this.viemService.getSeriesItems();
     let totalPoints = BigInt(total.points);
     let totalEvents = BigInt(total.events);
     let totalNfts = BigInt(total.nfts);
@@ -112,14 +102,15 @@ export class PointsController {
         for (let i = 0; i < args.ids.length; i++) {
           const tokenId = args.ids[i];
           const quantitie = args.quantities[i];
-          switch (tokenId) {
-            case 1n:
+          const item = seriesItems.find((e) => e.tokenId === tokenId);
+          switch (item.rareness) {
+            case 0:
               common += quantitie;
               break;
-            case 2n:
+            case 1:
               rare += quantitie;
               break;
-            case 3n:
+            case 2:
               special += quantitie;
               break;
             default:
