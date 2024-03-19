@@ -51,6 +51,8 @@ const ResultPage: NextPage = () => {
           SPIN AGAIN!
         </SpinButton>
 
+        <br />
+
         <Link href="/">
           <Button
             mt={5}
