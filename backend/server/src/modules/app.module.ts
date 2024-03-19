@@ -16,6 +16,7 @@ import {
 import { AccountEntity } from 'src/entities/account.entity';
 import { EventEntity } from 'src/entities/event.entity';
 import { TotalEntity } from 'src/entities/total.entity';
+import { LogicEntity } from 'src/entities/logic.entity';
 
 @Module({
   imports: [
@@ -26,7 +27,7 @@ import { TotalEntity } from 'src/entities/total.entity';
       username: DB_USERNAME,
       password: DB_PASSWORD,
       database: DB_NAME,
-      entities: [AccountEntity, EventEntity, TotalEntity],
+      entities: [AccountEntity, EventEntity, TotalEntity, LogicEntity],
       synchronize: true,
     }),
     NeynarModule,
