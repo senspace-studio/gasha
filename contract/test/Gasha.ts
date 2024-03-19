@@ -9,7 +9,7 @@ import {
 import { zeroAddress } from 'viem'
 import { ethers } from 'hardhat'
 import { SignerWithAddress } from '@nomicfoundation/hardhat-ethers/signers'
-import { AbiCoder, keccak256, parseEther } from 'ethers'
+import { parseEther } from 'ethers'
 import MerkleTree from 'merkletreejs'
 import {
   addPermission,
@@ -19,7 +19,6 @@ import {
   deployZoraCreatorERC1155Factory,
   setMinterArguments,
 } from './helper'
-import { Console } from 'console'
 
 describe('Gasha', () => {
   let Gasha: Gasha
@@ -35,7 +34,7 @@ describe('Gasha', () => {
   before(async () => {
     ;[admin, fundRecipient] = await ethers.getSigners()
 
-    const contracts = await deployZoraCreatorERC1155Factory()
+    const contracts = await deployZoraCreatorERC1155Factory(admin.address)
     ZoraCreator1155Factory = contracts.zoraCreatorERC1155Factory
     MerkelMinter = contracts.merkelMinter
     ZoraProtocolRewards = contracts.zoraProtocolRewards
@@ -51,6 +50,7 @@ describe('Gasha', () => {
     )
 
     Gasha = await deployGashaContract(
+      admin.address,
       await ZoraCreator1155.getAddress(),
       await MerkelMinter.getAddress(),
       fundRecipient.address,
@@ -125,12 +125,29 @@ describe('Gasha', () => {
     ).emit(Gasha, 'Spin')
   })
 
-  it('remove series item', async () => {
-    const tx = await Gasha.removeSeriesItem(1)
-    await tx.wait()
+  it('should get active items', async () => {
+    const activeItems = await Gasha.activeSeriesItems()
+    expect(activeItems.length).to.equal(3)
+    expect(activeItems[0].tokenId).to.equal(1)
+    expect(activeItems[0].rareness).to.equal(0)
+    expect(activeItems[0].weight).to.equal(800)
+  })
 
-    const seriesItem = await Gasha.series(0)
-    expect(seriesItem.tokenId).to.equal(2)
-    expect(seriesItem.rareness).to.equal(1)
+  it('should deactivate series item', async () => {
+    await Gasha.deactivateSeriesItem(1)
+    const activeItems = await Gasha.activeSeriesItems()
+    expect(activeItems.length).to.equal(2)
+    expect(activeItems[0].tokenId).to.equal(2)
+    expect(activeItems[0].rareness).to.equal(1)
+    expect(activeItems[0].weight).to.equal(150)
+  })
+
+  it('should activate series item', async () => {
+    await Gasha.activateSeriesItem(1)
+    const activeItems = await Gasha.activeSeriesItems()
+    expect(activeItems.length).to.equal(3)
+    expect(activeItems[0].tokenId).to.equal(1)
+    expect(activeItems[0].rareness).to.equal(0)
+    expect(activeItems[0].weight).to.equal(800)
   })
 })

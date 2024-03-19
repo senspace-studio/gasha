@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.17;
 
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "./zora/interfaces/IZoraCreator1155.sol";
@@ -29,7 +29,8 @@ contract Gasha is IGasha, OwnableUpgradeable {
         uint256 _initialSeed,
         uint256 _unitPrice
     ) public initializer {
-        __Ownable_init(_initialOwner);
+        __Ownable_init();
+        transferOwnership(_initialOwner);
         ZoraCreator1155 = IZoraCreator1155(_zoraCreator1155);
         MerkleMinter = IMinter1155(_merkleMinter);
         mintReferral = _mintReferral;
@@ -133,16 +134,20 @@ contract Gasha is IGasha, OwnableUpgradeable {
         return series;
     }
 
-    // todo: onlyOwner
     function setNewSeriesItem(
         uint256 tokenId,
         Rareness rareness,
         uint256 weight
     ) public onlyOwner {
+        for (uint256 i = 0; i < series.length; i++) {
+            require(
+                series[i].tokenId != tokenId,
+                "Gasha: tokenId is already exist"
+            );
+        }
         series.push(SeriesItem(tokenId, rareness, weight, true));
     }
 
-    // todo: onlyOwner
     function activateSeriesItem(uint256 tokenId) public onlyOwner {
         for (uint256 i = 0; i < series.length; i++) {
             if (series[i].tokenId == tokenId) {
@@ -152,7 +157,6 @@ contract Gasha is IGasha, OwnableUpgradeable {
         }
     }
 
-    // todo: onlyOwner
     function deactivateSeriesItem(uint256 tokenId) public onlyOwner {
         for (uint256 i = 0; i < series.length; i++) {
             if (series[i].tokenId == tokenId) {
@@ -162,12 +166,10 @@ contract Gasha is IGasha, OwnableUpgradeable {
         }
     }
 
-    // todo: onlyOwner
     function resetSeed(uint256 newSeed) public onlyOwner {
         seed = newSeed;
     }
 
-    // todo: onlyOwner
     function setMinterArguments(
         bytes memory _minterArguments
     ) external onlyOwner {
