@@ -32,6 +32,7 @@ const main = async () => {
   )
 
   const gashaContract = await deployGashaContract(
+    adminAddress,
     zoraCreator1155Address!,
     await contracts.merkelMinter.getAddress(),
     fundRecipientAddress,
@@ -40,7 +41,7 @@ const main = async () => {
 
   for (const tokenId of [1, 2, 3]) {
     let tx = await ZoraCreator1155.setupNewTokenWithCreateReferral(
-      `ipfs://QmWdGS5HgfGjbXX851xzCd2f5WFnNxK4NjpmDnUCiY8EXz/${tokenId}.json`,
+      `ipfs://QmQM3UFhUVocoKgVrdvXf1UxtYyGVnNnnrZYkePknv6R63/${tokenId}.json`,
       100000,
       fundRecipientAddress
     )
