@@ -1,0 +1,8 @@
+{
+  "stage": "test",
+  "aws": {
+    "accountId": "726394863183",
+    "region": "ap-northeast-1"
+  },
+  "dbSecretSuffix": "NSdscr"
+}

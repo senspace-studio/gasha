@@ -9,7 +9,8 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "deploy": "cdk deploy --profile senspace"
+    "deploy": "cdk deploy --profile senspace",
+    "destroy": "cdk destroy --profile senspace"
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",

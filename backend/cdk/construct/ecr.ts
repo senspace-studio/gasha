@@ -10,7 +10,7 @@ export class EcrRepository extends Construct {
 
     this.repository = new ecr.Repository(scope, 'Gasha-Repository', {
       repositoryName: 'gasha-repository',
-      removalPolicy: RemovalPolicy.RETAIN,
+      removalPolicy: RemovalPolicy.DESTROY,
       imageScanOnPush: true,
     })
 
