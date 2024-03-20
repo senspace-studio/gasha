@@ -8,6 +8,7 @@ interface AppProps {
   repository: ecr.Repository
   vpc: ec2.Vpc
   appRunnerSecurityGroup: ec2.SecurityGroup
+  dbSecretSuffix: string
 }
 
 export class GashaAppStack extends cdk.Stack {
@@ -19,12 +20,13 @@ export class GashaAppStack extends cdk.Stack {
   ) {
     super(scope, id, props)
 
-    const { repository, vpc, appRunnerSecurityGroup } = appProps
+    const { repository, vpc, appRunnerSecurityGroup, dbSecretSuffix } = appProps
 
     new AppRunner(this, 'AppRunner', {
       vpc,
       repository,
       appRunnerSecurityGroup,
+      dbSecretSuffix: dbSecretSuffix,
     })
   }
 }

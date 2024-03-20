@@ -9,6 +9,7 @@ interface AppRunnerProps {
   vpc: ec2.Vpc
   repository: ecr.Repository
   appRunnerSecurityGroup: ec2.SecurityGroup
+  dbSecretSuffix: string
 }
 
 export class AppRunner extends Construct {
@@ -32,27 +33,10 @@ export class AppRunner extends Construct {
       )
     )
 
-    const secretsAppRunner = new secretsmanager.Secret(
-      this,
-      'Gasha-AppRunner-Secret',
-      {
-        description: 'for-Gasha-AppRunner',
-        secretName: 'gasha-apprunner',
-        generateSecretString: {
-          includeSpace: false,
-          excludePunctuation: true,
-          passwordLength: 48,
-          excludeCharacters: ' %+~`#$&*()|[]{}:;<>?!\'/@"\\',
-          generateStringKey: 'api_key',
-          secretStringTemplate: JSON.stringify({}),
-        },
-      }
-    )
-
     const secretsDB = secretsmanager.Secret.fromSecretNameV2(
       scope,
-      'gasha-db-secret',
-      'gasha-db-secret'
+      `gasha-db-secret-${props.dbSecretSuffix}`,
+      `gasha-db-secret-${props.dbSecretSuffix}`
     )
 
     const vpcConnector = new apprunner.CfnVpcConnector(
@@ -132,8 +116,8 @@ export class AppRunner extends Construct {
         },
       },
       healthCheckConfiguration: {
-        path: '/health',
-        interval: 60,
+        path: '/',
+        interval: 20,
       },
       instanceConfiguration: {
         instanceRoleArn: instanceRole.roleArn,
@@ -146,6 +130,7 @@ export class AppRunner extends Construct {
           vpcConnectorArn: vpcConnector.attrVpcConnectorArn,
         },
       },
+
       serviceName: 'gasha-apprunner',
     })
   }
