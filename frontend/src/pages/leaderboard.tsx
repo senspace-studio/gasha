@@ -1,4 +1,5 @@
 import { LeaderboardListItem } from '@/components/uiparts/LeaderboardListItem'
+import { StolzlText } from '@/components/uiparts/StolzlText'
 import {
   Box,
   Container,
@@ -95,11 +96,13 @@ const Leaderboard: NextPage = () => {
         borderRadius={10}
         background="black"
         justifyContent="space-between"
-        fontFamily="stolzl, sans-serif"
-        fontWeight="500"
       >
-        <Box>User</Box>
-        <Box>Points</Box>
+        <Box>
+          <StolzlText fontWeight={500}>User</StolzlText>
+        </Box>
+        <Box>
+          <StolzlText fontWeight={500}>Points</StolzlText>
+        </Box>
       </Flex>
 
       <VStack my={5}>

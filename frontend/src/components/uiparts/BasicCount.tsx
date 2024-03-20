@@ -1,5 +1,6 @@
 import { Box, Text } from '@chakra-ui/react'
 import { FC } from 'react'
+import { StolzlText } from './StolzlText'
 
 type Props = {
   number: string | number
@@ -14,8 +15,6 @@ export const BasicCount: FC<Props> = ({ number, unit, label }) => {
       overflow="hidden"
       borderRadius={10}
       width="100%"
-      fontFamily="stolzl, sans-serif"
-      fontWeight={500}
     >
       <Box
         fontSize="4xl"
@@ -25,8 +24,10 @@ export const BasicCount: FC<Props> = ({ number, unit, label }) => {
         pt={5}
         pb={4}
       >
-        {number}
-        <Text fontSize="md">{unit}</Text>
+        <StolzlText fontWeight={500}>{number}</StolzlText>
+        <Text fontSize="md">
+          <StolzlText fontWeight={500}>{unit}</StolzlText>
+        </Text>
       </Box>
       <Box
         fontSize="lg"
@@ -36,7 +37,7 @@ export const BasicCount: FC<Props> = ({ number, unit, label }) => {
         pt={2}
         pb={1}
       >
-        {label}
+        <StolzlText fontWeight={500}>{label}</StolzlText>
       </Box>
     </Box>
   )
