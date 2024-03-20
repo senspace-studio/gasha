@@ -5,7 +5,7 @@ import { useCurrentMints, useRemainingTime } from '@/hooks/useCount'
 import { Box, Container, VStack } from '@chakra-ui/react'
 
 export default function Home() {
-  const {} = useCurrentMints()
+  const { mints } = useCurrentMints()
   const remainingTime = useRemainingTime()
 
   return (
@@ -26,7 +26,7 @@ export default function Home() {
           <SpinModule />
 
           <VStack mt={20} pb={10} gap={5}>
-            <BasicCount number={99.9999} unit="MINTS" label="Total Mints" />
+            <BasicCount number={mints} unit="MINTS" label="Total Mints" />
             <BasicCount number={99.9999} unit="ETH" label="Total Rewards" />
             <BasicCount number={remainingTime} label="Time Remaining" />
           </VStack>

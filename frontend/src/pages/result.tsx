@@ -3,16 +3,51 @@ import { Scorecard } from '@/components/uiparts/Scorecard'
 import { SpinButton } from '@/components/uiparts/SpinButton'
 import { StolzlText } from '@/components/uiparts/StolzlText'
 import { useResultData } from '@/hooks/useGasha'
-import { Box, Button, Heading, Text } from '@chakra-ui/react'
+import { Box, Button, Flex, Heading, Spinner, Text } from '@chakra-ui/react'
+import { css } from '@emotion/react'
 import { NextPage } from 'next'
 import Link from 'next/link'
 
 const ResultPage: NextPage = () => {
-  const { gotItems } = useResultData()
+  const { gotItems, gotPoints } = useResultData()
 
   return (
     <>
-      <ResultGallery items={gotItems || []} />
+      {/* <Box css={animationStyle}>
+        <Button
+          width={100}
+          height={100}
+          borderRadius="full"
+          position="fixed"
+          bottom={5}
+          right={5}
+          zIndex={10}
+          fontFamily="stolzl, sans-serif"
+          border="3px solid black"
+          color="white"
+          bgGradient="linear(to-r, blue.400, yellow.400)"
+          fontSize="lg"
+          boxShadow="0 0 10px 0 rgba(256, 256, 256, 0.5)"
+          animation="3s ease-in-out infinite rotate"
+        >
+          SPIN
+          <br />
+          AGAIN
+        </Button>
+      </Box> */}
+
+      {gotItems ? (
+        <ResultGallery items={gotItems || []} />
+      ) : (
+        <Flex
+          alignItems="center"
+          justifyContent="center"
+          width="100%"
+          height={300}
+        >
+          <Spinner color="yellow.400" size="lg" />
+        </Flex>
+      )}
 
       <Box
         textAlign="center"
@@ -46,7 +81,7 @@ const ResultPage: NextPage = () => {
           See What you won below!
         </Text>
 
-        <Scorecard />
+        <Scorecard points={gotPoints} items={gotItems} />
 
         <SpinButton minW="230px" mt={10}>
           SPIN AGAIN!
@@ -76,3 +111,14 @@ const ResultPage: NextPage = () => {
 }
 
 export default ResultPage
+
+const animationStyle = css`
+  @keyframes rotate {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+`

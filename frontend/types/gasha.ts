@@ -1,3 +1,10 @@
+export type ResultItem = {
+  name: string
+  image: string
+  rareness: string
+  quantity: number
+}
+
 export type ResultPoint = {
   address: string
   common: ResultPointOfRareness

@@ -35,8 +35,8 @@ export const useCurrentMints = () => {
 
   useEffect(() => {
     const getMints = async () => {
-      const res = await (await gashaAPI('/total')).json()
-      console.log(res)
+      const res = await (await gashaAPI('/points/total')).json()
+      setMints(res.nfts)
     }
     getMints()
   }, [])

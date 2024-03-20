@@ -86,7 +86,6 @@ export const ResultGallery: FC<Props> = ({ items }) => {
           backgroundColor="black"
           color="white"
           minW="170"
-          pt={1}
         >
           <StolzlText fontWeight={400}>Share on Farcaster</StolzlText>
         </Button>
@@ -97,7 +96,6 @@ export const ResultGallery: FC<Props> = ({ items }) => {
           backgroundColor="black"
           color="white"
           minW="170"
-          pt={1}
         >
           <StolzlText fontWeight={400}>Share on X</StolzlText>
         </Button>
