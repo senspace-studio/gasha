@@ -1,5 +1,5 @@
 import { ComponentWithAs, Text, TextProps } from '@chakra-ui/react'
-import { FC, ReactNode, useMemo } from 'react'
+import { FC, ReactNode, useEffect, useMemo, useState } from 'react'
 
 interface Props extends TextProps {
   children: ReactNode
@@ -9,10 +9,11 @@ export const StolzlText: ComponentWithAs<'p', Props> = ({
   children,
   ...rest
 }) => {
-  // check useragent mac and iphone or not
-  const isApple = useMemo(() => {
-    if (typeof window === 'undefined') return false
-    return /Mac|iPod|iPhone|iPad/.test(window.navigator.userAgent)
+  const [isApple, setIsApple] = useState(false)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    setIsApple(/Mac|iPod|iPhone|iPad/.test(window.navigator.userAgent))
   }, [])
 
   return (
