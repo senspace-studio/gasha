@@ -12,7 +12,7 @@ import { useRouter } from 'next/router'
 import { toast } from 'react-toastify'
 import { ipfs2http } from '@/lib/ipfs2http'
 import { gashaAPI } from '@/lib/gashaAPI'
-import { ResultPoint } from '@/gasha'
+import { ResultItem, ResultPoint } from '@/gasha'
 
 enum RarenessLabel {
   Common = 0,
@@ -104,7 +104,7 @@ export const useSpinGasha = () => {
     calcPoints()
   }, [result])
 
-  return { spinGasha, isPending, result, points }
+  return { spinGasha, isPending, result, points, txHash }
 }
 
 export const useSeriesItems = () => {
@@ -139,8 +139,7 @@ export const useResultData = () => {
   const { address } = useAccount()
 
   const [gotTokenIds, setGotTokenIds] = useState<number[]>([])
-  const [gotItems, setGotItems] =
-    useState<{ name: string; image: string; rareness: string }[]>()
+  const [gotItems, setGotItems] = useState<ResultItem[]>()
   const [gotPoints, setGotPoints] = useState<ResultPoint>()
 
   const { data } = useMultiReadZoraCreator1155Contract(
@@ -172,9 +171,12 @@ export const useResultData = () => {
         const query = Object.entries(rareness)
           .map(([key, value]) => `${key}=${value}`)
           .join('&')
-        const points = gashaAPI(`/points/${address}/result/?${query}`, {
-          method: 'GET',
-        })
+        const points = await (
+          await gashaAPI(`/points/${address}/result/?${query}`, {
+            method: 'GET',
+          })
+        ).json()
+        setGotPoints(points)
       }
     }
 
@@ -211,6 +213,8 @@ export const useResultData = () => {
               rarenessLabel[
                 resultData?.find((r) => r.tokenId === tokenId)?.rareness || 0
               ],
+            quantity:
+              resultData?.find((r) => r.tokenId === tokenId)?.quantity || 0,
           }
         })
         const items = await Promise.all(promises)
@@ -220,5 +224,5 @@ export const useResultData = () => {
     fetchMetadata()
   }, [data, resultData])
 
-  return { gotItems }
+  return { gotItems, gotPoints }
 }

@@ -16,9 +16,9 @@ import {
   useDisclosure,
 } from '@chakra-ui/react'
 import { CloseIcon, HamburgerIcon } from '@chakra-ui/icons'
-import { usePrivy, useWallets } from '@privy-io/react-auth'
+import { useWallets, useConnectWallet, usePrivy } from '@privy-io/react-auth'
 import { FC, useCallback, useEffect, useRef } from 'react'
-import { useAccount, useDisconnect } from 'wagmi'
+import { useAccount, useDisconnect, useSwitchChain } from 'wagmi'
 import { useSetActiveWallet } from '@privy-io/wagmi'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -47,26 +47,8 @@ const socialLinks: any[] = [
 
 export const Header: FC = () => {
   const { connectWallet } = usePrivy()
-  const { disconnect } = useDisconnect()
-
-  const { isConnected, address } = useAccount()
-  const { wallets } = useWallets()
-  const { setActiveWallet } = useSetActiveWallet()
-
-  const handleConnectWallet = useCallback(() => {
-    if (isConnected) {
-      disconnect()
-    } else {
-      connectWallet()
-    }
-  }, [isConnected])
-
-  useEffect(() => {
-    const setWallet = async () => {
-      if (wallets.length > 0) await setActiveWallet(wallets[0])
-    }
-    setWallet()
-  }, [wallets])
+  const { address, chainId } = useAccount()
+  const { switchChainAsync } = useSwitchChain()
 
   const { isOpen, onOpen, onClose } = useDisclosure()
   const btnRef = useRef<HTMLButtonElement>(null)
@@ -75,6 +57,16 @@ export const Header: FC = () => {
   useEffect(() => {
     onClose()
   }, [asPath])
+
+  useEffect(() => {
+    if (address && chainId !== Number(process.env.NEXT_PUBLIC_CHAIN_ID)) {
+      try {
+        switchChainAsync({
+          chainId: Number(process.env.NEXT_PUBLIC_CHAIN_ID),
+        })
+      } catch (error) {}
+    }
+  }, [chainId, address])
 
   return (
     <header>
@@ -89,12 +81,12 @@ export const Header: FC = () => {
           Gasha
         </Box>
         <Button
-          onClick={handleConnectWallet}
+          onClick={connectWallet}
           backgroundColor="yellow.300"
           borderRadius="full"
         >
           <StolzlText fontWeight={500}>
-            {isConnected
+            {address
               ? `${address?.slice(0, 5)}...${address?.slice(-4)}`
               : 'Connect Wallet'}
           </StolzlText>
