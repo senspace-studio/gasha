@@ -22,6 +22,7 @@ import { useAccount, useDisconnect } from 'wagmi'
 import { useSetActiveWallet } from '@privy-io/wagmi'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { StolzlText } from '../uiparts/StolzlText'
 
 const links = [
   { path: '/', name: 'Top' },
@@ -91,13 +92,12 @@ export const Header: FC = () => {
           onClick={handleConnectWallet}
           backgroundColor="yellow.300"
           borderRadius="full"
-          fontFamily="stolzl, sans-serif"
-          fontWeight={500}
-          pt={1}
         >
-          {isConnected
-            ? `${address?.slice(0, 5)}...${address?.slice(-4)}`
-            : 'Connect Wallet'}
+          <StolzlText fontWeight={500}>
+            {isConnected
+              ? `${address?.slice(0, 5)}...${address?.slice(-4)}`
+              : 'Connect Wallet'}
+          </StolzlText>
         </Button>
       </HStack>
 
@@ -130,14 +130,8 @@ export const Header: FC = () => {
             <Stack spacing={3} align="stretch" marginBottom={'33px'}>
               {links.map((link) => (
                 <Link key={link.path} href={link.path}>
-                  <Text
-                    fontSize="4xl"
-                    fontFamily={'stolzl, sans-serif'}
-                    fontWeight={500}
-                    color="blue.400"
-                    whiteSpace={'nowrap'}
-                  >
-                    {link.name}
+                  <Text fontSize="4xl" color="blue.400" whiteSpace={'nowrap'}>
+                    <StolzlText fontWeight={500}>{link.name}</StolzlText>
                   </Text>
                 </Link>
               ))}
