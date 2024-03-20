@@ -1,6 +1,7 @@
 import { ResultGallery } from '@/components/uiparts/ResultGallery'
 import { Scorecard } from '@/components/uiparts/Scorecard'
 import { SpinButton } from '@/components/uiparts/SpinButton'
+import { StolzlText } from '@/components/uiparts/StolzlText'
 import { useResultData } from '@/hooks/useGasha'
 import { Box, Button, Heading, Text } from '@chakra-ui/react'
 import { NextPage } from 'next'
@@ -65,10 +66,8 @@ const ResultPage: NextPage = () => {
             fontSize="lg"
             border="2px solid black"
             borderBottom="4px solid black"
-            fontFamily="stolzl, sans-serif"
-            fontWeight={500}
           >
-            Check Total Rewards
+            <StolzlText fontWeight={500}>Check Total Rewards</StolzlText>
           </Button>
         </Link>
       </Box>

@@ -11,6 +11,7 @@ import { FC, useState } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import 'swiper/css'
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons'
+import { StolzlText } from './StolzlText'
 
 type Props = {
   items: { name: string; image: string; rareness: string }[]
@@ -58,13 +59,10 @@ export const ResultGallery: FC<Props> = ({ items }) => {
                   height={330}
                   backgroundColor="yellow.300"
                 ></Box>
-                <Heading
-                  textAlign="center"
-                  color="yellow.400"
-                  fontFamily="stolzl, sans-serif"
-                  fontWeight={500}
-                >
-                  {item.rareness.toUpperCase()}
+                <Heading textAlign="center" color="yellow.400">
+                  <StolzlText fontWeight={500}>
+                    {item.rareness.toUpperCase()}
+                  </StolzlText>
                 </Heading>
               </SwiperSlide>
             ))}
@@ -80,13 +78,7 @@ export const ResultGallery: FC<Props> = ({ items }) => {
         />
       </Grid>
 
-      <VStack
-        gap={3}
-        mt={5}
-        fontFamily="stolzl, sans-serif"
-        fontWeight={400}
-        width="100%"
-      >
+      <VStack gap={3} mt={5} width="100%">
         <Button
           fontSize="xs"
           size="sm"
@@ -96,7 +88,7 @@ export const ResultGallery: FC<Props> = ({ items }) => {
           minW="170"
           pt={1}
         >
-          Share on Farcaster
+          <StolzlText fontWeight={400}>Share on Farcaster</StolzlText>
         </Button>
         <Button
           fontSize="xs"
@@ -107,7 +99,7 @@ export const ResultGallery: FC<Props> = ({ items }) => {
           minW="170"
           pt={1}
         >
-          Share on X
+          <StolzlText fontWeight={400}>Share on X</StolzlText>
         </Button>
       </VStack>
     </Container>

@@ -1,5 +1,6 @@
 import { Button, ButtonProps, ComponentWithAs } from '@chakra-ui/react'
 import { FC, ReactNode } from 'react'
+import { StolzlText } from './StolzlText'
 
 interface Props extends ButtonProps {
   children: ReactNode
@@ -21,10 +22,8 @@ export const SpinButton: ComponentWithAs<'button', Props> = ({
       fontSize="2xl"
       border="2px solid black"
       borderBottom="4px solid black"
-      fontFamily="stolzl, sans-serif"
-      fontWeight={700}
     >
-      {children}
+      <StolzlText fontWeight={700}>{children}</StolzlText>
     </Button>
   )
 }
