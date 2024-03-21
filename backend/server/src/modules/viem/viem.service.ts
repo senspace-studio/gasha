@@ -1,14 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { BLOCKCHAIN_API, GASHA_ADDRESS } from 'src/utils/env';
-import { http, createPublicClient, Chain, Address } from 'viem';
+import { http, createPublicClient, Chain, Address, getContract } from 'viem';
 import { baseSepolia as chain } from 'viem/chains';
 import { Gasha } from 'src/constants/Gasha';
-
-export type SpinEvent = {
-  minter: Address;
-  ids: [bigint, bigint, bigint];
-  quantities: [bigint, bigint, bigint];
-};
+import { SeriesItem } from 'src/types/contract';
 
 @Injectable()
 export class ViemService {
@@ -32,6 +27,16 @@ export class ViemService {
       toBlock: toBlock,
     });
     return events;
+  }
+
+  async getSeriesItems() {
+    const contract = getContract({
+      address: GASHA_ADDRESS as Address,
+      abi: Gasha.abi,
+      client: this.client as any,
+    }) as any;
+    const res = await contract.read.activeSeriesItems();
+    return res as SeriesItem[];
   }
 
   async getBlockTimestampByBlockHash(blockHash: Address) {
