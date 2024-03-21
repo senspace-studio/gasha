@@ -1,5 +1,6 @@
 import { ResultGallery } from '@/components/uiparts/ResultGallery'
 import { Scorecard } from '@/components/uiparts/Scorecard'
+import { SpinAgainModal } from '@/components/uiparts/SpinAgainModal'
 import { SpinButton } from '@/components/uiparts/SpinButton'
 import { StolzlText } from '@/components/uiparts/StolzlText'
 import { useResultData } from '@/hooks/useGasha'
@@ -7,9 +8,18 @@ import { Box, Button, Flex, Heading, Spinner, Text } from '@chakra-ui/react'
 import { css } from '@emotion/react'
 import { NextPage } from 'next'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
+import { useEffect } from 'react'
 
 const ResultPage: NextPage = () => {
   const { gotItems, gotPoints } = useResultData()
+  const { asPath } = useRouter()
+
+  useEffect(() => {
+    setTimeout(() => {
+      window.scrollTo(0, 0)
+    }, 200)
+  }, [asPath])
 
   return (
     <>
@@ -83,9 +93,7 @@ const ResultPage: NextPage = () => {
 
         <Scorecard points={gotPoints} items={gotItems} />
 
-        <SpinButton minW="230px" mt={10}>
-          SPIN AGAIN!
-        </SpinButton>
+        <SpinAgainModal />
 
         <br />
 

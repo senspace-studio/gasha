@@ -37,7 +37,7 @@ export const ResultGallery: FC<Props> = ({ items }) => {
         />
         <Box overflow="hidden">
           <Swiper
-            loop
+            loop={items.length > 1}
             onInit={(ev) => {
               setSwiper(ev)
             }}

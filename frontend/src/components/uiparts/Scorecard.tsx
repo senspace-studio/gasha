@@ -62,6 +62,14 @@ export const Scorecard: FC<Props> = ({ points, items }) => {
     return items?.filter((item) => item.rareness === 'common') || []
   }, [items])
 
+  const totalPoints = useMemo(() => {
+    return points
+      ? Number(points?.common.points) +
+          Number(points?.rare.points) +
+          Number(points?.special.points)
+      : 'XXX'
+  }, [points])
+
   return (
     <>
       <Box
@@ -88,16 +96,15 @@ export const Scorecard: FC<Props> = ({ points, items }) => {
             <Box width="80px" height="100px" backgroundColor="grey"></Box>
             <Grid alignItems="center">
               <Text fontSize="4xl" color="blue.400">
-                <StolzlText fontWeight={500}>
-                  {points &&
-                    Number(points?.common.points) +
-                      Number(points?.rare.points) +
-                      Number(points?.special.points)}
-                </StolzlText>
+                <StolzlText fontWeight={500}>{totalPoints}</StolzlText>
               </Text>
             </Grid>
             <Grid alignItems="end">
-              <Box lineHeight={1.1} mb={4}>
+              <Box
+                lineHeight={1.1}
+                mb={4}
+                mr={Number(totalPoints) > 9999 ? 10 : 0}
+              >
                 <Text fontSize="xl">
                   <StolzlText fontWeight={500} color="blue.400">
                     POINTS
