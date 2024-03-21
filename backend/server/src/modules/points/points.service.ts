@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { LessThanOrEqual, MoreThan, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EventEntity } from 'src/entities/event.entity';
 import { AccountEntity } from 'src/entities/account.entity';
@@ -9,11 +9,11 @@ import { BonusAddress } from 'src/constants/BonusAddress';
 
 // DB
 // '0','1711116000','1711177200','200','400','800'
-// '1','1711116000','1711177200','200','400','800'
-// '2','1711116000','1711177200','400','800','1600'
-// '3','1711116000','1711177200','400','800','1600'
-// '4','1711116000','1711177200','200','400','800'
-// '5','1711116000','1711177200','400','800','1600'
+// '1','1711177200','1711375200','200','400','800'
+// '2','1711375200','1711396800','400','800','1600'
+// '3','1711396800','1711436400','400','800','1600'
+// '4','1711436400','1711544400','200','400','800'
+// '5','1711544400','1711609200','400','800','1600'
 
 export type PointCalcResponse = {
   special: {
@@ -139,6 +139,15 @@ export class PointsService {
     return await this.logicRepository.find();
   }
 
+  async getLogicByDate(date: number) {
+    return await this.logicRepository.findOne({
+      where: {
+        start: LessThanOrEqual(date),
+        end: MoreThan(date),
+      },
+    });
+  }
+
   // dateはミリ秒なので注意
   async calc(
     address: string,
@@ -147,33 +156,29 @@ export class PointsService {
     special: bigint,
     date: bigint,
   ): Promise<PointCalcResponse> {
-    const logics = await this.getLogics();
-    for (const logic of logics) {
-      if (BigInt(logic.start * 1e3) <= date && date < BigInt(logic.end * 1e3)) {
-        if (logic.bonus && BonusAddress.includes(address.toLowerCase())) {
-          return {
-            common: {
-              amount: common,
-              points: common * BigInt(logic.common * 2),
-            },
-            rare: { amount: rare, points: rare * BigInt(logic.rare * 2) },
-            special: {
-              amount: special,
-              points: special * BigInt(logic.special * 2),
-            },
-          };
-        }
-        return {
-          common: { amount: common, points: common * BigInt(logic.common) },
-          rare: { amount: rare, points: rare * BigInt(logic.rare) },
-          special: { amount: special, points: special * BigInt(logic.special) },
-        };
-      }
+    const logic = await this.getLogicByDate(Number(date) / 1e3);
+    console.log(Number(date) / 1e3, logic);
+    if (!logic) {
+      return {
+        common: { amount: common, points: 0n },
+        rare: { amount: rare, points: 0n },
+        special: { amount: special, points: 0n },
+      };
     }
+    const bonus = logic.bonus && BonusAddress.includes(address.toLowerCase());
     return {
-      common: { amount: common, points: 0n },
-      rare: { amount: rare, points: 0n },
-      special: { amount: special, points: 0n },
+      common: {
+        amount: common,
+        points: common * BigInt(logic.common * (bonus ? 2 : 1)),
+      },
+      rare: {
+        amount: rare,
+        points: rare * BigInt(logic.rare * (bonus ? 2 : 1)),
+      },
+      special: {
+        amount: special,
+        points: special * BigInt(logic.special * (bonus ? 2 : 1)),
+      },
     };
   }
 }
