@@ -3,19 +3,7 @@ import { BLOCKCHAIN_API, GASHA_ADDRESS } from 'src/utils/env';
 import { http, createPublicClient, Chain, Address, getContract } from 'viem';
 import { baseSepolia as chain } from 'viem/chains';
 import { Gasha } from 'src/constants/Gasha';
-
-export type SpinEvent = {
-  minter: Address;
-  ids: [bigint, bigint, bigint];
-  quantities: [bigint, bigint, bigint];
-};
-
-export type SeriesItem = {
-  tokenId: bigint;
-  rareness: number;
-  weight: bigint;
-  isActive: boolean;
-};
+import { SeriesItem } from 'src/types/contract';
 
 @Injectable()
 export class ViemService {
