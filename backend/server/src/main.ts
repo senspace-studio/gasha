@@ -16,28 +16,28 @@ async function bootstrap() {
   app.use(helmet());
   await app.listen(3000);
 }
-// bootstrap();
-const primaryProcess = () => {
-  logger.log(`Primary server started on ${process.pid} cpu len: ${numCPUs}`);
-  for (let i = 0; i < numCPUs; i++) {
-    logger.log(`cluster fork: ${i}`);
-    cluster.fork();
-  }
-  cluster.on('exit', (worker, code, signal) => {
-    logger.warn(
-      `[${worker.id}] Worker died : [PID ${worker.process.pid}] [Signal ${signal}] [Code ${code}]`,
-    );
-    cluster.fork();
-  });
-};
+bootstrap();
+// const primaryProcess = () => {
+//   logger.log(`Primary server started on ${process.pid} cpu len: ${numCPUs}`);
+//   for (let i = 0; i < numCPUs; i++) {
+//     logger.log(`cluster fork: ${i}`);
+//     cluster.fork();
+//   }
+//   cluster.on('exit', (worker, code, signal) => {
+//     logger.warn(
+//       `[${worker.id}] Worker died : [PID ${worker.process.pid}] [Signal ${signal}] [Code ${code}]`,
+//     );
+//     cluster.fork();
+//   });
+// };
 
-const workerProcess = () => {
-  logger.log(`bootstrap@${process.pid}`);
-  bootstrap();
-};
+// const workerProcess = () => {
+//   logger.log(`bootstrap@${process.pid}`);
+//   bootstrap();
+// };
 
-if (cluster.isMaster || cluster.isPrimary) {
-  primaryProcess();
-} else {
-  workerProcess();
-}
+// if (cluster.isMaster || cluster.isPrimary) {
+//   primaryProcess();
+// } else {
+//   workerProcess();
+// }
