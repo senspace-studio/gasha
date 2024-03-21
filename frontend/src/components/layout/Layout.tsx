@@ -12,7 +12,9 @@ export const DefaultLayout: FC<Props> = ({ children }) => {
       <Header />
       <main>{children}</main>
       <footer>
-        <h1>Footer</h1>
+        <Box py={3} textAlign="center" color="yellow.400">
+          Logo
+        </Box>
       </footer>
     </Box>
   )

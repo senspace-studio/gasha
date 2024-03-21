@@ -1,9 +1,13 @@
 import { BasicCount } from '@/components/uiparts/BasicCount'
 import { SpinModule } from '@/components/uiparts/SpinModule'
 import { TopCount } from '@/components/uiparts/TopCount'
+import { useCurrentMints, useRemainingTime } from '@/hooks/useCount'
 import { Box, Container, VStack } from '@chakra-ui/react'
 
 export default function Home() {
+  const {} = useCurrentMints()
+  const remainingTime = useRemainingTime()
+
   return (
     <>
       <TopCount />
@@ -24,7 +28,7 @@ export default function Home() {
           <VStack mt={20} pb={10} gap={5}>
             <BasicCount number={99.9999} unit="MINTS" label="Total Mints" />
             <BasicCount number={99.9999} unit="ETH" label="Total Rewards" />
-            <BasicCount number={99.9999} label="Time Remaining" />
+            <BasicCount number={remainingTime} label="Time Remaining" />
           </VStack>
         </Container>
       </Box>
