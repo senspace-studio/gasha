@@ -45,7 +45,9 @@ export const useSpinGasha = () => {
         await sendTx(
           [BigInt(quantity)],
           parseEther(
-            String(quantity * Number(process.env.NEXT_PUBLIC_UNIT_PRICE))
+            String(
+              Number(quantity) * Number(process.env.NEXT_PUBLIC_UNIT_PRICE)
+            )
           )
         )
       } catch (error) {

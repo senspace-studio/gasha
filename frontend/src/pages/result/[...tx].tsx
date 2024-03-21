@@ -12,7 +12,6 @@ import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 
 const ResultPage: NextPage = () => {
-  const { gotItems, gotPoints } = useResultData()
   const { asPath } = useRouter()
 
   useEffect(() => {
@@ -46,18 +45,22 @@ const ResultPage: NextPage = () => {
         </Button>
       </Box> */}
 
-      {gotItems ? (
-        <ResultGallery items={gotItems || []} />
-      ) : (
-        <Flex
-          alignItems="center"
-          justifyContent="center"
-          width="100%"
-          height={300}
+      <Box textAlign="center" color="yellow.400">
+        <Heading
+          as="h2"
+          fontFamily="stolzl, sans-serif"
+          fontWeight={500}
+          mb={3}
+          mt={5}
         >
-          <Spinner color="yellow.400" size="lg" />
-        </Flex>
-      )}
+          Congratulations!
+        </Heading>
+        <Text fontWeight="bold" mb={7}>
+          See What you won below!
+        </Text>
+      </Box>
+
+      <ResultGallery />
 
       <Box
         textAlign="center"
@@ -78,23 +81,9 @@ const ResultPage: NextPage = () => {
         }}
         overflow="hidden"
       >
-        <Heading
-          as="h2"
-          fontFamily="stolzl, sans-serif"
-          fontWeight={500}
-          mb={3}
-          mt={10}
-        >
-          Congratulations!
-        </Heading>
-        <Text fontWeight="bold" mb={7}>
-          See What you won below!
-        </Text>
-
-        <Scorecard points={gotPoints} items={gotItems} />
-
         <SpinAgainModal />
 
+        {/* 
         <br />
 
         <Link href="/">
@@ -112,7 +101,7 @@ const ResultPage: NextPage = () => {
           >
             <StolzlText fontWeight={500}>Check Total Rewards</StolzlText>
           </Button>
-        </Link>
+        </Link> */}
       </Box>
     </>
   )
