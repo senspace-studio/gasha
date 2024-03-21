@@ -1,10 +1,18 @@
 import { createConfig, http } from 'wagmi'
-import { Chain, hardhat, localhost, zoraSepolia } from 'wagmi/chains'
+import {
+  Chain,
+  baseSepolia,
+  hardhat,
+  localhost,
+  zoraSepolia,
+} from 'wagmi/chains'
 
 const selectChain = () => {
   switch (process.env.NEXT_PUBLIC_CHAIN_ID) {
     case '31337':
       return hardhat
+    case '84532':
+      return baseSepolia
     case '999999999':
       return zoraSepolia
     default:

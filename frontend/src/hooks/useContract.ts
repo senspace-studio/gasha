@@ -77,3 +77,21 @@ export const useReadZoraCreator1155Contract = <
 
   return readResult as ZoraCreator1155ReadFunctionReturnType<T>
 }
+
+export const useMultiReadZoraCreator1155Contract = (
+  params: {
+    functionName: ZoraCreatorERC1155ReadFunctionName
+    args: ZoraCreatorERC1155ReadArgs<ZoraCreatorERC1155ReadFunctionName>
+  }[]
+) => {
+  const readResult = useReadContracts({
+    contracts: params.map((param) => ({
+      abi: ZoraCreator1155Abi,
+      address: ZORA_CREATOR_ERC1155_ADDRESS,
+      functionName: param.functionName,
+      args: param.args,
+    })),
+  })
+
+  return readResult
+}
