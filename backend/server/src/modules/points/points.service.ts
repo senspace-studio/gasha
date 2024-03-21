@@ -1,24 +1,20 @@
 import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { LessThanOrEqual, MoreThan, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EventEntity } from 'src/entities/event.entity';
 import { AccountEntity } from 'src/entities/account.entity';
 import { TotalEntity } from 'src/entities/total.entity';
+import { LogicEntity } from 'src/entities/logic.entity';
+import { BonusAddress } from 'src/constants/BonusAddress';
+import { PointCalcResponse } from 'src/types/point';
 
-export type PointCalcResponse = {
-  special: {
-    amount: bigint;
-    points: bigint;
-  };
-  rare: {
-    amount: bigint;
-    points: bigint;
-  };
-  common: {
-    amount: bigint;
-    points: bigint;
-  };
-};
+// DB
+// '0','1711116000','1711177200','200','400','800'
+// '1','1711177200','1711375200','200','400','800'
+// '2','1711375200','1711396800','400','800','1600'
+// '3','1711396800','1711436400','400','800','1600'
+// '4','1711436400','1711544400','200','400','800'
+// '5','1711544400','1711609200','400','800','1600'
 
 @Injectable()
 export class PointsService {
@@ -29,7 +25,29 @@ export class PointsService {
     private readonly accountRepository: Repository<AccountEntity>,
     @InjectRepository(TotalEntity)
     private readonly totalRepository: Repository<TotalEntity>,
-  ) {}
+    @InjectRepository(LogicEntity)
+    private readonly logicRepository: Repository<LogicEntity>,
+  ) {
+    // const eventDates = [
+    //   1711116000, // [0] Fri Mar 22 2024 23:00:00 GMT+0900 (Japan Standard Time) 開始時間
+    //   1711177200, // [1] Sat Mar 23 2024 16:00:00 GMT+0900 (Japan Standard Time)
+    //   1711375200, // [2] Mon Mar 25 2024 23:00:00 GMT+0900 (Japan Standard Time)
+    //   1711396800, // [3] Tue Mar 26 2024 05:00:00 GMT+0900 (Japan Standard Time)
+    //   1711436400, // [4] Tue Mar 26 2024 16:00:00 GMT+0900 (Japan Standard Time)
+    //   1711544400, // [5] Thu Mar 27 2024 22:00:00 GMT+0900 (Japan Standard Time)
+    //   1711609200, // [6] Fri Mar 28 2024 16:00:00 GMT+0900 (Japan Standard Time) 終了時間
+    // ];
+    // for (let i = 0; i < eventDates.length - 1; i++) {
+    //   this.logicRepository.save({
+    //     id: i,
+    //     start: eventDates[0],
+    //     end: eventDates[1],
+    //     common: 200,
+    //     rare: 400,
+    //     special: 800,
+    //   });
+    // }
+  }
 
   async getEventsByMinter(minter: string) {
     const events = await this.eventRepository.find({ where: { minter } });
@@ -103,6 +121,19 @@ export class PointsService {
     });
   }
 
+  async getLogics() {
+    return await this.logicRepository.find();
+  }
+
+  async getLogicByDate(date: number) {
+    return await this.logicRepository.findOne({
+      where: {
+        start: LessThanOrEqual(date),
+        end: MoreThan(date),
+      },
+    });
+  }
+
   // dateはミリ秒なので注意
   async calc(
     address: string,
@@ -111,83 +142,29 @@ export class PointsService {
     special: bigint,
     date: bigint,
   ): Promise<PointCalcResponse> {
-    const res: PointCalcResponse = {
-      common: { amount: common, points: 0n },
-      rare: { amount: rare, points: 0n },
-      special: { amount: special, points: 0n },
-    };
-    // ベースポイントの設定
-    const basepoint = {
-      common: 200n,
-      rare: 400n,
-      special: 800n,
-    };
-    // 日付の分割に使う
-    const eventDates = [
-      1711116000000, // [0] Fri Mar 22 2024 23:00:00 GMT+0900 (Japan Standard Time) 開始時間
-      1711177200000, // [1] Sat Mar 23 2024 16:00:00 GMT+0900 (Japan Standard Time)
-      1711375200000, // [2] Mon Mar 25 2024 23:00:00 GMT+0900 (Japan Standard Time)
-      1711396800000, // [3] Tue Mar 26 2024 05:00:00 GMT+0900 (Japan Standard Time)
-      1711436400000, // [4] Tue Mar 26 2024 16:00:00 GMT+0900 (Japan Standard Time)
-      1711544400000, // [5] Thu Mar 27 2024 22:00:00 GMT+0900 (Japan Standard Time)
-      1711609200000, // [6] Fri Mar 28 2024 16:00:00 GMT+0900 (Japan Standard Time) 終了時間
-    ];
-
-    const calcDay = (timestamp: number) => {
-      if (eventDates[eventDates.length - 1] <= timestamp) {
-        // 範囲外（終了時刻以降）
-        return -1;
-      }
-      // 日付範囲を返す
-      for (let i = eventDates.length - 2; 0 <= i; i--) {
-        if (eventDates[i] <= timestamp) {
-          return i;
-        }
-      }
-      // 範囲外（開始時間前）
-      return -1;
-    };
-
-    // ダブルポイントか否か
-    let isDouble = false;
-    const day = calcDay(Number(date));
-    switch (day) {
-      case 0:
-        // 1日目
-        // [TODO] チャンネル登録していたらボーナスの処理を加える
-        // isDouble = true;
-        break;
-      case 1:
-        // 2日目 通常
-        break;
-      case 2:
-        // 3日目 ダブルポイント
-        isDouble = true;
-        break;
-      case 3:
-        // 4日目 1日目だけリストックでダブルポイント
-        const events = await this.getEventsByMinter(address);
-        for (const event of events) {
-          if (calcDay(Number(event.timestamp)) === 0) {
-            isDouble = true;
-          }
-        }
-        break;
-      case 4:
-        // 5日目 通常
-        break;
-      case 5:
-        // 6日目 ダブルポイント
-        isDouble = true;
-      default:
-        // [DEBUG] 本番ではコメントアウトを外す
-        // 異常な日付はポイントを計算せずに返す
-        // return 0n;
-        break;
+    const logic = await this.getLogicByDate(Number(date) / 1e3);
+    console.log(Number(date) / 1e3, logic);
+    if (!logic) {
+      return {
+        common: { amount: common, points: 0n },
+        rare: { amount: rare, points: 0n },
+        special: { amount: special, points: 0n },
+      };
     }
-    res.common.points = common * basepoint.common * (isDouble ? 2n : 1n);
-    res.rare.points = rare * basepoint.rare * (isDouble ? 2n : 1n);
-    res.special.points = special * basepoint.special * (isDouble ? 2n : 1n);
-    return res;
+    const bonus = logic.bonus && BonusAddress.includes(address.toLowerCase());
+    return {
+      common: {
+        amount: common,
+        points: common * BigInt(logic.common * (bonus ? 2 : 1)),
+      },
+      rare: {
+        amount: rare,
+        points: rare * BigInt(logic.rare * (bonus ? 2 : 1)),
+      },
+      special: {
+        amount: special,
+        points: special * BigInt(logic.special * (bonus ? 2 : 1)),
+      },
+    };
   }
 }
