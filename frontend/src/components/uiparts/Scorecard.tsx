@@ -1,4 +1,13 @@
-import { Box, Button, Flex, Grid, HStack, Text, VStack } from '@chakra-ui/react'
+import {
+  Box,
+  Button,
+  Center,
+  Flex,
+  Grid,
+  HStack,
+  Text,
+  VStack,
+} from '@chakra-ui/react'
 import { FC, useMemo } from 'react'
 import { StolzlText } from './StolzlText'
 import { useAccount } from 'wagmi'
@@ -77,22 +86,25 @@ export const Scorecard: FC<Props> = ({ points, items }) => {
         borderRadius={10}
         border="2px solid black"
         width={300}
-        margin="0 auto"
+        h={380}
+        backgroundColor="yellow.300"
       >
         <Box backgroundColor="yellow.400">
-          <Box
-            margin="10px auto 0"
-            backgroundColor="blue.400"
-            color="yellow.400"
-            border="2px solid black"
-            borderRadius="full"
-            display="inline-block"
-            px={3}
-            py={1}
-          >
-            <StolzlText>ScoreCard</StolzlText>
-          </Box>
-          <Grid gridTemplateColumns="100px auto 100px">
+          <Center>
+            <Box
+              margin="10px auto 0"
+              backgroundColor="blue.400"
+              color="yellow.400"
+              border="2px solid black"
+              borderRadius="full"
+              display="inline-block"
+              px={3}
+              py={1}
+            >
+              <StolzlText>ScoreCard</StolzlText>
+            </Box>
+          </Center>
+          <Grid gridTemplateColumns="100px auto 100px" justifyContent="center">
             <Box width="80px" height="100px" backgroundColor="grey"></Box>
             <Grid alignItems="center">
               <Text fontSize="4xl" color="blue.400">
@@ -119,7 +131,7 @@ export const Scorecard: FC<Props> = ({ points, items }) => {
             </Grid>
           </Grid>
         </Box>
-        <Grid rowGap={5} backgroundColor="yellow.300" pt={8} pb={5}>
+        <Grid rowGap={5} pt={8} pb={5}>
           {specialItems.length > 0 && (
             <ScoreCardItem
               points={Number(points?.special.points)}
@@ -140,29 +152,6 @@ export const Scorecard: FC<Props> = ({ points, items }) => {
           )}
         </Grid>
       </Box>
-
-      <VStack gap={3} mt={5}>
-        <Button
-          fontSize="xs"
-          size="sm"
-          borderRadius="full"
-          backgroundColor="black"
-          color="white"
-          minW="170"
-        >
-          <StolzlText fontWeight={400}>Share on Farcaster</StolzlText>
-        </Button>
-        <Button
-          fontSize="xs"
-          size="sm"
-          borderRadius="full"
-          backgroundColor="black"
-          color="white"
-          minW="170"
-        >
-          <StolzlText fontWeight={400}>Share on X</StolzlText>
-        </Button>
-      </VStack>
     </>
   )
 }

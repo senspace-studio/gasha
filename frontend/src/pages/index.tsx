@@ -10,24 +10,24 @@ export default function Home() {
 
   return (
     <>
-      <TopCount />
+      {/* <TopCount /> */}
       <Box
         width={300}
         height={350}
         backgroundColor="gray"
         margin="0 auto"
-        mt={10}
+        mt={5}
         mb={-10}
         zIndex={1}
         position="relative"
       />
       <Box backgroundColor="yellow.400" position="relative">
-        <Container pt="80px">
+        <Container pt={['80px', '90px']}>
           <SpinModule />
 
-          <VStack mt={20} pb={10} gap={5}>
-            <BasicCount number={mints} unit="MINTS" label="Total Mints" />
+          <VStack mt={['40px', 20]} pb={10} gap={5}>
             <BasicCount number={99.9999} unit="ETH" label="Total Rewards" />
+            <BasicCount number={mints} unit="MINTS" label="Total Mints" />
             <BasicCount number={remainingTime} label="Time Remaining" />
           </VStack>
         </Container>
