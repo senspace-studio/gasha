@@ -31,6 +31,7 @@ export const useSpinGasha = () => {
     sendTx,
     isPending,
     data: txHash,
+    reset,
   } = useWriteGashaContract<'spin'>('spin')
   const config = useConfig()
   const [receipt, setReceipt] = useState<TransactionReceipt>()
@@ -60,7 +61,8 @@ export const useSpinGasha = () => {
         try {
           const _receipt = await getTransactionReceipt(config, { hash: txHash })
           if (_receipt.status === 'reverted') {
-            toast.error('Transaction reverted')
+            toast.error('Transaction reverted. Please try again.')
+            reset()
             clearInterval(fetchReceipt)
           } else if (_receipt?.logs.length > 0) {
             setReceipt(_receipt)
@@ -93,16 +95,14 @@ export const useSpinGasha = () => {
   }, [receipt, seriesItems])
 
   useEffect(() => {
-    const calcPoints = async () => {
-      if (result) {
-        router.push({
-          pathname: '/result',
-          query: { result: JSON.stringify(result), points: 1000 },
-        })
-      }
+    if (result && txHash) {
+      reset()
+      router.push({
+        pathname: `/result/${txHash}`,
+        query: { result: JSON.stringify(result) },
+      })
     }
-    calcPoints()
-  }, [result])
+  }, [result, txHash])
 
   return { spinGasha, isPending, result, points, txHash }
 }

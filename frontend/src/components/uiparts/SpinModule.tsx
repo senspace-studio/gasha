@@ -5,6 +5,10 @@ import {
   HStack,
   Icon,
   Input,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
   Spinner,
   VStack,
 } from '@chakra-ui/react'
@@ -26,27 +30,42 @@ export const SpinModule: FC = () => {
     <>
       <VStack gap={5}>
         <HStack justifyContent="center" gap={5}>
-          <Icon
-            as={MinusIcon}
-            onClick={() => setQuantity(Math.max(1, quantity - 1))}
-          />
-          <Input
-            type="number"
+          <NumberInput
             min={1}
             max={999}
-            width="80px"
-            variant="transparent"
-            backgroundColor="transparent"
-            borderBottom="2px black solid"
-            borderRadius="none"
-            textAlign="center"
-            fontSize="2xl"
-            fontFamily="stolzl, sans-serif"
-            fontWeight="bold"
+            justifyContent="center"
+            gap={5}
+            display="grid"
+            gridTemplateColumns="20px 1fr 20px"
             value={quantity}
-            onChange={(e) => setQuantity(Number(e.target.value))}
-          />
-          <Icon as={AddIcon} onClick={() => setQuantity(quantity + 1)} />
+            onChange={(value) => setQuantity(Number(value))}
+          >
+            <NumberDecrementStepper
+              border="none"
+              children={<Icon as={MinusIcon} fontSize="lg" />}
+            />
+
+            <NumberInputField
+              p={0}
+              width="80px"
+              backgroundColor="transparent"
+              border="none"
+              borderBottom="2px black solid"
+              borderRadius="none"
+              textAlign="center"
+              fontSize="2xl"
+              fontFamily="stolzl, sans-serif"
+              fontWeight="bold"
+              _focusVisible={{
+                border: 'none',
+                borderBottom: '2px black solid',
+              }}
+            />
+            <NumberIncrementStepper
+              border="none"
+              children={<Icon as={AddIcon} fontSize="lg" />}
+            />
+          </NumberInput>
         </HStack>
         <SpinButton onClick={handleSpin} minW="150px" disabled={isPending}>
           {isPending ? <Spinner color="yellow.400" /> : 'SPIN'}
