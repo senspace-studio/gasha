@@ -1,10 +1,10 @@
 import { Controller, Get, Param, Query, Logger } from '@nestjs/common';
+import { Address } from 'viem';
 import { PointsService } from './points.service';
 import { NeynarService } from 'src/modules/neynar/neynar.service';
 import { ZoraService } from 'src/modules/zora/zora.service';
-import { SpinEvent, ViemService } from 'src/modules/viem/viem.service';
-import { Address } from 'viem';
-// import { AccountEntity } from 'src/entities/account.entity';
+import { ViemService } from 'src/modules/viem/viem.service';
+import { SpinEvent } from 'src/types/contract';
 
 @Controller('points')
 export class PointsController {
