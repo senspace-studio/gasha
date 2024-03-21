@@ -28,5 +28,6 @@ export const wagmiConfig = () => {
     transports: {
       [chain.id]: http(),
     },
+    ssr: true,
   })
 }
