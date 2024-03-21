@@ -1,3 +1,4 @@
+import { gashaAPI } from '@/lib/gashaAPI'
 import { useEffect, useState } from 'react'
 
 export const useRemainingTime = () => {
@@ -27,4 +28,18 @@ export const useRemainingTime = () => {
   }, [])
 
   return time
+}
+
+export const useCurrentMints = () => {
+  const [mints, setMints] = useState(0)
+
+  useEffect(() => {
+    const getMints = async () => {
+      const res = await (await gashaAPI('/total')).json()
+      console.log(res)
+    }
+    getMints()
+  }, [])
+
+  return { mints }
 }
