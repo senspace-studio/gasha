@@ -6,6 +6,7 @@ import { AccountEntity } from 'src/entities/account.entity';
 import { TotalEntity } from 'src/entities/total.entity';
 import { LogicEntity } from 'src/entities/logic.entity';
 import { BonusAddress } from 'src/constants/BonusAddress';
+import { PointCalcResponse } from 'src/types/point';
 
 // DB
 // '0','1711116000','1711177200','200','400','800'
@@ -14,21 +15,6 @@ import { BonusAddress } from 'src/constants/BonusAddress';
 // '3','1711396800','1711436400','400','800','1600'
 // '4','1711436400','1711544400','200','400','800'
 // '5','1711544400','1711609200','400','800','1600'
-
-export type PointCalcResponse = {
-  special: {
-    amount: bigint;
-    points: bigint;
-  };
-  rare: {
-    amount: bigint;
-    points: bigint;
-  };
-  common: {
-    amount: bigint;
-    points: bigint;
-  };
-};
 
 @Injectable()
 export class PointsService {
