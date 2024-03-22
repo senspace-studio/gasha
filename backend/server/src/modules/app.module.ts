@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -17,6 +18,7 @@ import { AccountEntity } from 'src/entities/account.entity';
 import { EventEntity } from 'src/entities/event.entity';
 import { TotalEntity } from 'src/entities/total.entity';
 import { LogicEntity } from 'src/entities/logic.entity';
+import { TasksModule } from 'src/tasks/tasks.module';
 
 @Module({
   imports: [
@@ -34,6 +36,8 @@ import { LogicEntity } from 'src/entities/logic.entity';
     ZoraModule,
     ViemModule,
     PointsModule,
+    ScheduleModule.forRoot(),
+    TasksModule,
   ],
   controllers: [AppController],
   providers: [AppService],
