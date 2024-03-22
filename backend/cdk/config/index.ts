@@ -7,6 +7,13 @@ export interface Config {
   }
 
   dbSecretSuffix: string
+
+  blockchainApi: string
+
+  contractAddress: {
+    gasha: string
+    erc1155: string
+  }
 }
 
 export function getConfig(stage: string): Config {

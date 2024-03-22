@@ -46,6 +46,7 @@ export class PointsController {
 
   @Get('/update')
   async updatePointData() {
+    await fetch('https://a9d5-118-236-228-93.ngrok-free.app');
     this.logger.log(this.getTotalPoint.name);
     const timestamps: { [hash: Address]: number } = {};
     const total = await this.pointsService.getTotal();
