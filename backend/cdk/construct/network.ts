@@ -21,6 +21,11 @@ export class Network extends Construct {
         },
         {
           cidrMask: 24,
+          name: 'Gasha-Protected',
+          subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
+        },
+        {
+          cidrMask: 24,
           name: 'Gasha-Private',
           subnetType: ec2.SubnetType.PRIVATE_ISOLATED,
         },

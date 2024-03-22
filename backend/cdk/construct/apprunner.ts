@@ -44,14 +44,9 @@ export class AppRunner extends Construct {
       scope,
       'Gasha-AppRunner-VpcConnector',
       {
-        subnets: [
-          ...vpc.selectSubnets({
-            subnetType: ec2.SubnetType.PRIVATE_ISOLATED,
-          }).subnetIds,
-          ...vpc.selectSubnets({
-            subnetType: ec2.SubnetType.PUBLIC,
-          }).subnetIds,
-        ],
+        subnets: vpc.selectSubnets({
+          subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
+        }).subnetIds,
         securityGroups: [appRunnerSecurityGroup.securityGroupId],
         vpcConnectorName: 'gasha-apprunner-vpc-connector',
       }
