@@ -1,16 +1,20 @@
 import { Construct } from 'constructs'
 import { RemovalPolicy } from 'aws-cdk-lib'
 import * as ecr from 'aws-cdk-lib/aws-ecr'
+import { Config } from '../config'
 
+interface EcrRepositoryProps {
+  config: Config
+}
 export class EcrRepository extends Construct {
   readonly repository: ecr.Repository
 
-  constructor(scope: Construct, id: string) {
+  constructor(scope: Construct, id: string, props: EcrRepositoryProps) {
     super(scope, id)
 
     this.repository = new ecr.Repository(scope, 'Gasha-Repository', {
-      repositoryName: 'gasha-repository',
-      removalPolicy: RemovalPolicy.DESTROY,
+      repositoryName: `${props.config.stage}-gasha-repository`,
+      removalPolicy: RemovalPolicy.RETAIN,
       imageScanOnPush: true,
     })
 

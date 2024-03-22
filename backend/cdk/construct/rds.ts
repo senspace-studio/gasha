@@ -13,9 +13,6 @@ export class Rds extends Construct {
 
     const { vpc, dbSecurityGroup } = props
 
-    // const rdsCredentials = rds.Credentials.fromGeneratedSecret('admin', {
-    //   secretName: 'gasha-db-secret',
-    // })
     const rdsCredentials = rds.Credentials.fromUsername('admin', {
       secretName: 'gasha-db-secret',
     })
