@@ -1,5 +1,6 @@
 import { LeaderboardListItem } from '@/components/uiparts/LeaderboardListItem'
 import { StolzlText } from '@/components/uiparts/StolzlText'
+import { useLeaderboard } from '@/hooks/useLeaderboard'
 import {
   Box,
   Container,
@@ -11,8 +12,14 @@ import {
   VStack,
 } from '@chakra-ui/react'
 import { NextPage } from 'next'
+import { useState } from 'react'
+import { useAccount } from 'wagmi'
 
 const Leaderboard: NextPage = () => {
+  const { myPoints, totalPoints, leaderboard } = useLeaderboard()
+  const { address } = useAccount()
+  const [page, setPage] = useState(1)
+
   return (
     <Container>
       <Heading
@@ -106,9 +113,25 @@ const Leaderboard: NextPage = () => {
       </Flex>
 
       <VStack my={5}>
-        <LeaderboardListItem backgroundColor="blue.300" />
-        <LeaderboardListItem backgroundColor="yellow.400" />
-        <LeaderboardListItem />
+        {address && (
+          <LeaderboardListItem
+            address={address}
+            points={myPoints}
+            totalPoints={totalPoints}
+            backgroundColor="blue.300"
+          />
+        )}
+        {leaderboard?.data.map((item, i) => (
+          <LeaderboardListItem
+            key={i}
+            address={item.address}
+            points={Number(item.points)}
+            totalPoints={totalPoints}
+            backgroundColor={
+              page === 1 && i === 0 ? 'yellow.400' : 'yellow.300'
+            }
+          />
+        ))}
       </VStack>
     </Container>
   )
