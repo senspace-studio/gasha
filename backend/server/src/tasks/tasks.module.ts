@@ -1,14 +1,12 @@
 import { Module } from '@nestjs/common';
-import { PointsController } from './points.controller';
-import { PointsService } from './points.service';
-import { ZoraModule } from 'src/modules/zora/zora.module';
-import { NeynarModule } from 'src/modules/neynar/neynar.module';
-import { ViemModule } from 'src/modules/viem/viem.module';
+import { TasksService } from './tasks.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EventEntity } from 'src/entities/event.entity';
 import { AccountEntity } from 'src/entities/account.entity';
 import { TotalEntity } from 'src/entities/total.entity';
 import { LogicEntity } from 'src/entities/logic.entity';
+import { ViemModule } from 'src/modules/viem/viem.module';
+import { PointsModule } from 'src/modules/points/points.module';
 
 @Module({
   imports: [
@@ -18,12 +16,9 @@ import { LogicEntity } from 'src/entities/logic.entity';
       TotalEntity,
       LogicEntity,
     ]),
-    NeynarModule,
-    ZoraModule,
     ViemModule,
+    PointsModule,
   ],
-  controllers: [PointsController],
-  providers: [PointsService],
-  exports: [PointsService],
+  providers: [TasksService],
 })
-export class PointsModule {}
+export class TasksModule {}
