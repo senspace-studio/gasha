@@ -31,6 +31,9 @@ const { vpc, repository, appRunnerSecurityGroup } = new GashaInitStack(
       environment: stage,
     },
     env,
+  },
+  {
+    config,
   }
 )
 
@@ -49,6 +52,6 @@ new GashaAppStack(
     repository,
     vpc,
     appRunnerSecurityGroup,
-    dbSecretSuffix: config.dbSecretSuffix,
+    config,
   }
 )
