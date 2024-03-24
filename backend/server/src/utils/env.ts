@@ -9,3 +9,4 @@ export const ZORA_API_KEY = process.env.ZORA_API_ENDPOINT || '';
 export const BLOCKCHAIN_API = process.env.BLOCKCHAIN_API || '';
 export const ERC1155_ADDRESS = process.env.ERC1155_ADDRESS || '0x';
 export const GASHA_ADDRESS = process.env.GASHA_ADDRESS || '';
+export const RUN_CRON = process.env.RUN_CRON === 'true';
