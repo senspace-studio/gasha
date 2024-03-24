@@ -14,13 +14,15 @@ export const SpinButton: ComponentWithAs<'button', Props> = ({
       {...props}
       backgroundColor="blue.400"
       color="yellow.400"
-      pt="28px"
-      pb="25px"
-      px="30px"
-      fontWeight="bold"
-      fontSize="xl"
+      pt="34px"
+      pb="28px"
+      px="35px"
+      width="auto"
+      fontSize="2xl"
       border="2px solid black"
-      fontFamily="Zo"
+      borderBottom="4px solid black"
+      fontFamily="stolzl, sans-serif"
+      fontWeight={700}
     >
       {children}
     </Button>
