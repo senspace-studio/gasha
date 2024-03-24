@@ -35,7 +35,7 @@ export class ViemService {
       abi: Gasha.abi,
       client: this.client as any,
     }) as any;
-    const res = await contract.read.activeSeriesItems();
+    const res = await contract.read.seriesItems();
     return res as SeriesItem[];
   }
 
