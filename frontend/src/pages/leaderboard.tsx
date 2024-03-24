@@ -14,17 +14,31 @@ import { NextPage } from 'next'
 const Leaderboard: NextPage = () => {
   return (
     <Container>
-      <Heading textAlign="center" color="yellow.400">
+      <Heading
+        textAlign="center"
+        color="yellow.400"
+        fontFamily="stolzl, sans-serif"
+        fontWeight={500}
+        mt={5}
+        fontSize="4xl"
+      >
         Leaderboard
       </Heading>
 
-      <Text fontSize="sm" color="yellow.400" textAlign="center" my={10}>
+      <Text fontSize="sm" color="yellow.400" textAlign="center" mt={6} mb={10}>
         Points represent your chances of winning ETH prize.
         <br />
         Lose your points if you sell your Gashas.
       </Text>
 
-      <List display="grid" gap={2} justifyContent="center" mb={10}>
+      <List
+        display="grid"
+        gap={2}
+        justifyContent="center"
+        mb={10}
+        fontFamily="stolzl, sans-serif"
+        fontWeight={400}
+      >
         <ListItem display="flex" alignItems="center">
           <Box
             width={5}
@@ -33,10 +47,10 @@ const Leaderboard: NextPage = () => {
             backgroundColor="#ABD193"
             mr={2}
           />
-          <Text color="white" fontWeight="bold" fontSize="sm" width="100px">
+          <Text color="white" fontSize="sm" width="100px">
             Common
           </Text>
-          <Text color="white" fontWeight="bold" fontSize="sm">
+          <Text color="white" fontSize="sm">
             = 1point
           </Text>
         </ListItem>
@@ -48,10 +62,10 @@ const Leaderboard: NextPage = () => {
             backgroundColor="#ABD193"
             mr={2}
           />
-          <Text color="white" fontWeight="bold" fontSize="sm" width="100px">
+          <Text color="white" fontSize="sm" width="100px">
             Rare
           </Text>
-          <Text color="white" fontWeight="bold" fontSize="sm">
+          <Text color="white" fontSize="sm">
             = 2point
           </Text>
         </ListItem>
@@ -63,10 +77,10 @@ const Leaderboard: NextPage = () => {
             backgroundColor="#ABD193"
             mr={2}
           />
-          <Text color="white" fontWeight="bold" fontSize="sm" width="100px">
+          <Text color="white" fontSize="sm" width="100px">
             Special
           </Text>
-          <Text color="white" fontWeight="bold" fontSize="sm">
+          <Text color="white" fontSize="sm">
             = 4point
           </Text>
         </ListItem>
@@ -75,12 +89,14 @@ const Leaderboard: NextPage = () => {
       <Flex
         color="yellow.400"
         fontSize="sm"
-        fontWeight="bold"
-        py={2}
+        pt={3}
+        pb={2}
         px={4}
         borderRadius={10}
         background="black"
         justifyContent="space-between"
+        fontFamily="stolzl, sans-serif"
+        fontWeight="500"
       >
         <Box>User</Box>
         <Box>Points</Box>

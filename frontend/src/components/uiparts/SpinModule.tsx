@@ -22,6 +22,8 @@ export const SpinModule: FC = () => {
         />
         <Input
           type="number"
+          min={1}
+          max={999}
           width="80px"
           variant="transparent"
           backgroundColor="transparent"
@@ -29,13 +31,14 @@ export const SpinModule: FC = () => {
           borderRadius="none"
           textAlign="center"
           fontSize="2xl"
+          fontFamily="stolzl, sans-serif"
           fontWeight="bold"
           value={quantity}
           onChange={(e) => setQuantity(Number(e.target.value))}
         />
         <Icon as={AddIcon} onClick={() => setQuantity(quantity + 1)} />
       </HStack>
-      <SpinButton onClick={handleSpin} width="160px">
+      <SpinButton onClick={handleSpin} minW="150px">
         {isPending ? <Spinner color="yellow.400" /> : 'SPIN'}
       </SpinButton>
     </VStack>
