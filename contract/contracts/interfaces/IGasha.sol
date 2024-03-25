@@ -20,6 +20,8 @@ interface IGasha {
 
     event ResetSeed(uint256 indexed seed);
 
+    event SetAvailableTime(uint64 startTime, uint64 endTime);
+
     // ***********************
     // *** Structs Section ****
     // ***********************
@@ -42,7 +44,27 @@ interface IGasha {
         uint256 quantity;
     }
 
+    // ***********************
+    // *** Functions Section ****
+    // ***********************
+
     function spin(uint256 quantity) external payable;
 
     function setMinterArguments(bytes memory _minterArguments) external;
+
+    function setAvailableTime(uint64 _startTime, uint64 _endTime) external;
+
+    function resetSeed(uint256 newSeed) external;
+
+    function togglePause() external;
+
+    function activateSeriesItem(uint256 tokenId) external;
+
+    function deactivateSeriesItem(uint256 tokenId) external;
+
+    function setNewSeriesItem(
+        uint256 tokenId,
+        Rareness rareness,
+        uint256 weight
+    ) external;
 }

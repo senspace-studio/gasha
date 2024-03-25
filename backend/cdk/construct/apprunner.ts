@@ -111,6 +111,14 @@ export class AppRunner extends Construct {
                 name: 'GASHA_ADDRESS',
                 value: props.config.contractAddress.gasha,
               },
+              {
+                name: 'NEYNAR_API_KEY',
+                value: props.config.neynarApiKey,
+              },
+              {
+                name: 'CLIENT_URL',
+                value: props.config.clientURL,
+              },
             ],
           },
         },

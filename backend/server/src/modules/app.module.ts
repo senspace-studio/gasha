@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { ScheduleModule } from '@nestjs/schedule';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { NeynarModule } from './neynar/neynar.module';
@@ -18,7 +18,11 @@ import { AccountEntity } from 'src/entities/account.entity';
 import { EventEntity } from 'src/entities/event.entity';
 import { TotalEntity } from 'src/entities/total.entity';
 import { LogicEntity } from 'src/entities/logic.entity';
+import { AllowlistEntity } from 'src/entities/allowlist.entity';
 import { CronModule } from './cron/cron.module';
+import { AllowlistController } from './allowlist/allowlist.controller';
+import { AllowlistService } from './allowlist/allowlist.service';
+import { AllowlistModule } from './allowlist/allowlist.module';
 
 @Module({
   imports: [
@@ -29,7 +33,13 @@ import { CronModule } from './cron/cron.module';
       username: DB_USERNAME,
       password: DB_PASSWORD,
       database: DB_NAME,
-      entities: [AccountEntity, EventEntity, TotalEntity, LogicEntity],
+      entities: [
+        AccountEntity,
+        AllowlistEntity,
+        EventEntity,
+        TotalEntity,
+        LogicEntity,
+      ],
       synchronize: true,
     }),
     ScheduleModule.forRoot(),
@@ -38,6 +48,7 @@ import { CronModule } from './cron/cron.module';
     ViemModule,
     PointsModule,
     CronModule,
+    AllowlistModule,
   ],
   controllers: [AppController],
   providers: [AppService],
