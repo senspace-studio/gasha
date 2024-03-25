@@ -2,11 +2,12 @@
 pragma solidity ^0.8.17;
 
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import "./zora/interfaces/IZoraCreator1155.sol";
 import "./interfaces/IGasha.sol";
 import "hardhat/console.sol";
 
-contract Gasha is IGasha, OwnableUpgradeable {
+contract Gasha is IGasha, OwnableUpgradeable, PausableUpgradeable {
     IZoraCreator1155 public ZoraCreator1155;
 
     IMinter1155 public MerkleMinter;
@@ -21,6 +22,19 @@ contract Gasha is IGasha, OwnableUpgradeable {
 
     uint256 public unitPrice;
 
+    uint64 public startTime;
+
+    uint64 public endTime;
+
+    modifier isAvailableTime() {
+        uint256 currentTime = block.timestamp;
+        require(
+            startTime <= currentTime && currentTime <= endTime,
+            "Gasha: not available now"
+        );
+        _;
+    }
+
     function initialize(
         address _initialOwner,
         address _zoraCreator1155,
@@ -30,6 +44,7 @@ contract Gasha is IGasha, OwnableUpgradeable {
         uint256 _unitPrice
     ) public initializer {
         __Ownable_init();
+        __Pausable_init();
         transferOwnership(_initialOwner);
         ZoraCreator1155 = IZoraCreator1155(_zoraCreator1155);
         MerkleMinter = IMinter1155(_merkleMinter);
@@ -38,7 +53,9 @@ contract Gasha is IGasha, OwnableUpgradeable {
         unitPrice = _unitPrice;
     }
 
-    function spin(uint256 quantity) public payable {
+    function spin(
+        uint256 quantity
+    ) public payable isAvailableTime whenNotPaused {
         require(quantity > 0 && quantity < 1000, "Gasha: quantity is invalid");
         require(msg.value >= unitPrice * quantity, "Gasha: insufficient funds");
 
@@ -82,6 +99,40 @@ contract Gasha is IGasha, OwnableUpgradeable {
         );
 
         emit Spin(msg.sender, ids, quantities);
+    }
+
+    // FreeSpin
+
+    // DropSpin
+
+    function dropByOwner(
+        address to,
+        uint256[] calldata ids,
+        uint256[] calldata quantities
+    ) external onlyOwner {
+        for (uint256 i = 0; i < series.length; i++) {
+            if (quantities[i] > 0) {
+                ZoraCreator1155.mintWithRewards{
+                    value: unitPrice * quantities[i]
+                }(
+                    MerkleMinter,
+                    ids[i],
+                    quantities[i],
+                    minterArguments,
+                    mintReferral
+                );
+            }
+        }
+
+        ZoraCreator1155.safeBatchTransferFrom(
+            address(this),
+            to,
+            ids,
+            quantities,
+            ""
+        );
+
+        emit Spin(to, ids, quantities);
     }
 
     function _pickRandomBall(
@@ -166,8 +217,26 @@ contract Gasha is IGasha, OwnableUpgradeable {
         }
     }
 
-    function resetSeed(uint256 newSeed) public onlyOwner {
+    function resetSeed(uint256 newSeed) external onlyOwner {
         seed = newSeed;
+    }
+
+    function setAvailableTime(
+        uint64 _startTime,
+        uint64 _endTime
+    ) external onlyOwner {
+        startTime = _startTime;
+        endTime = _endTime;
+
+        emit SetAvailableTime(_startTime, _endTime);
+    }
+
+    function togglePause() external onlyOwner {
+        if (paused()) {
+            _unpause();
+        } else {
+            _pause();
+        }
     }
 
     function setMinterArguments(
