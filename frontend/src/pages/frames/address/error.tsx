@@ -8,16 +8,8 @@ const FramesAddress: NextPage = () => {
       <FrameMetadata
         image={{
           aspectRatio: '1:1',
-          src: `${SITE_URL}/img/frames/address_grab.png`,
+          src: `${SITE_URL}/img/frames/outofstock.png`,
         }}
-        input={{ text: 'Enter your address or ENS' }}
-        buttons={[
-          {
-            action: 'post',
-            label: 'Submit',
-            target: `${process.env.NEXT_PUBLIC_API_URL}/allowlist`,
-          },
-        ]}
       />
     </>
   )
