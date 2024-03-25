@@ -19,28 +19,45 @@ async function bootstrap() {
   app.use(helmet());
   await app.listen(process.env.PORT || 3000);
 }
-bootstrap();
-// const primaryProcess = () => {
-//   logger.log(`Primary server started on ${process.pid} cpu len: ${numCPUs}`);
-//   for (let i = 0; i < numCPUs; i++) {
-//     logger.log(`cluster fork: ${i}`);
-//     cluster.fork();
-//   }
-//   cluster.on('exit', (worker, code, signal) => {
-//     logger.warn(
-//       `[${worker.id}] Worker died : [PID ${worker.process.pid}] [Signal ${signal}] [Code ${code}]`,
-//     );
-//     cluster.fork();
-//   });
-// };
+// bootstrap();
+const primaryProcess = () => {
+  logger.log(`Primary server started on ${process.pid} cpu len: ${numCPUs}`);
+  // workerが落ちたときのために、cron処理を行うworkerのidを格納
+  const cronWorker = { id: 0 };
+  for (let i = 0; i < numCPUs; i++) {
+    logger.log(`cluster fork: ${i}`);
+    if (i === 0) {
+      // cron処理を行うworkerは環境変数を追加
+      const worker = cluster.fork({ RUN_CRON: 'true' });
+      // idを格納
+      cronWorker.id = worker.id;
+    } else {
+      cluster.fork();
+    }
+  }
+  cluster.on('exit', (worker, code, signal) => {
+    logger.warn(
+      `[${worker.id}] Worker died : [PID ${worker.process.pid}] [Signal ${signal}] [Code ${code}]`,
+    );
+    // 落ちたものがcron処理を行っていたworkerかを判定
+    if (cronWorker.id === worker.id) {
+      // cron処理を行うworkerは環境変数を追加
+      // idを格納
+      const worker = cluster.fork({ RUN_CRON: 'true' });
+      cronWorker.id = worker.id;
+    } else {
+      cluster.fork();
+    }
+  });
+};
 
-// const workerProcess = () => {
-//   logger.log(`bootstrap@${process.pid}`);
-//   bootstrap();
-// };
+const workerProcess = () => {
+  logger.log(`bootstrap@${process.pid}`);
+  bootstrap();
+};
 
-// if (cluster.isMaster || cluster.isPrimary) {
-//   primaryProcess();
-// } else {
-//   workerProcess();
-// }
+if (cluster.isMaster || cluster.isPrimary) {
+  primaryProcess();
+} else {
+  workerProcess();
+}
