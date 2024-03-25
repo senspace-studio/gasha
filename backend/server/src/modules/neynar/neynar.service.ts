@@ -47,11 +47,14 @@ export class NeynarService {
       },
     );
     for (const recast of recasts.reactions) {
+      console.log(recast.cast?.embeds[0]);
       if (
         recast.cast?.embeds
           .map((embed: any) => embed.url)
-          .includes(
-            'https://zora.co/collect/zora:0xb5d00e222daad1b3030a6a1d0ce5f2edd8de7fd0/2?referrer=0xb17e447d0Eb15c444789886F2bff6A4907140bC5',
+          .some((url: string) =>
+            url.includes(
+              'https://zora.co/collect/zora:0xb5d00e222daad1b3030a6a1d0ce5f2edd8de7fd0/2',
+            ),
           )
       )
         return true;

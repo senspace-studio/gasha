@@ -40,7 +40,7 @@ export class AllowlistController {
       return { url: `${process.env.CLIENT_URL}/frames/address/error` };
     }
     const inputText = validatedData.action.input.text;
-    const fid = validatedData.action.signer.client.fid;
+    const fid = validatedData.action.interactor.fid;
 
     const isExist = await this.allowlistService.existAllowlist(fid);
     if (isExist) {
