@@ -46,10 +46,6 @@ const socialLinks: any[] = [
     path: 'https://warpcast.com/~/channel/ball',
     icon: <FarcasterIcon fontSize="48px" />,
   },
-  {
-    path: 'https://twitter.com/senspace_studio',
-    icon: <XIcon fontSize="48px" />,
-  },
 ]
 
 export const Header: FC = () => {
