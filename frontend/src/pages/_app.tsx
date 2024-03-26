@@ -7,8 +7,8 @@ import { DefaultLayout } from '@/components/layout/Layout'
 import { chakraTheme } from '@/lib/chakraTheme'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { useChain } from '@/hooks/useChain'
 import { wagmiConfig } from '@/lib/wagmi'
+import { GoogleTagManager } from '@next/third-parties/google'
 
 const config = wagmiConfig()
 
@@ -33,6 +33,7 @@ export default function App({ Component, pageProps }: AppProps) {
               pauseOnFocusLoss={false}
               pauseOnHover={false}
             />
+            <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID!} />
           </ChakraProvider>
         </WagmiProvider>
       </QueryClientProvider>
