@@ -15,6 +15,7 @@
     "@coinbase/onchainkit": "^0.11.0",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.0",
+    "@next/third-parties": "^14.1.4",
     "@privy-io/react-auth": "^1.59.5",
     "@privy-io/wagmi": "^0.2.1",
     "@privy-io/wagmi-connector": "^0.1.13",

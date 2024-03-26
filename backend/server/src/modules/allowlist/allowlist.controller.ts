@@ -64,6 +64,8 @@ export class AllowlistController {
       } catch (error) {
         throw new HttpException('Invalid request', 400);
       }
+    } else {
+      address = inputText;
     }
 
     const [following, recasted] = await Promise.all([
