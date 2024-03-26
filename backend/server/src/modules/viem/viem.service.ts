@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { BLOCKCHAIN_API, GASHA_ADDRESS } from 'src/utils/env';
 import { http, createPublicClient, Chain, Address, getContract } from 'viem';
-import { baseSepolia as chain } from 'viem/chains';
+import { baseSepolia as chain, mainnet } from 'viem/chains';
 import { Gasha } from 'src/constants/Gasha';
 import { SeriesItem } from 'src/types/contract';
 
@@ -11,6 +11,13 @@ export class ViemService {
     return createPublicClient({
       chain: chain as Chain,
       transport: http(BLOCKCHAIN_API),
+    });
+  }
+
+  private get ensResolverClient() {
+    return createPublicClient({
+      chain: mainnet,
+      transport: http(),
     });
   }
 
@@ -35,7 +42,7 @@ export class ViemService {
       abi: Gasha.abi,
       client: this.client as any,
     }) as any;
-    const res = await contract.read.activeSeriesItems();
+    const res = await contract.read.seriesItems();
     return res as SeriesItem[];
   }
 
@@ -62,5 +69,17 @@ export class ViemService {
       toBlock: toBlock,
     });
     return events;
+  }
+
+  async lookupENS(ens: string) {
+    try {
+      const resolvedAddress = await this.ensResolverClient.getEnsAddress({
+        name: ens,
+      });
+
+      return resolvedAddress;
+    } catch (error) {
+      throw new Error('Invalid address');
+    }
   }
 }

@@ -5,11 +5,12 @@ const { baseSepolia } = require('viem/chains');
 const nft = require('./ZoraCreator1155Impl.json');
 const gasha = require('./Gasha.json');
 
-export const BLOCKCHAIN_API =
-  process.env.BLOCKCHAIN_API || 'https://base-sepolia.g.alchemy.com/v2/5kVob7zDOtjcG4NjjhECSAFH15_LVZsk';
-export const ERC1155_ADDRESS =
+const BLOCKCHAIN_API =
+  process.env.BLOCKCHAIN_API ||
+  'https://base-sepolia.g.alchemy.com/v2/5kVob7zDOtjcG4NjjhECSAFH15_LVZsk';
+const ERC1155_ADDRESS =
   process.env.ERC1155_ADDRESS || '0x29108d08E04F8B89e970cB4Adb8c72d8C57e67EB';
-export const GASHA_ADDRESS =
+const GASHA_ADDRESS =
   process.env.GASHA_ADDRESS || '0x550710763F44094c2F5E1b756521620a6004959c';
 
 // const nftAddress = '0xDD3b3b34FcB47d761B1aac2358E7703Aa8CD3b92';

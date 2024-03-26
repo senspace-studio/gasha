@@ -4,12 +4,13 @@ import * as iam from 'aws-cdk-lib/aws-iam'
 import * as apprunner from 'aws-cdk-lib/aws-apprunner'
 import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager'
 import { Construct } from 'constructs'
+import { Config } from '../config'
 
 interface AppRunnerProps {
   vpc: ec2.Vpc
   repository: ecr.Repository
   appRunnerSecurityGroup: ec2.SecurityGroup
-  dbSecretSuffix: string
+  config: Config
 }
 
 export class AppRunner extends Construct {
@@ -35,8 +36,8 @@ export class AppRunner extends Construct {
 
     const secretsDB = secretsmanager.Secret.fromSecretNameV2(
       scope,
-      `gasha-db-secret-${props.dbSecretSuffix}`,
-      `gasha-db-secret-${props.dbSecretSuffix}`
+      `gasha-db-secret-${props.config.dbSecretSuffix}`,
+      `gasha-db-secret-${props.config.dbSecretSuffix}`
     )
 
     const vpcConnector = new apprunner.CfnVpcConnector(
@@ -44,7 +45,7 @@ export class AppRunner extends Construct {
       'Gasha-AppRunner-VpcConnector',
       {
         subnets: vpc.selectSubnets({
-          subnetType: ec2.SubnetType.PRIVATE_ISOLATED,
+          subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
         }).subnetIds,
         securityGroups: [appRunnerSecurityGroup.securityGroupId],
         vpcConnectorName: 'gasha-apprunner-vpc-connector',
@@ -100,16 +101,23 @@ export class AppRunner extends Construct {
               },
               {
                 name: 'BLOCKCHAIN_API',
-                value:
-                  'https://base-sepolia.g.alchemy.com/v2/5kVob7zDOtjcG4NjjhECSAFH15_LVZsk',
+                value: props.config.blockchainApi,
               },
               {
                 name: 'ERC1155_ADDRESS',
-                value: '0xDD3b3b34FcB47d761B1aac2358E7703Aa8CD3b92',
+                value: props.config.contractAddress.erc1155,
               },
               {
                 name: 'GASHA_ADDRESS',
-                value: '0x1994176e3Ce8ff95ceE85a22D575728838619a17',
+                value: props.config.contractAddress.gasha,
+              },
+              {
+                name: 'NEYNAR_API_KEY',
+                value: props.config.neynarApiKey,
+              },
+              {
+                name: 'CLIENT_URL',
+                value: props.config.clientURL,
               },
             ],
           },
