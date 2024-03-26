@@ -8,7 +8,6 @@ import { Config } from '../config'
 
 interface AppRunnerProps {
   vpc: ec2.Vpc
-  repository: ecr.Repository
   appRunnerSecurityGroup: ec2.SecurityGroup
   config: Config
 }
@@ -17,17 +16,25 @@ export class AppRunner extends Construct {
   constructor(scope: Construct, id: string, props: AppRunnerProps) {
     super(scope, id)
 
-    const { vpc, repository, appRunnerSecurityGroup } = props
+    const { vpc, appRunnerSecurityGroup } = props
 
-    const instanceRole = new iam.Role(scope, 'Gasha-AppRunner-Role', {
-      roleName: 'Gasha-AppRunner-Role',
-      assumedBy: new iam.ServicePrincipal('tasks.apprunner.amazonaws.com'),
-    })
+    const instanceRole = new iam.Role(
+      scope,
+      `${props.config.stage}-Gasha-AppRunner-Role`,
+      {
+        roleName: `${props.config.stage}-Gasha-AppRunner-Role`,
+        assumedBy: new iam.ServicePrincipal('tasks.apprunner.amazonaws.com'),
+      }
+    )
 
-    const accessRole = new iam.Role(scope, 'Gasha-AppRunner-AccessRole', {
-      roleName: 'Gasha-AppRunner-AccessRole',
-      assumedBy: new iam.ServicePrincipal('build.apprunner.amazonaws.com'),
-    })
+    const accessRole = new iam.Role(
+      scope,
+      `${props.config.stage}-Gasha-AppRunner-AccessRole`,
+      {
+        roleName: `${props.config.stage}-Gasha-AppRunner-AccessRole`,
+        assumedBy: new iam.ServicePrincipal('build.apprunner.amazonaws.com'),
+      }
+    )
     accessRole.addManagedPolicy(
       iam.ManagedPolicy.fromAwsManagedPolicyName(
         'service-role/AWSAppRunnerServicePolicyForECRAccess'
@@ -36,23 +43,23 @@ export class AppRunner extends Construct {
 
     const secretsDB = secretsmanager.Secret.fromSecretNameV2(
       scope,
-      `gasha-db-secret-${props.config.dbSecretSuffix}`,
-      `gasha-db-secret-${props.config.dbSecretSuffix}`
+      `${props.config.stage}-gasha-db-secret-${props.config.dbSecretSuffix}`,
+      `${props.config.stage}-gasha-db-secret-${props.config.dbSecretSuffix}`
     )
 
     const vpcConnector = new apprunner.CfnVpcConnector(
       scope,
-      'Gasha-AppRunner-VpcConnector',
+      `${props.config.stage}-Gasha-AppRunner-VpcConnector`,
       {
         subnets: vpc.selectSubnets({
           subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
         }).subnetIds,
         securityGroups: [appRunnerSecurityGroup.securityGroupId],
-        vpcConnectorName: 'gasha-apprunner-vpc-connector',
+        vpcConnectorName: `${props.config.stage}-gasha-apprunner-vpc-connector`,
       }
     )
 
-    new apprunner.CfnService(scope, 'Gasha-AppRunner', {
+    new apprunner.CfnService(scope, `${props.config.stage}-Gasha-AppRunner`, {
       sourceConfiguration: {
         authenticationConfiguration: {
           accessRoleArn: accessRole.roleArn,
@@ -60,7 +67,7 @@ export class AppRunner extends Construct {
         autoDeploymentsEnabled: true,
         imageRepository: {
           imageRepositoryType: 'ECR',
-          imageIdentifier: repository.repositoryUriForTag('latest'),
+          imageIdentifier: `${props.config.aws.accountId}.dkr.ecr.${props.config.aws.region}.amazonaws.com/${props.config.stage}-gasha:latest`,
           imageConfiguration: {
             port: '3000',
             runtimeEnvironmentVariables: [
@@ -129,8 +136,8 @@ export class AppRunner extends Construct {
       },
       instanceConfiguration: {
         instanceRoleArn: instanceRole.roleArn,
-        cpu: '512',
-        memory: '1024',
+        cpu: props.config.stage === 'main' ? '1024' : '256',
+        memory: props.config.stage === 'main' ? '2048' : '512',
       },
       networkConfiguration: {
         egressConfiguration: {
@@ -139,7 +146,7 @@ export class AppRunner extends Construct {
         },
       },
 
-      serviceName: 'gasha-apprunner',
+      serviceName: `${props.config.stage}-gasha-apprunner`,
     })
   }
 }

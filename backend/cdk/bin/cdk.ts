@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 import 'source-map-support/register'
 import { GashaInitStack } from '../lib/init-stack'
-import { GashaAppStack } from '../lib/apprunner-stack'
 import * as cdk from 'aws-cdk-lib'
 import { getConfig } from '../config'
+import { GashaAppStack } from '../lib/app-stack'
+import { GashaRdsStack } from '../lib/rds-stack'
 
 const app = new cdk.App()
 
@@ -21,11 +22,23 @@ const env = {
   region: config.aws.region,
 }
 
-const { vpc, repository, appRunnerSecurityGroup } = new GashaInitStack(
+const { vpc, ec2BastionSecurityGroup } = new GashaInitStack(
   app,
-  `${stage}${serviceName}InitStack`,
+  `${serviceName}InitStack`,
   {
     description: 'Gasha Init Stack',
+    tags: {
+      service: serviceName,
+    },
+    env,
+  }
+)
+
+const { appRunnerSecurityGroup } = new GashaRdsStack(
+  app,
+  `${stage}${serviceName}RdsStack`,
+  {
+    description: 'Gasha RDS Stack',
     tags: {
       service: serviceName,
       environment: stage,
@@ -33,7 +46,9 @@ const { vpc, repository, appRunnerSecurityGroup } = new GashaInitStack(
     env,
   },
   {
+    vpc,
     config,
+    ec2BastionSecurityGroup,
   }
 )
 
@@ -49,9 +64,8 @@ new GashaAppStack(
     env,
   },
   {
-    repository,
     vpc,
-    appRunnerSecurityGroup,
     config,
+    appRunnerSecurityGroup,
   }
 )
