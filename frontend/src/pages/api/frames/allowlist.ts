@@ -21,6 +21,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       case 'Already claimed':
         res.redirect(303, `${SITE_URL}/frames/allowlist/alreadyclaimed`)
         return
+      case 'Is not eligible':
+        res.redirect(303, `${SITE_URL}/frames/allowlist/not-eligible`)
+        return
       default:
         res.redirect(303, `${SITE_URL}/frames/allowlist/error`)
         return
