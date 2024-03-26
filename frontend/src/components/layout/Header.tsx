@@ -15,34 +15,41 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react'
-import { CloseIcon, HamburgerIcon } from '@chakra-ui/icons'
-import { useWallets, useConnectWallet, usePrivy } from '@privy-io/react-auth'
-import { FC, useCallback, useEffect, useRef } from 'react'
-import { useAccount, useDisconnect, useSwitchChain } from 'wagmi'
-import { useSetActiveWallet } from '@privy-io/wagmi'
+import { CloseIcon, ExternalLinkIcon, HamburgerIcon } from '@chakra-ui/icons'
+import { usePrivy } from '@privy-io/react-auth'
+import { FC, useEffect, useRef } from 'react'
+import { useAccount, useSwitchChain } from 'wagmi'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { StolzlText } from '../uiparts/StolzlText'
+import { XIcon } from '../uiparts/icons/XIcon'
+import { FarcasterIcon } from '../uiparts/icons/FarcasterIcon'
+import Image from 'next/image'
 
 const links = [
   { path: '/', name: 'Top' },
-  { path: '/leaderboard', name: 'Leaderboard' },
-  { path: '/about', name: 'Whitepaper' },
+  { path: '/rules', name: 'Rules' },
+  {
+    path: 'https://drive.google.com/drive/folders/1cF1POI3XiuPB5sqGyvL_KIO08o8lQQ0d?usp=drive_link',
+    name: (
+      <>
+        Brand Assets
+        <ExternalLinkIcon ml={3} fontSize="3xl" />
+      </>
+    ),
+    target: '_blank',
+  },
 ]
 
 const socialLinks: any[] = [
-  // {
-  //   path: "https://www.instagram.com/senspace_/",
-  //   icon: <InstagramIcon width={"40px"} height={"40px"} />,
-  // },
-  // {
-  //   path: "https://twitter.com/senspace_studio",
-  //   icon: <TwitterIcon width={"40px"} height={"40px"} />,
-  // },
-  // {
-  //   path: "https://discord.gg/rbEXVBDyJj",
-  //   icon: <DiscordIcon width={"40px"} height={"40px"} />,
-  // },
+  {
+    path: 'https://www.instagram.com/senspace_/',
+    icon: <FarcasterIcon fontSize="48px" />,
+  },
+  {
+    path: 'https://twitter.com/senspace_studio',
+    icon: <XIcon fontSize="48px" />,
+  },
 ]
 
 export const Header: FC = () => {
@@ -50,7 +57,7 @@ export const Header: FC = () => {
   const { address, chainId } = useAccount()
   const { switchChainAsync } = useSwitchChain()
 
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: true })
   const btnRef = useRef<HTMLButtonElement>(null)
   const { asPath } = useRouter()
 
@@ -70,16 +77,19 @@ export const Header: FC = () => {
 
   return (
     <header>
-      <HStack px={[2, 4]} py={2} justifyContent="space-between">
-        <Box>
+      <HStack px={[2, 5]} py={[2, 5]} justifyContent="space-between">
+        <Flex alignItems="center" gap={3}>
           <Icon
             as={HamburgerIcon}
             color="yellow.300"
             fontSize="3xl"
             onClick={onOpen}
+            cursor="pointer"
           />
-          Gasha
-        </Box>
+          <Link href="/">
+            <Image alt="logo" src="/img/logo.png" width="35" height="35" />
+          </Link>
+        </Flex>
         <Button
           onClick={connectWallet}
           backgroundColor="yellow.300"
@@ -121,14 +131,18 @@ export const Header: FC = () => {
           <DrawerBody pl="40px" pt={'30px'}>
             <Stack spacing={3} align="stretch" marginBottom={'33px'}>
               {links.map((link) => (
-                <Link key={link.path} href={link.path}>
+                <Link
+                  key={link.path}
+                  href={link.path}
+                  target={link.target || '_self'}
+                >
                   <Text fontSize="4xl" color="blue.400" whiteSpace={'nowrap'}>
                     <StolzlText fontWeight={500}>{link.name}</StolzlText>
                   </Text>
                 </Link>
               ))}
             </Stack>
-            <Stack direction={'row'} spacing={2} marginBottom={'33px'}>
+            <Stack direction={'row'} gap={8} marginTop={['45vh', '40vh']}>
               {socialLinks.map((link) => (
                 <Link key={link.path} href={link.path}>
                   <Center w="40px" h="40px">
@@ -137,21 +151,7 @@ export const Header: FC = () => {
                 </Link>
               ))}
             </Stack>
-            {/* <Stack spacing={2} align="stretch" marginBottom={"33px"}>
-                {footLinks.map((link) => (
-                  <Link key={link.path} href={link.path}>
-                    <Text fontSize={"13px"} color={dt.colors.mossGreen}>
-                      {link.name}
-                    </Text>
-                  </Link>
-                ))}
-              </Stack> */}
           </DrawerBody>
-          <DrawerFooter>
-            <Text ml={[0, '50px']} mt={['28px', 0]} fontSize={'xs'}>
-              ©Senspace ALL RIGHTS RESERVED
-            </Text>
-          </DrawerFooter>
         </DrawerContent>
       </Drawer>
     </header>
