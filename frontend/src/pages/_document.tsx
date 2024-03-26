@@ -23,6 +23,7 @@ export default function Document() {
           href="/favicon-16x16.png"
         />
         <link rel="stylesheet" href="https://use.typekit.net/wtj8wnw.css" />
+        <meta property="og:image" content="/default_og.png" />
       </Head>
       <body>
         <Main />
