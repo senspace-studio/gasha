@@ -22,13 +22,13 @@ export class AllowlistController {
   ) {}
 
   @Post('/')
-  @Redirect('', 307)
   async addAllowlist(@Body() body: any) {
+    console.log(body);
     this.logger.log(this.addAllowlist.name);
 
     const allowlistNum = await this.allowlistService.allowlistCount();
     if (allowlistNum >= 1000) {
-      return { url: `${process.env.CLIENT_URL}/frames/address/outofstock` };
+      throw new HttpException('Allowlist is full', 400);
     }
 
     let validatedData: ValidateFrameActionResponse;
@@ -36,15 +36,16 @@ export class AllowlistController {
       validatedData = await this.neynarService.validateRequest(
         body.trustedData.messageBytes,
       );
+      console.log(validatedData);
     } catch (error) {
-      return { url: `${process.env.CLIENT_URL}/frames/address/error` };
+      throw new HttpException('Invalid request', 400);
     }
     const inputText = validatedData.action.input.text;
     const fid = validatedData.action.interactor.fid;
 
     const isExist = await this.allowlistService.existAllowlist(fid);
     if (isExist) {
-      return { url: `${process.env.CLIENT_URL}/frames/address/alreadyclaimed` };
+      throw new HttpException('Already claimed', 400);
     }
 
     let address = '';
@@ -53,15 +54,15 @@ export class AllowlistController {
       !(inputText.startsWith('0x') && inputText.length !== 42) &&
       !inputText.endsWith('.eth')
     ) {
-      return { url: `${process.env.CLIENT_URL}/frames/address/error` };
+      throw new HttpException('Invalid request', 400);
     } else if (inputText.endsWith('.eth')) {
       try {
         address = await this.viemService.lookupENS(inputText);
         if (!address) {
-          return { url: `${process.env.CLIENT_URL}/frames/address/error` };
+          throw new HttpException('Invalid request', 400);
         }
       } catch (error) {
-        return { url: `${process.env.CLIENT_URL}/frames/address/error` };
+        throw new HttpException('Invalid request', 400);
       }
     }
 
@@ -71,11 +72,15 @@ export class AllowlistController {
     ]);
 
     if (!following || !recasted) {
-      return { url: `${process.env.CLIENT_URL}/frames/address/not-eligible` };
+      throw new HttpException('Is not eligible', 400);
     }
 
-    await this.allowlistService.addAllowlist(address, fid);
+    try {
+      await this.allowlistService.addAllowlist(address, fid);
+    } catch (error) {
+      throw new HttpException('Failed to add allowlist', 400);
+    }
 
-    return { url: `${process.env.CLIENT_URL}/frames/address/claimed` };
+    return { success: true };
   }
 }
