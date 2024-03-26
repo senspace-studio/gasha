@@ -8,7 +8,7 @@ const FramesAddress: NextPage = () => {
       <FrameMetadata
         image={{
           aspectRatio: '1:1',
-          src: `${SITE_URL}/img/frames/outofstock.png`,
+          src: `${SITE_URL}/img/frames/error.png`,
         }}
       />
     </>
