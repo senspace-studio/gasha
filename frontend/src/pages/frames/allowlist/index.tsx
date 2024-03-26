@@ -13,7 +13,7 @@ const FramesAddress: NextPage = () => {
         input={{ text: 'Enter your address or ENS' }}
         buttons={[
           {
-            action: 'post',
+            action: 'post_redirect',
             label: 'Submit',
             target: `${SITE_URL}/api/frames/allowlist`,
           },
