@@ -43,7 +43,7 @@ const links = [
 
 const socialLinks: any[] = [
   {
-    path: 'https://www.instagram.com/senspace_/',
+    path: 'https://warpcast.com/~/channel/ball',
     icon: <FarcasterIcon fontSize="48px" />,
   },
   {
@@ -57,7 +57,7 @@ export const Header: FC = () => {
   const { address, chainId } = useAccount()
   const { switchChainAsync } = useSwitchChain()
 
-  const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: true })
+  const { isOpen, onOpen, onClose } = useDisclosure()
   const btnRef = useRef<HTMLButtonElement>(null)
   const { asPath } = useRouter()
 
