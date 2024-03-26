@@ -11,4 +11,5 @@ export const BLOCKCHAIN_API = process.env.BLOCKCHAIN_API || '';
 export const ERC1155_ADDRESS = process.env.ERC1155_ADDRESS || '0x';
 export const GASHA_ADDRESS = process.env.GASHA_ADDRESS || '';
 export const RUN_CRON = process.env.RUN_CRON === 'true';
-export const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:3001';
+export const CLIENT_URL =
+  process.env.CLIENT_URL || 'https://fe78-118-236-228-93.ngrok-free.app';
