@@ -1,10 +1,12 @@
 import * as ec2 from 'aws-cdk-lib/aws-ec2'
 import * as rds from 'aws-cdk-lib/aws-rds'
 import { Construct } from 'constructs'
+import { Config } from '../config'
 
 interface RdsProps {
   vpc: ec2.Vpc
   dbSecurityGroup: ec2.SecurityGroup
+  config: Config
 }
 
 export class Rds extends Construct {
@@ -14,7 +16,7 @@ export class Rds extends Construct {
     const { vpc, dbSecurityGroup } = props
 
     const rdsCredentials = rds.Credentials.fromUsername('admin', {
-      secretName: 'gasha-db-secret',
+      secretName: `${props.config.stage}-gasha-db-secret`,
     })
 
     const instanceParameterGroup = new rds.ParameterGroup(
@@ -34,7 +36,9 @@ export class Rds extends Construct {
       }),
       instanceType: ec2.InstanceType.of(
         ec2.InstanceClass.T3,
-        ec2.InstanceSize.SMALL
+        props.config.stage === 'main'
+          ? ec2.InstanceSize.MEDIUM
+          : ec2.InstanceSize.MICRO
       ),
       multiAz: false,
       allocatedStorage: 16,
