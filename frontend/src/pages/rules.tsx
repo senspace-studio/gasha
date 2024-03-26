@@ -109,7 +109,7 @@ const Rules: NextPage = () => {
       </Text>
 
       <Text>
-        The “What’s in the Ball” team reserves the rights to change the rules of
+        The “What’s in the Ball” team reserves the right to change the rules of
         the game at any time, but we will do our very best not to rug you!
       </Text>
     </Container>
