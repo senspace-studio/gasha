@@ -1,13 +1,8 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import type { NextApiRequest, NextApiResponse } from "next";
+// write hellow world api of next api route
 
-type Data = {
-  name: string;
-};
+import { NextApiRequest, NextApiResponse } from 'next'
 
-export default function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<Data>,
-) {
-  res.status(200).json({ name: "John Doe" });
+export default (req: NextApiRequest, res: NextApiResponse) => {
+  console.log(req.body)
+  res.status(200).json({ text: 'Hello' })
 }
