@@ -15,7 +15,7 @@ const FramesAddress: NextPage = () => {
           {
             action: 'post',
             label: 'Submit',
-            target: `${process.env.NEXT_PUBLIC_API_URL}/allowlist`,
+            target: `${SITE_URL}/api/frames/allowlist`,
           },
         ]}
       />
