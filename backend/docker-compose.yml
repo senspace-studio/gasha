@@ -1,4 +1,4 @@
-version: "3"
+version: '3'
 
 networks:
   basic:
@@ -47,4 +47,5 @@ services:
       NEYNAR_API_KEY: ${NEYNAR_API_KEY}
       ZORA_API_ENDPOINT: ${ZORA_API_ENDPOINT}
       ZORA_API_KEY: ${ZORA_API_KEY}
+      CLIENT_URL: ${CLIENT_URL}
     command: yarn start:dev

@@ -24,5 +24,6 @@ import { LogicEntity } from 'src/entities/logic.entity';
   ],
   controllers: [PointsController],
   providers: [PointsService],
+  exports: [PointsService],
 })
 export class PointsModule {}
