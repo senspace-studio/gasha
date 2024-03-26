@@ -76,40 +76,26 @@ contract Gasha is IGasha, OwnableUpgradeable, PausableUpgradeable {
             }
         }
 
-        for (uint256 i = 0; i < series.length; i++) {
-            if (quantities[i] > 0) {
-                ZoraCreator1155.mintWithRewards{
-                    value: unitPrice * quantities[i]
-                }(
-                    MerkleMinter,
-                    ids[i],
-                    quantities[i],
-                    minterArguments,
-                    mintReferral
-                );
-            }
-        }
-
-        ZoraCreator1155.safeBatchTransferFrom(
-            address(this),
-            msg.sender,
-            ids,
-            quantities,
-            ""
-        );
+        _mintAndTransfer(msg.sender, ids, quantities);
 
         emit Spin(msg.sender, ids, quantities);
     }
-
-    // FreeSpin
-
-    // DropSpin
 
     function dropByOwner(
         address to,
         uint256[] calldata ids,
         uint256[] calldata quantities
     ) external onlyOwner {
+        _mintAndTransfer(to, ids, quantities);
+
+        emit Spin(to, ids, quantities);
+    }
+
+    function _mintAndTransfer(
+        address to,
+        uint256[] memory ids,
+        uint256[] memory quantities
+    ) private {
         for (uint256 i = 0; i < series.length; i++) {
             if (quantities[i] > 0) {
                 ZoraCreator1155.mintWithRewards{
@@ -131,8 +117,6 @@ contract Gasha is IGasha, OwnableUpgradeable, PausableUpgradeable {
             quantities,
             ""
         );
-
-        emit Spin(to, ids, quantities);
     }
 
     function _pickRandomBall(
