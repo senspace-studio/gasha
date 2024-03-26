@@ -12,7 +12,7 @@ import { useRouter } from 'next/router'
 import { toast } from 'react-toastify'
 import { ipfs2http } from '@/lib/ipfs2http'
 import { gashaAPI } from '@/lib/gashaAPI'
-import { ResultPoint } from '@/gasha'
+import { ResultItem, ResultPoint } from '@/gasha'
 
 enum RarenessLabel {
   Common = 0,
@@ -31,6 +31,7 @@ export const useSpinGasha = () => {
     sendTx,
     isPending,
     data: txHash,
+    reset,
   } = useWriteGashaContract<'spin'>('spin')
   const config = useConfig()
   const [receipt, setReceipt] = useState<TransactionReceipt>()
@@ -44,7 +45,9 @@ export const useSpinGasha = () => {
         await sendTx(
           [BigInt(quantity)],
           parseEther(
-            String(quantity * Number(process.env.NEXT_PUBLIC_UNIT_PRICE))
+            String(
+              Number(quantity) * Number(process.env.NEXT_PUBLIC_UNIT_PRICE)
+            )
           )
         )
       } catch (error) {
@@ -60,7 +63,8 @@ export const useSpinGasha = () => {
         try {
           const _receipt = await getTransactionReceipt(config, { hash: txHash })
           if (_receipt.status === 'reverted') {
-            toast.error('Transaction reverted')
+            toast.error('Transaction reverted. Please try again.')
+            reset()
             clearInterval(fetchReceipt)
           } else if (_receipt?.logs.length > 0) {
             setReceipt(_receipt)
@@ -93,18 +97,16 @@ export const useSpinGasha = () => {
   }, [receipt, seriesItems])
 
   useEffect(() => {
-    const calcPoints = async () => {
-      if (result) {
-        router.push({
-          pathname: '/result',
-          query: { result: JSON.stringify(result), points: 1000 },
-        })
-      }
+    if (result && txHash) {
+      reset()
+      router.push({
+        pathname: `/result/${txHash}`,
+        query: { result: JSON.stringify(result) },
+      })
     }
-    calcPoints()
-  }, [result])
+  }, [result, txHash])
 
-  return { spinGasha, isPending, result, points }
+  return { spinGasha, isPending, result, points, txHash }
 }
 
 export const useSeriesItems = () => {
@@ -139,8 +141,7 @@ export const useResultData = () => {
   const { address } = useAccount()
 
   const [gotTokenIds, setGotTokenIds] = useState<number[]>([])
-  const [gotItems, setGotItems] =
-    useState<{ name: string; image: string; rareness: string }[]>()
+  const [gotItems, setGotItems] = useState<ResultItem[]>()
   const [gotPoints, setGotPoints] = useState<ResultPoint>()
 
   const { data } = useMultiReadZoraCreator1155Contract(
@@ -172,9 +173,12 @@ export const useResultData = () => {
         const query = Object.entries(rareness)
           .map(([key, value]) => `${key}=${value}`)
           .join('&')
-        const points = gashaAPI(`/points/${address}/result/?${query}`, {
-          method: 'GET',
-        })
+        const points = await (
+          await gashaAPI(`/points/${address}/result/?${query}`, {
+            method: 'GET',
+          })
+        ).json()
+        setGotPoints(points)
       }
     }
 
@@ -211,6 +215,8 @@ export const useResultData = () => {
               rarenessLabel[
                 resultData?.find((r) => r.tokenId === tokenId)?.rareness || 0
               ],
+            quantity:
+              resultData?.find((r) => r.tokenId === tokenId)?.quantity || 0,
           }
         })
         const items = await Promise.all(promises)
@@ -220,5 +226,5 @@ export const useResultData = () => {
     fetchMetadata()
   }, [data, resultData])
 
-  return { gotItems }
+  return { gotItems, gotPoints }
 }

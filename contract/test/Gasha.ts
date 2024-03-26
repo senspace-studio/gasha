@@ -104,6 +104,19 @@ describe('Gasha', () => {
     expect(seriesItem.weight).to.equal(800)
   })
 
+  it('should revert when not available', async () => {
+    await expect(
+      Gasha.spin(1, { value: parseEther('0.000777') })
+    ).to.be.revertedWith('Gasha: not available now')
+  })
+
+  it('should set available time', async () => {
+    await expect(Gasha.setAvailableTime(0, 1893456000)).emit(
+      Gasha,
+      'SetAvailableTime'
+    )
+  })
+
   it('shoud spin', async () => {
     let amount = 100
     await expect(
