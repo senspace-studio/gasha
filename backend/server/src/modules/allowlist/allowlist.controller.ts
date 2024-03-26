@@ -51,7 +51,7 @@ export class AllowlistController {
     let address = '';
 
     if (
-      !(inputText.startsWith('0x') && inputText.length !== 42) &&
+      !(inputText.startsWith('0x') && inputText.length === 42) &&
       !inputText.endsWith('.eth')
     ) {
       throw new HttpException('Invalid request', 400);

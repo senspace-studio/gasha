@@ -15,10 +15,6 @@ export const DefaultLayout: FC<Props> = ({ children }) => {
       path: 'https://warpcast.com/~/channel/ball',
       icon: <FarcasterIcon fontSize="24px" />,
     },
-    {
-      path: 'https://twitter.com/senspace_studio',
-      icon: <XIcon fontSize="24px" />,
-    },
   ]
 
   return (
