@@ -12,18 +12,18 @@ export const BasicCount: FC<Props> = ({ number, unit, label }) => {
   return (
     <Box
       border="2px solid black"
+      borderBottom="4px solid black"
       overflow="hidden"
-      borderRadius={10}
+      borderRadius={20}
       width="100%"
     >
       <Box
         fontSize="lg"
         textAlign="center"
-        backgroundColor="yellow.300"
-        // color="yellow.400"
+        backgroundColor="blue.400"
+        color="yellow.400"
         pt={2}
         pb={1}
-        borderBottom="2px solid black"
       >
         <StolzlText fontWeight={500}>{label}</StolzlText>
       </Box>
@@ -32,8 +32,8 @@ export const BasicCount: FC<Props> = ({ number, unit, label }) => {
         textAlign="center"
         backgroundColor="yellow.300"
         lineHeight={1}
-        pt={5}
-        pb={4}
+        py={5}
+        minH="55px"
       >
         <StolzlText fontWeight={500}>{number}</StolzlText>
         <Text fontSize="md">
