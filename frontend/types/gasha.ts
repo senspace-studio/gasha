@@ -16,3 +16,22 @@ export type ResultPointOfRareness = {
   amount: string
   points: string
 }
+
+export type Total = {
+  points: string
+  events: string
+  nfts: string
+  lastBlockNumber: string
+}
+
+export type Leaderboard = {
+  data: LeaderboardItem[]
+  total: number
+  page: number
+  pageSize: number
+}
+
+export type LeaderboardItem = {
+  address: string
+  points: string
+}
