@@ -12,7 +12,7 @@ type Props = {
 export const DefaultLayout: FC<Props> = ({ children }) => {
   const socialLinks: any[] = [
     {
-      path: 'https://www.instagram.com/senspace_/',
+      path: 'https://warpcast.com/~/channel/ball',
       icon: <FarcasterIcon fontSize="24px" />,
     },
     {
