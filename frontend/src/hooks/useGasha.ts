@@ -211,6 +211,7 @@ export const useResultData = () => {
           )
           return {
             ...metadata,
+            tokenId,
             rareness:
               rarenessLabel[
                 resultData?.find((r) => r.tokenId === tokenId)?.rareness || 0
