@@ -27,7 +27,7 @@ export class AllowlistController {
     this.logger.log(this.addAllowlist.name);
 
     const allowlistNum = await this.allowlistService.allowlistCount();
-    if (allowlistNum >= 1000) {
+    if (allowlistNum >= 150) {
       throw new HttpException('Allowlist is full', 400);
     }
 
@@ -68,12 +68,9 @@ export class AllowlistController {
       address = inputText;
     }
 
-    const [following, recasted] = await Promise.all([
-      this.neynarService.isUserFollowing(fid),
-      this.neynarService.isUserRecasted(fid),
-    ]);
+    const recasted = await this.neynarService.isUserRecasted(fid);
 
-    if (!following || !recasted) {
+    if (!recasted) {
       throw new HttpException('Is not eligible', 400);
     }
 
