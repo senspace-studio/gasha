@@ -1,4 +1,5 @@
 import { GashaAbi } from '@/abi/gasha'
+import { ZoraProtocolRewardsAbi } from '@/abi/protocolRewards'
 import { ZoraCreator1155Abi } from '@/abi/zoraCreator1155'
 import {
   GashaReadArgs,
@@ -8,6 +9,9 @@ import {
   ZoraCreator1155ReadFunctionReturnType,
   ZoraCreatorERC1155ReadArgs,
   ZoraCreatorERC1155ReadFunctionName,
+  ZoraProtocolRewardsFunctionReturnType,
+  ZoraProtocolRewardsReadArgs,
+  ZoraProtocolRewardsReadFunctionName,
 } from '@/contract'
 import { useCallback } from 'react'
 import { useReadContract, useReadContracts, useWriteContract } from 'wagmi'
@@ -15,6 +19,8 @@ import { useReadContract, useReadContracts, useWriteContract } from 'wagmi'
 const GASHA_ADDRESS = process.env.NEXT_PUBLIC_GASHA_ADDRESS as `0x${string}`
 const ZORA_CREATOR_ERC1155_ADDRESS = process.env
   .NEXT_PUBLIC_ZORA_CREATOR_ERC1155_ADDRESS as `0x${string}`
+const ZORA_PROTOCOL_REWARDS_ADDRESS = process.env
+  .NEXT_PUBLIC_ZORA_PROTOCOL_REWARDS_ADDRESS as `0x${string}`
 
 export const useMultiReadGashaContract = (
   params: {
@@ -88,6 +94,24 @@ export const useMultiReadZoraCreator1155Contract = (
     contracts: params.map((param) => ({
       abi: ZoraCreator1155Abi,
       address: ZORA_CREATOR_ERC1155_ADDRESS,
+      functionName: param.functionName,
+      args: param.args,
+    })),
+  })
+
+  return readResult
+}
+
+export const useMultiReadProtocolRewardsContract = (
+  params: {
+    functionName: ZoraProtocolRewardsReadFunctionName
+    args: ZoraProtocolRewardsReadArgs
+  }[]
+) => {
+  const readResult = useReadContracts({
+    contracts: params.map((param) => ({
+      abi: ZoraProtocolRewardsAbi,
+      address: ZORA_PROTOCOL_REWARDS_ADDRESS,
       functionName: param.functionName,
       args: param.args,
     })),
