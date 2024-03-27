@@ -20,9 +20,8 @@ import { TotalEntity } from 'src/entities/total.entity';
 import { LogicEntity } from 'src/entities/logic.entity';
 import { AllowlistEntity } from 'src/entities/allowlist.entity';
 import { CronModule } from './cron/cron.module';
-import { AllowlistController } from './allowlist/allowlist.controller';
-import { AllowlistService } from './allowlist/allowlist.service';
 import { AllowlistModule } from './allowlist/allowlist.module';
+import { OgpModule } from './ogp/ogp.module';
 
 @Module({
   imports: [
@@ -49,6 +48,7 @@ import { AllowlistModule } from './allowlist/allowlist.module';
     PointsModule,
     CronModule,
     AllowlistModule,
+    OgpModule,
   ],
   controllers: [AppController],
   providers: [AppService],

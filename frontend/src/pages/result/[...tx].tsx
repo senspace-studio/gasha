@@ -22,6 +22,7 @@ const ResultPage: NextPage = () => {
           fontFamily="stolzl, sans-serif"
           fontWeight={500}
           mb={[1, 3]}
+          fontSize="32px"
         >
           Congratulations!
         </Heading>
@@ -35,8 +36,8 @@ const ResultPage: NextPage = () => {
       <Box
         textAlign="center"
         backgroundColor="yellow.400"
-        py={10}
-        mt={4}
+        p={10}
+        pb={20}
         position="relative"
         overflow="hidden"
       >
