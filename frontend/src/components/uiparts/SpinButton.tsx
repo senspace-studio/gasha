@@ -15,7 +15,7 @@ export const SpinButton: ComponentWithAs<'button', Props> = ({
       {...props}
       backgroundColor="blue.400"
       color="yellow.400"
-      pt="34px"
+      pt="30px"
       pb="28px"
       px="30px"
       width="auto"
