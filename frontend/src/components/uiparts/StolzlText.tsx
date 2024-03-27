@@ -7,6 +7,7 @@ interface Props extends TextProps {
 
 export const StolzlText: ComponentWithAs<'p', Props> = ({
   children,
+  fontWeight,
   ...rest
 }) => {
   const [isApple, setIsApple] = useState(false)
@@ -22,6 +23,7 @@ export const StolzlText: ComponentWithAs<'p', Props> = ({
       fontFamily="stolzl, sans-serif"
       as="span"
       pt={isApple ? '0px' : 1}
+      pb={isApple ? (Number(fontWeight) > 600 ? '6px' : '2px') : 0}
     >
       {children}
     </Text>
