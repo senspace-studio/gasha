@@ -1,30 +1,43 @@
 import {
   Box,
-  Button,
   Container,
   Flex,
   Grid,
   Heading,
-  Icon,
+  HStack,
   Spinner,
-  VStack,
 } from '@chakra-ui/react'
-import { FC, useState } from 'react'
+import { FC, useCallback, useState } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
+import { Autoplay } from 'swiper/modules'
 import 'swiper/css'
-import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons'
 import { StolzlText } from './StolzlText'
 import { Scorecard } from './Scorecard'
 import { useResultData } from '@/hooks/useGasha'
 import Image from 'next/image'
-import { ipfs2http } from '@/lib/ipfs2http'
 import { PrevIcon } from './icons/PrevIcon'
 import { NextIcon } from './icons/NextIcon'
+import { FarcasterIcon } from './icons/FarcasterIcon'
+import { XIcon } from './icons/XIcon'
 
 export const ResultGallery: FC = () => {
-  const [swiper, setSwiper] = useState<any>(null)
+  const [swiper, setSwiper] = useState<any>()
 
   const { gotItems, gotPoints } = useResultData()
+
+  const shareOnFarcaster = useCallback(() => {
+    const index = swiper.activeIndex
+    const item = gotItems?.[index]
+    if (!item) return
+
+    const url = `${window.location.origin}/frames/share/${item.tokenId}`
+    window.open(
+      `https://warpcast.com/~/compose?text=Got%20Item!%20${encodeURIComponent(
+        url
+      )}`,
+      '_blank'
+    )
+  }, [swiper, gotItems])
 
   return gotItems ? (
     <Container display="flex" justifyContent="center" flexWrap="wrap">
@@ -39,6 +52,7 @@ export const ResultGallery: FC = () => {
             swiper.slidePrev()
           }}
           mt="-90px"
+          cursor="pointer"
         />
         <Box overflow="hidden">
           <Swiper
@@ -47,6 +61,7 @@ export const ResultGallery: FC = () => {
             onInit={(ev) => {
               setSwiper(ev)
             }}
+            modules={[Autoplay]}
           >
             {gotItems.map((item, index) => (
               <SwiperSlide key={index}>
@@ -54,8 +69,42 @@ export const ResultGallery: FC = () => {
                   width={280}
                   height={280}
                   alt={`${item.name} image`}
-                  src={`/img/gacha-item/${item.image.slice(7)}`}
+                  src={`/img/gacha-item/${item.tokenId}.jpg`}
                 />
+                <Flex
+                  justifyContent="center"
+                  alignItems="center"
+                  gap={2}
+                  mt={4}
+                >
+                  <Heading
+                    textAlign="center"
+                    color="blue.400"
+                    fontFamily="freight-big-pro, serif"
+                    fontWeight={400}
+                    fontSize="5xl"
+                  >
+                    {item.name}
+                  </Heading>
+                  <Heading
+                    textAlign="center"
+                    color="blue.400"
+                    fontSize="xs"
+                    p="4px 5px 2px"
+                    borderRadius="full"
+                    border="1px solid"
+                    borderColor="blue.400"
+                  >
+                    <StolzlText fontWeight={400}>
+                      {item.rareness.toUpperCase()}
+                    </StolzlText>
+                  </Heading>
+                </Flex>
+              </SwiperSlide>
+            ))}
+            <SwiperSlide>
+              <Scorecard points={gotPoints} items={gotItems} />
+              <Flex justifyContent="center" alignItems="center" gap={2} mt={4}>
                 <Heading
                   textAlign="center"
                   color="blue.400"
@@ -63,17 +112,9 @@ export const ResultGallery: FC = () => {
                   fontWeight={400}
                   fontSize="5xl"
                 >
-                  {item.name}
+                  Scorecard
                 </Heading>
-                <Heading textAlign="center" color="blue.400" fontSize="md">
-                  <StolzlText fontWeight={500}>
-                    {item.rareness.toUpperCase()}
-                  </StolzlText>
-                </Heading>
-              </SwiperSlide>
-            ))}
-            <SwiperSlide>
-              <Scorecard points={gotPoints} items={gotItems} />
+              </Flex>
             </SwiperSlide>
           </Swiper>
         </Box>
@@ -83,31 +124,24 @@ export const ResultGallery: FC = () => {
             swiper.slideNext()
           }}
           mt="-90px"
+          cursor="pointer"
         />
       </Grid>
 
-      <VStack gap={3} mt={5} width="100%">
-        <Button
-          fontSize="xs"
-          size="sm"
+      <Box textAlign="center" width="100%" mt={3}>
+        <HStack
+          display="inline-flex"
+          gap={2}
+          justifyContent="center"
+          border="1px solid black"
+          p="10px 15px"
           borderRadius="full"
-          backgroundColor="black"
-          color="white"
-          minW="170"
         >
-          <StolzlText fontWeight={400}>Share on Farcaster</StolzlText>
-        </Button>
-        <Button
-          fontSize="xs"
-          size="sm"
-          borderRadius="full"
-          backgroundColor="black"
-          color="white"
-          minW="170"
-        >
-          <StolzlText fontWeight={400}>Share on X</StolzlText>
-        </Button>
-      </VStack>
+          <StolzlText fontWeight={400}>Share on</StolzlText>
+          <FarcasterIcon fontSize="30px" onClick={shareOnFarcaster} />
+          <XIcon fontSize="30px" />
+        </HStack>
+      </Box>
     </Container>
   ) : (
     <Flex alignItems="center" justifyContent="center" width="100%" height={380}>
