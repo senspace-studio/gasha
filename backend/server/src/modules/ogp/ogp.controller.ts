@@ -15,4 +15,12 @@ export class OgpController {
     res.set({ 'Content-Type': 'image/png' });
     res.send(file);
   }
+
+  @Get('/rectangle')
+  async getRectangleOgp(@Res() res: Response) {
+    this.logger.log(this.getRectangleOgp.name);
+    const file = await this.ogpService.generateRectangleOgp();
+    res.set({ 'Content-Type': 'image/png' });
+    res.send(file);
+  }
 }
