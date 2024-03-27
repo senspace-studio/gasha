@@ -61,7 +61,7 @@ export const ResultGallery: FC = () => {
             onInit={(ev) => {
               setSwiper(ev)
             }}
-            modules={[Autoplay]}
+            // modules={[Autoplay]}
           >
             {gotItems.map((item, index) => (
               <SwiperSlide key={index}>

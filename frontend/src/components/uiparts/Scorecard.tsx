@@ -37,7 +37,9 @@ const ScoreCardItem: FC<ItemProps> = ({ points, items, rareness }) => {
         />
         <Grid lineHeight={1} textAlign="left" fontWeight={500}>
           <StolzlText fontSize="lg">
-            {points}{' '}
+            <Box as="span" minW="50px" display="inline-block">
+              {points}
+            </Box>
             <StolzlText as="span" fontSize="10px">
               POINTS
             </StolzlText>
