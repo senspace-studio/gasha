@@ -114,7 +114,7 @@ describe('Gasha', () => {
 
   it('should revert when not available time', async () => {
     await expect(
-      Gasha.setAvailableTime(0, Math.ceil(new Date().getTime() / 1000) - 1e6)
+      Gasha.setAvailableTime(0, new Date().getTime() * 1000 - 1e6)
     ).emit(Gasha, 'SetAvailableTime')
     await expect(
       Gasha.spin(1, { value: parseEther('0.000777') })
