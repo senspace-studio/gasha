@@ -47,14 +47,11 @@ export class NeynarService {
       },
     );
     for (const recast of recasts.reactions) {
-      console.log(recast.cast?.embeds[0]);
       if (
         recast.cast?.embeds
           .map((embed: any) => embed.url)
           .some((url: string) =>
-            url.includes(
-              'https://zora.co/collect/zora:0xb5d00e222daad1b3030a6a1d0ce5f2edd8de7fd0/2',
-            ),
+            url?.includes('https://theball.fun/frames/allowlist'),
           )
       )
         return true;
