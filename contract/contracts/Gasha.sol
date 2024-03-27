@@ -28,6 +28,9 @@ contract Gasha is IGasha, OwnableUpgradeable, PausableUpgradeable {
 
     modifier isAvailableTime() {
         uint256 currentTime = block.timestamp;
+        console.log("currentTime: %d", currentTime);
+        console.log("startTime: %d", startTime);
+        console.log("endTime: %d", endTime);
         require(
             startTime <= currentTime && currentTime <= endTime,
             "Gasha: not available now"
@@ -55,7 +58,7 @@ contract Gasha is IGasha, OwnableUpgradeable, PausableUpgradeable {
 
     function spin(
         uint256 quantity
-    ) public payable isAvailableTime whenNotPaused {
+    ) external payable isAvailableTime whenNotPaused {
         require(quantity > 0 && quantity < 1000, "Gasha: quantity is invalid");
         require(msg.value >= unitPrice * quantity, "Gasha: insufficient funds");
 
@@ -85,7 +88,16 @@ contract Gasha is IGasha, OwnableUpgradeable, PausableUpgradeable {
         address to,
         uint256[] calldata ids,
         uint256[] calldata quantities
-    ) external onlyOwner {
+    ) external payable onlyOwner {
+        uint256 totalQuantity = 0;
+        for (uint256 i = 0; i < quantities.length; i++) {
+            totalQuantity += quantities[i];
+        }
+        require(
+            msg.value >= unitPrice * totalQuantity,
+            "Gasha: insufficient funds"
+        );
+
         _mintAndTransfer(to, ids, quantities);
 
         emit Spin(to, ids, quantities);
@@ -180,7 +192,7 @@ contract Gasha is IGasha, OwnableUpgradeable, PausableUpgradeable {
                 "Gasha: tokenId is already exist"
             );
         }
-        series.push(SeriesItem(tokenId, rareness, weight, true));
+        series.push(SeriesItem(tokenId, rareness, weight, false));
     }
 
     function activateSeriesItem(uint256 tokenId) public onlyOwner {
@@ -212,6 +224,8 @@ contract Gasha is IGasha, OwnableUpgradeable, PausableUpgradeable {
         startTime = _startTime;
         endTime = _endTime;
 
+        console.log("startTime: %d", startTime);
+        console.log("endTime: %d", endTime);
         emit SetAvailableTime(_startTime, _endTime);
     }
 

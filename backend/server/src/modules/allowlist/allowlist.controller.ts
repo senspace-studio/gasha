@@ -68,12 +68,9 @@ export class AllowlistController {
       address = inputText;
     }
 
-    const [following, recasted] = await Promise.all([
-      this.neynarService.isUserFollowing(fid),
-      this.neynarService.isUserRecasted(fid),
-    ]);
+    const recasted = await this.neynarService.isUserRecasted(fid);
 
-    if (!following || !recasted) {
+    if (!recasted) {
       throw new HttpException('Is not eligible', 400);
     }
 
