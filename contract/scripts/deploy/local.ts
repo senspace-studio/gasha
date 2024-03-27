@@ -6,7 +6,7 @@ import {
   deployZoraCreatorERC1155Factory,
 } from '../helper/zora'
 import { deployGashaContract, setMinterArguments } from '../helper/gasha'
-import { zeroAddress } from 'viem'
+import { maxUint64, zeroAddress } from 'viem'
 import MerkleTree from 'merkletreejs'
 
 async function main() {
@@ -27,6 +27,7 @@ async function main() {
 
   // Deploy Gasha
   const gashaContract = await deployGashaContract(
+    admin.address,
     createZoraCreator1155Address!,
     await contracts.merkelMinter.getAddress(),
     fundRecipientAddress,
@@ -36,7 +37,7 @@ async function main() {
   // Setup Tokens
   for (const tokenId of [1, 2, 3]) {
     let tx = await ZoraCreator1155.setupNewTokenWithCreateReferral(
-      `https://zora.co/${tokenId}`,
+      `ipfs://QmQM3UFhUVocoKgVrdvXf1UxtYyGVnNnnrZYkePknv6R63/${tokenId}.json`,
       100000,
       fundRecipientAddress
     )
@@ -71,10 +72,22 @@ async function main() {
   // Add Gasha series
   let tx = await gashaContract.setNewSeriesItem(1, 0, 800)
   await tx.wait()
+  tx = await gashaContract.activateSeriesItem(1)
+  await tx.wait()
   tx = await gashaContract.setNewSeriesItem(2, 1, 150)
+  await tx.wait()
+  tx = await gashaContract.activateSeriesItem(2)
   await tx.wait()
   tx = await gashaContract.setNewSeriesItem(3, 2, 50)
   await tx.wait()
+  tx = await gashaContract.activateSeriesItem(3)
+  await tx.wait()
+
+  // Set available time
+  tx = await gashaContract.setAvailableTime(0, 1893456000)
+  await tx.wait()
+
+  console.log(tx)
 
   console.log(
     'ZoraCreator1155 deployed to:',

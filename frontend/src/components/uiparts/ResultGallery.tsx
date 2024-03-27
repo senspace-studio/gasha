@@ -16,6 +16,10 @@ import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons'
 import { StolzlText } from './StolzlText'
 import { Scorecard } from './Scorecard'
 import { useResultData } from '@/hooks/useGasha'
+import Image from 'next/image'
+import { ipfs2http } from '@/lib/ipfs2http'
+import { PrevIcon } from './icons/PrevIcon'
+import { NextIcon } from './icons/NextIcon'
 
 export const ResultGallery: FC = () => {
   const [swiper, setSwiper] = useState<any>(null)
@@ -24,13 +28,17 @@ export const ResultGallery: FC = () => {
 
   return gotItems ? (
     <Container display="flex" justifyContent="center" flexWrap="wrap">
-      <Grid gridTemplateColumns={'36px 300px 36px'} alignItems="center">
-        <Icon
-          as={ChevronLeftIcon}
-          fontSize="4xl"
+      <Grid
+        gridTemplateColumns={'40px 280px 40px'}
+        alignItems="center"
+        columnGap={2}
+      >
+        <PrevIcon
+          fontSize="40px"
           onClick={() => {
             swiper.slidePrev()
           }}
+          mt="-90px"
         />
         <Box overflow="hidden">
           <Swiper
@@ -42,22 +50,22 @@ export const ResultGallery: FC = () => {
           >
             {gotItems.map((item, index) => (
               <SwiperSlide key={index}>
-                <Box
-                  margin="0 auto"
-                  width={300}
-                  height={330}
-                  backgroundColor="yellow.300"
-                ></Box>
+                <Image
+                  width={280}
+                  height={280}
+                  alt={`${item.name} image`}
+                  src={`/img/gacha-item/${item.image.slice(7)}`}
+                />
                 <Heading
                   textAlign="center"
-                  color="yellow.400"
+                  color="blue.400"
                   fontFamily="freight-big-pro, serif"
                   fontWeight={400}
                   fontSize="5xl"
                 >
                   {item.name}
                 </Heading>
-                <Heading textAlign="center" color="yellow.400" fontSize="md">
+                <Heading textAlign="center" color="blue.400" fontSize="md">
                   <StolzlText fontWeight={500}>
                     {item.rareness.toUpperCase()}
                   </StolzlText>
@@ -69,12 +77,12 @@ export const ResultGallery: FC = () => {
             </SwiperSlide>
           </Swiper>
         </Box>
-        <Icon
-          as={ChevronRightIcon}
-          fontSize="4xl"
+        <NextIcon
+          fontSize="40px"
           onClick={() => {
             swiper.slideNext()
           }}
+          mt="-90px"
         />
       </Grid>
 

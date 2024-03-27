@@ -5,6 +5,9 @@ import { Box, Container, VStack } from '@chakra-ui/react'
 import Image from 'next/image'
 
 export default function Home() {
+  const currentMints = useCurrentMints()
+  const remainingTime = useRemainingTime()
+
   return (
     <>
       <Box height={['330px', '320px']} position="relative">
@@ -55,8 +58,12 @@ export default function Home() {
 
           <VStack mt={['40px', '40px']} pb={10} gap={5}>
             <BasicCount number={0} unit="ETH" label="Total Rewards" />
-            <BasicCount number={0} unit="MINTS" label="Total Mints" />
-            <BasicCount number={'--:--:--:--'} label="Time Remaining" />
+            <BasicCount
+              number={currentMints.mints}
+              unit="MINTS"
+              label="Total Mints"
+            />
+            <BasicCount number={remainingTime} label="Time Remaining" />
           </VStack>
         </Container>
       </Box>
