@@ -123,6 +123,73 @@ export class OgpService {
     const buffer = await container.toBuffer();
     return buffer;
   }
+
+  async generateRectangleOgp() {
+    const base = readFileSync(
+      join(__dirname, '../../assets/images/ogp/rectangle-base.png'),
+    );
+
+    const container = sharp(base);
+
+    const point = await sharp({
+      text: {
+        text: `<span foreground="${blue}">200</span>`,
+        font: 'Albert Sans',
+        fontfile: join(__dirname, '../../assets/fonts/AlbertSans-Medium.ttf'),
+        rgba: true,
+        width: 550,
+        height: 90,
+      },
+    })
+      .png()
+      .toBuffer();
+
+    const pointLabel = await sharp({
+      text: {
+        text: `<span foreground="${blue}">POINTS</span>`,
+        font: 'Albert Sans',
+        fontfile: join(__dirname, '../../assets/fonts/AlbertSans-Regular.ttf'),
+        rgba: true,
+        width: 150,
+        height: 34,
+      },
+    })
+      .png()
+      .toBuffer();
+
+    const address = await sharp({
+      text: {
+        text: `<span foreground="black">0x12...678E</span>`,
+        font: 'Albert Sans',
+        fontfile: join(__dirname, '../../assets/fonts/AlbertSans-Regular.ttf'),
+        rgba: true,
+        width: 550,
+        height: 28,
+      },
+    })
+      .png()
+      .toBuffer();
+
+    container.composite([
+      {
+        input: point,
+        left: 50,
+        top: 300,
+      },
+      {
+        ...pointLabelPosition(200),
+        input: pointLabel,
+      },
+      {
+        input: address,
+        left: 53,
+        top: 425,
+      },
+    ]);
+
+    const buffer = await container.toBuffer();
+    return buffer;
+  }
 }
 
 const pointLabelPosition = (point: number) => {
