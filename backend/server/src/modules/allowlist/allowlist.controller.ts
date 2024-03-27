@@ -27,7 +27,7 @@ export class AllowlistController {
     this.logger.log(this.addAllowlist.name);
 
     const allowlistNum = await this.allowlistService.allowlistCount();
-    if (allowlistNum >= 1000) {
+    if (allowlistNum >= 150) {
       throw new HttpException('Allowlist is full', 400);
     }
 

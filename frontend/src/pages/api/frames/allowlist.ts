@@ -13,7 +13,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     switch (error.response.data.message) {
       case 'Allowlist is full':
-        res.redirect(303, `${SITE_URL}/frames/allowlist/outoofstock`)
+        res.redirect(303, `${SITE_URL}/frames/allowlist/outofstock`)
         return
       case 'Invalid request':
         res.redirect(303, `${SITE_URL}/frames/allowlist/error`)
