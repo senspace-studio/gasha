@@ -40,7 +40,7 @@ export const useSpinGasha = () => {
   const [points, setPoints] = useState<number>()
   const router = useRouter()
   const { address, chainId } = useAccount()
-  const { switchChain } = useSwitchChain()
+  const { handleSwitchChain, switched } = useSwitchChain()
 
   const spinGasha = useCallback(
     async (quantity: number) => {
@@ -49,9 +49,7 @@ export const useSpinGasha = () => {
         return
       }
 
-      alert(chainId)
-
-      if (chainId === Number(process.env.NEXT_PUBLIC_CHAIN_ID)) {
+      if (chainId === Number(process.env.NEXT_PUBLIC_CHAIN_ID) || switched) {
         try {
           await sendTx(
             [BigInt(quantity)],
@@ -65,10 +63,10 @@ export const useSpinGasha = () => {
           toast.error('Failed to spin the gasha')
         }
       } else {
-        await switchChain()
+        handleSwitchChain()
       }
     },
-    [sendTx, chainId, address]
+    [sendTx, chainId, address, switched]
   )
 
   useEffect(() => {
