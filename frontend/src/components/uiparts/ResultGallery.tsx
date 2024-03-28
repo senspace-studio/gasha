@@ -82,7 +82,7 @@ export const ResultGallery: FC = () => {
                     color="blue.400"
                     fontFamily="freight-big-pro, serif"
                     fontWeight={400}
-                    fontSize="5xl"
+                    fontSize="36px"
                   >
                     {item.name}
                   </Heading>
