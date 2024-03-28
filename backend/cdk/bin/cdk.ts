@@ -8,7 +8,7 @@ import { GashaRdsStack } from '../lib/rds-stack'
 
 const app = new cdk.App()
 
-const stages = ['test', 'main']
+const stages = ['test', 'main-stg', 'main']
 const stage = app.node.tryGetContext('stage')
 if (!stages.includes(stage)) {
   throw new Error(`stage must be one of ${stages.join(', ')}`)
