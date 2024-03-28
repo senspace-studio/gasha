@@ -69,7 +69,7 @@ export const ResultGallery: FC = () => {
                   width={280}
                   height={280}
                   alt={`${item.name} image`}
-                  src={`/img/gacha-item/${item.tokenId}.jpg`}
+                  src={`/img/gacha-item/${item.tokenId}.png`}
                 />
                 <Flex
                   justifyContent="center"

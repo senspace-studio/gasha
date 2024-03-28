@@ -72,11 +72,11 @@ const main = async () => {
   await setMinterArguments(gashaContract, tree)
 
   // Add Gasha series
-  let tx = await gashaContract.setNewSeriesItem(1, 0, 800)
+  let tx = await gashaContract.setNewSeriesItem(1, 0, 600)
   await tx.wait()
-  tx = await gashaContract.setNewSeriesItem(2, 1, 150)
+  tx = await gashaContract.setNewSeriesItem(2, 1, 300)
   await tx.wait()
-  tx = await gashaContract.setNewSeriesItem(3, 2, 50)
+  tx = await gashaContract.setNewSeriesItem(3, 2, 100)
   await tx.wait()
 
   console.log(
