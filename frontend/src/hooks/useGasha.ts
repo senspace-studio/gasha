@@ -47,6 +47,7 @@ export const useSpinGasha = () => {
         toast.error('Please connect your wallet')
         return
       }
+
       if (chainId !== Number(process.env.NEXT_PUBLIC_CHAIN_ID)) {
         try {
           await switchChainAsync({
@@ -60,7 +61,9 @@ export const useSpinGasha = () => {
           toast.error('Failed to switch network')
           return
         }
+        return
       }
+
       try {
         await sendTx(
           [BigInt(quantity)],
