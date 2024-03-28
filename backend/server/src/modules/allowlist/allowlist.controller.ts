@@ -85,4 +85,39 @@ export class AllowlistController {
 
     return { success: true };
   }
+
+  @Post('/claim')
+  async claim(@Body() body: any) {
+    this.logger.log(this.claim.name);
+
+    const address = body.address?.toLowerCase();
+    const record = await this.allowlistService.findByAddress(address);
+    if (!record) {
+      throw new HttpException('Not listed', 400);
+    } else if (record.status) {
+      throw new HttpException('Already claimed', 400);
+    }
+
+    const seriesItems = await this.viemService.getSeriesItems();
+    const activeTokens = seriesItems.filter((item) => item.isActive);
+
+    const totalWeight = activeTokens.reduce(
+      (acc, item) => acc + Number(item.weight),
+      0,
+    );
+    let randomNumber = Math.random() * totalWeight;
+
+    let tokenId!: number;
+    for (const item of activeTokens) {
+      randomNumber -= Number(item.weight);
+      if (randomNumber <= 0) {
+        tokenId = Number(item.tokenId);
+        break;
+      }
+    }
+
+    await this.allowlistService.claim(address, tokenId);
+
+    return { tokenId };
+  }
 }
