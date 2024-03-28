@@ -3,16 +3,15 @@ import {
   addPermission,
   callSaleForMerkleMinter,
   createZoraCreator1155,
+  generateMerkleTree,
 } from '../helper/zora'
 import { deployGashaContract, setMinterArguments } from '../helper/gasha'
 import { zeroAddress } from 'viem'
-import MerkleTree from 'merkletreejs'
 
 const main = async () => {
   const adminAddress = '0x807C69F16456F92ab2bFc9De8f14AF31051f9678'
   const fundRecipientAddress = '0xdCb93093424447bF4FE9Df869750950922F1E30B'
   const merkelMinterAddress = '0xf48172CA3B6068B20eE4917Eb27b5472f1f272C7'
-
   const ipfsBaseURI = 'ipfs://QmeDd8wEEf6EPqeDSa1Kd5gpYHDA9VDU52GA6S85SuosiH'
 
   const ZoraERC1155FactoryAddress = '0x777777C338d93e2C7adf08D102d45CA7CC4Ed021'
@@ -57,19 +56,18 @@ const main = async () => {
     [await gashaContract.getAddress(), 10e9, 0],
   ]
 
-  let tree!: MerkleTree
+  const merkleTree = generateMerkleTree(leaves)
   for (const tokenId of [1, 2, 3]) {
-    const { merkleTree } = await callSaleForMerkleMinter(
+    await callSaleForMerkleMinter(
       ZoraCreator1155,
       merkelMinterAddress,
-      leaves,
       fundRecipientAddress,
-      tokenId
+      tokenId,
+      merkleTree
     )
-    tree = merkleTree
   }
 
-  await setMinterArguments(gashaContract, tree)
+  await setMinterArguments(gashaContract, merkleTree)
 
   // Add Gasha series
   let tx = await gashaContract.setNewSeriesItem(1, 0, 600)

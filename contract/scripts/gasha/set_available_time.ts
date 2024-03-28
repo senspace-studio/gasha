@@ -3,10 +3,10 @@ import { ethers } from 'hardhat'
 const main = async () => {
   const gashaContract = await ethers.getContractAt(
     'Gasha',
-    '0xa55410B75578c8941a76249C18c72167459253c7'
+    '0x51410f51EB90846b08159ec24d2E164b077aD00e'
   )
 
-  let tx = await gashaContract.setAvailableTime(1711639025, 1711640405)
+  let tx = await gashaContract.setAvailableTime(1711639025, 1811640405)
   await tx.wait()
 
   console.log('Set Available Time')

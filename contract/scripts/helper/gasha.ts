@@ -39,14 +39,14 @@ export const setMinterArguments = async (Gasha: Gasha, tree: MerkleTree) => {
   const leafToVerify = keccak256(
     new AbiCoder().encode(
       ['address', 'uint256', 'uint256'],
-      [(await Gasha.getAddress()) as `0x${string}`, 100000, 0]
+      [(await Gasha.getAddress()) as `0x${string}`, 10e9, 0]
     )
   )
   const proof = tree.getHexProof(leafToVerify)
 
   const minterArguments = new AbiCoder().encode(
     ['address', 'uint256', 'uint256', 'bytes32[]'],
-    [await Gasha.getAddress(), 100000, 0, proof]
+    [await Gasha.getAddress(), 10e9, 0, proof]
   )
 
   const tx = await Gasha.setMinterArguments(minterArguments)

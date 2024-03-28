@@ -118,13 +118,7 @@ export const addPermission = async (
   return
 }
 
-export const callSaleForMerkleMinter = async (
-  zoraCreator1155: ZoraCreator1155Impl,
-  minterAddress: string,
-  leaves: [string, number, number][],
-  fundsRecipientAddress: string,
-  tokenId: number
-) => {
+export const generateMerkleTree = (leaves: [string, number, number][]) => {
   const hashedLeaves = leaves.map((v) =>
     keccak256(
       new AbiCoder().encode(
@@ -137,6 +131,16 @@ export const callSaleForMerkleMinter = async (
     sortPairs: true,
   })
 
+  return merkleTree
+}
+
+export const callSaleForMerkleMinter = async (
+  zoraCreator1155: ZoraCreator1155Impl,
+  minterAddress: string,
+  fundsRecipientAddress: string,
+  tokenId: number,
+  merkleTree: MerkleTree
+) => {
   const values = [
     tokenId,
     {
@@ -155,6 +159,4 @@ export const callSaleForMerkleMinter = async (
 
   const tx = await zoraCreator1155.callSale(tokenId, minterAddress, setSaleData)
   await tx.wait()
-
-  return { merkleTree }
 }
