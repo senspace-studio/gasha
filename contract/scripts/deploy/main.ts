@@ -3,7 +3,6 @@ import {
   addPermission,
   callSaleForMerkleMinter,
   createZoraCreator1155,
-  deployZoraCreatorERC1155Factory,
 } from '../helper/zora'
 import { deployGashaContract, setMinterArguments } from '../helper/gasha'
 import { zeroAddress } from 'viem'
@@ -11,20 +10,23 @@ import MerkleTree from 'merkletreejs'
 
 const main = async () => {
   const adminAddress = '0x807C69F16456F92ab2bFc9De8f14AF31051f9678'
-  const fundRecipientAddress = '0x807C69F16456F92ab2bFc9De8f14AF31051f9678'
+  const fundRecipientAddress = '0xdCb93093424447bF4FE9Df869750950922F1E30B'
+  const merkelMinterAddress = '0xf48172CA3B6068B20eE4917Eb27b5472f1f272C7'
 
-  const contracts = await deployZoraCreatorERC1155Factory(adminAddress)
+  const ipfsBaseURI = 'ipfs://QmeDd8wEEf6EPqeDSa1Kd5gpYHDA9VDU52GA6S85SuosiH'
+
+  const ZoraERC1155FactoryAddress = '0x777777C338d93e2C7adf08D102d45CA7CC4Ed021'
 
   const zoraCreator1155Factory = await ethers.getContractAt(
     'ZoraCreator1155FactoryImpl',
-    await contracts.zoraCreatorERC1155Factory.getAddress()
+    ZoraERC1155FactoryAddress
   )
 
   const zoraCreator1155Address = await createZoraCreator1155(
     zoraCreator1155Factory,
-    '0x807C69F16456F92ab2bFc9De8f14AF31051f9678',
-    '0x807C69F16456F92ab2bFc9De8f14AF31051f9678',
-    'ipfs://QmWdGS5HgfGjbXX851xzCd2f5WFnNxK4NjpmDnUCiY8EXz'
+    adminAddress,
+    fundRecipientAddress,
+    ipfsBaseURI
   )
 
   const ZoraCreator1155 = await ethers.getContractAt(
@@ -35,35 +37,31 @@ const main = async () => {
   const gashaContract = await deployGashaContract(
     adminAddress,
     zoraCreator1155Address!,
-    await contracts.merkelMinter.getAddress(),
+    merkelMinterAddress,
     fundRecipientAddress,
     0.000777
   )
 
   for (const tokenId of [1, 2, 3]) {
     let tx = await ZoraCreator1155.setupNewTokenWithCreateReferral(
-      `ipfs://QmQM3UFhUVocoKgVrdvXf1UxtYyGVnNnnrZYkePknv6R63/${tokenId}.json`,
-      100000,
+      `${ipfsBaseURI}/${tokenId}.json`,
+      10e8,
       fundRecipientAddress
     )
     await tx.wait()
-    await addPermission(
-      ZoraCreator1155,
-      tokenId,
-      await contracts.merkelMinter.getAddress()
-    )
+    await addPermission(ZoraCreator1155, tokenId, merkelMinterAddress)
   }
 
   const leaves: [string, number, number][] = [
     [zeroAddress, 0, 0],
-    [await gashaContract.getAddress(), 100000, 0],
+    [await gashaContract.getAddress(), 10e9, 0],
   ]
 
   let tree!: MerkleTree
   for (const tokenId of [1, 2, 3]) {
     const { merkleTree } = await callSaleForMerkleMinter(
       ZoraCreator1155,
-      await contracts.merkelMinter.getAddress(),
+      merkelMinterAddress,
       leaves,
       fundRecipientAddress,
       tokenId
