@@ -7,6 +7,8 @@ import { AccountEntity } from 'src/entities/account.entity';
 import { EventEntity } from 'src/entities/event.entity';
 import { LogicEntity } from 'src/entities/logic.entity';
 import { TotalEntity } from 'src/entities/total.entity';
+import { AllowlistService } from '../allowlist/allowlist.service';
+import { AllowlistEntity } from 'src/entities/allowlist.entity';
 
 @Module({
   imports: [
@@ -15,8 +17,9 @@ import { TotalEntity } from 'src/entities/total.entity';
       AccountEntity,
       TotalEntity,
       LogicEntity,
+      AllowlistEntity,
     ]),
   ],
-  providers: [ViemService, PointsService, CronService],
+  providers: [ViemService, PointsService, CronService, AllowlistService],
 })
 export class CronModule {}
