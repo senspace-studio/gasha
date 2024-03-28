@@ -168,6 +168,7 @@ export class CronService {
     );
 
     for (const record of claimedList) {
+      await this.viemService;
     }
   }
 }
