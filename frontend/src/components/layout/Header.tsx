@@ -139,7 +139,7 @@ export const Header: FC = () => {
                 </Link>
               ))}
             </Stack>
-            <Stack direction={'row'} gap={8} marginTop={['45vh', '40vh']}>
+            <Stack direction={'row'} gap={8} marginTop={'40vh'}>
               {socialLinks.map((link) => (
                 <Link key={link.path} href={link.path}>
                   <Center w="40px" h="40px">
