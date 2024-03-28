@@ -21,7 +21,13 @@ export default function App({ Component, pageProps }: AppProps) {
       <Head>
         <title>The Ball</title>
       </Head>
-      <PrivyProvider appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID!} config={{}}>
+      <PrivyProvider
+        appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID!}
+        config={{
+          walletConnectCloudProjectId:
+            process.env.NEXT_PUBLIC_WALLET_CONNECT_CLOUD_PROJECT_ID!,
+        }}
+      >
         <QueryClientProvider client={queryClient}>
           <WagmiProvider config={config}>
             <ChakraProvider theme={chakraTheme}>
