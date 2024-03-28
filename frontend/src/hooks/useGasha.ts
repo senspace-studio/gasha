@@ -7,12 +7,13 @@ import {
 import { TransactionReceipt, parseEther, parseEventLogs } from 'viem'
 import { getTransactionReceipt } from '@wagmi/core'
 import { GashaAbi } from '@/abi/gasha'
-import { useAccount, useConfig, useSwitchChain } from 'wagmi'
+import { useAccount, useConfig } from 'wagmi'
 import { useRouter } from 'next/router'
 import { toast } from 'react-toastify'
 import { ipfs2http } from '@/lib/ipfs2http'
 import { gashaAPI } from '@/lib/gashaAPI'
 import { ResultItem, ResultPoint } from '@/gasha'
+import { useSwitchChain } from './useChain'
 
 enum RarenessLabel {
   Common = 0,
@@ -39,7 +40,7 @@ export const useSpinGasha = () => {
   const [points, setPoints] = useState<number>()
   const router = useRouter()
   const { address, chainId } = useAccount()
-  const { switchChainAsync, status } = useSwitchChain()
+  const { switchChain } = useSwitchChain()
 
   const spinGasha = useCallback(
     async (quantity: number) => {
@@ -48,36 +49,26 @@ export const useSpinGasha = () => {
         return
       }
 
-      if (chainId !== Number(process.env.NEXT_PUBLIC_CHAIN_ID)) {
-        try {
-          await switchChainAsync({
-            chainId: Number(process.env.NEXT_PUBLIC_CHAIN_ID),
-          })
-        } catch (error: any) {
-          if (error.message?.includes('already pending')) {
-            toast.info('Please check your wallet to switch network')
-            return
-          }
-          toast.error('Failed to switch network')
-          return
-        }
-        return
-      }
+      alert(chainId)
 
-      try {
-        await sendTx(
-          [BigInt(quantity)],
-          parseEther(
-            String(
-              Number(quantity) * Number(process.env.NEXT_PUBLIC_UNIT_PRICE)
+      if (chainId === Number(process.env.NEXT_PUBLIC_CHAIN_ID)) {
+        try {
+          await sendTx(
+            [BigInt(quantity)],
+            parseEther(
+              String(
+                Number(quantity) * Number(process.env.NEXT_PUBLIC_UNIT_PRICE)
+              )
             )
           )
-        )
-      } catch (error) {
-        toast.error('Failed to spin the gasha')
+        } catch (error) {
+          toast.error('Failed to spin the gasha')
+        }
+      } else {
+        await switchChain()
       }
     },
-    [sendTx, chainId, address, status]
+    [sendTx, chainId, address]
   )
 
   useEffect(() => {
