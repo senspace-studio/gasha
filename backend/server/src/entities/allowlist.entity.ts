@@ -14,6 +14,12 @@ export class AllowlistEntity {
   @PrimaryColumn()
   readonly address: string;
 
+  @Column()
+  readonly tokenId: number;
+
+  @Column()
+  readonly status: 'claimed' | 'pending' | 'minted' | 'failed';
+
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamp',

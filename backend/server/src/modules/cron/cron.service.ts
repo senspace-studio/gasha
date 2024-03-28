@@ -5,17 +5,19 @@ import { SpinEvent } from 'src/types/contract';
 import { Address } from 'viem';
 import { Interval } from '@nestjs/schedule';
 import { RUN_CRON } from 'src/utils/env';
+import { AllowlistService } from '../allowlist/allowlist.service';
 
 @Injectable()
 export class CronService {
   private readonly logger = new Logger(CronService.name);
   constructor(
     private readonly pointsService: PointsService,
+    private readonly allowlistService: AllowlistService,
     private readonly viemService: ViemService,
   ) {}
 
   @Interval(5 * 60 * 1e3)
-  async handleInterval() {
+  async updateScore() {
     if (!RUN_CRON) {
       this.logger.log('this process does not cron worker');
       return;
@@ -148,6 +150,24 @@ export class CronService {
         address,
         points: `${accounts[address].points}`,
       });
+    }
+  }
+
+  @Interval(1 * 60 * 1e3)
+  async mintAllowlist() {
+    if (!RUN_CRON) {
+      this.logger.log('this process does not cron worker');
+      return;
+    }
+    this.logger.log('mintAllowlist');
+
+    const claimedList = await this.allowlistService.findClaimedList();
+    await this.allowlistService.updateBatchStatus(
+      claimedList.map((e) => e.address),
+      'pending',
+    );
+
+    for (const record of claimedList) {
     }
   }
 }
