@@ -77,11 +77,12 @@ export const deployZoraCreatorERC1155Factory = async (adminAddress: string) => {
 export const createZoraCreator1155 = async (
   factory: ZoraCreator1155FactoryImpl,
   admin: string,
-  rewardsRecipient: string
+  rewardsRecipient: string,
+  ipfsBaseURI: string
 ) => {
   const tx = await factory.createContract(
-    'ipfs://QmWdGS5HgfGjbXX851xzCd2f5WFnNxK4NjpmDnUCiY8EXz',
-    'collection name',
+    ipfsBaseURI,
+    'The Ball',
     {
       royaltyMintSchedule: 0,
       royaltyBPS: 0,
