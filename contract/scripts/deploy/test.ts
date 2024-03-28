@@ -23,7 +23,8 @@ const main = async () => {
   const zoraCreator1155Address = await createZoraCreator1155(
     zoraCreator1155Factory,
     '0x807C69F16456F92ab2bFc9De8f14AF31051f9678',
-    '0x807C69F16456F92ab2bFc9De8f14AF31051f9678'
+    '0x807C69F16456F92ab2bFc9De8f14AF31051f9678',
+    'ipfs://QmWdGS5HgfGjbXX851xzCd2f5WFnNxK4NjpmDnUCiY8EXz'
   )
 
   const ZoraCreator1155 = await ethers.getContractAt(
