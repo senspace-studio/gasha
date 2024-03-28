@@ -20,7 +20,7 @@ export const SpinAgainModal: FC = () => {
 
   return (
     <>
-      <SpinButton minW="230px" mt={10} onClick={onOpen}>
+      <SpinButton minW="230px" onClick={onOpen}>
         SPIN AGAIN!
       </SpinButton>
       <Modal isOpen={isOpen} onClose={onClose} size="md" isCentered>

@@ -93,9 +93,17 @@ describe('Gasha', () => {
   it('should add series item', async () => {
     let tx = await Gasha.setNewSeriesItem(1, 0, 800)
     await tx.wait()
+    tx = await Gasha.activateSeriesItem(1)
+    await tx.wait()
+
     tx = await Gasha.setNewSeriesItem(2, 1, 150)
     await tx.wait()
+    tx = await Gasha.activateSeriesItem(2)
+    await tx.wait()
+
     tx = await Gasha.setNewSeriesItem(3, 2, 50)
+    await tx.wait()
+    tx = await Gasha.activateSeriesItem(3)
     await tx.wait()
 
     const seriesItem = await Gasha.series(0)
@@ -104,7 +112,10 @@ describe('Gasha', () => {
     expect(seriesItem.weight).to.equal(800)
   })
 
-  it('should revert when not available', async () => {
+  it('should revert when not available time', async () => {
+    await expect(
+      Gasha.setAvailableTime(0, Math.ceil(new Date().getTime() / 1000) - 1e6)
+    ).emit(Gasha, 'SetAvailableTime')
     await expect(
       Gasha.spin(1, { value: parseEther('0.000777') })
     ).to.be.revertedWith('Gasha: not available now')

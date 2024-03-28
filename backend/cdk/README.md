@@ -46,8 +46,8 @@ DB のシークレット情報を secret manager に保存しているが、ARN 
 
 1. `aws ecr get-login-password --region ap-northeast-1 --profile senspace | docker login --username AWS --password-stdin 726394863183.dkr.ecr.ap-northeast-1.amazonaws.com`
 2. `docker build -t gasha-repository:latest -f ./Dockerfile.test .`
-3. `docker tag gasha-repository:latest 726394863183.dkr.ecr.ap-northeast-1.amazonaws.com/gasha-repository:latest`
-4. `docker push 726394863183.dkr.ecr.ap-northeast-1.amazonaws.com/gasha-repository:latest`
+3. `docker tag gasha-repository:latest 726394863183.dkr.ecr.ap-northeast-1.amazonaws.com/gasha:latest`
+4. `docker push 726394863183.dkr.ecr.ap-northeast-1.amazonaws.com/gasha:latest`
 
 ## AppStack のデプロイ
 

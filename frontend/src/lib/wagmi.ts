@@ -5,6 +5,7 @@ import {
   hardhat,
   localhost,
   zoraSepolia,
+  base,
 } from 'wagmi/chains'
 
 const selectChain = () => {
@@ -13,6 +14,8 @@ const selectChain = () => {
       return hardhat
     case '84532':
       return baseSepolia
+    case '8453':
+      return base
     case '999999999':
       return zoraSepolia
     default:

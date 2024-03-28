@@ -3,6 +3,7 @@ export type ResultItem = {
   image: string
   rareness: string
   quantity: number
+  tokenId: number
 }
 
 export type ResultPoint = {

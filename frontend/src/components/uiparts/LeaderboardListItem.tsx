@@ -17,7 +17,7 @@ export const LeaderboardListItem: FC<Props> = ({
 }) => {
   const winnigRate = useMemo(() => {
     if (!totalPoints || !points) return 0
-    return ((points / totalPoints) * 100).toFixed(2)
+    return ((points / totalPoints) * 100).toFixed(3)
   }, [points, totalPoints])
 
   return (

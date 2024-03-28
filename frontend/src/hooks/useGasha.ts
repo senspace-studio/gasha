@@ -13,6 +13,7 @@ import { toast } from 'react-toastify'
 import { ipfs2http } from '@/lib/ipfs2http'
 import { gashaAPI } from '@/lib/gashaAPI'
 import { ResultItem, ResultPoint } from '@/gasha'
+import { useSwitchChain } from './useChain'
 
 enum RarenessLabel {
   Common = 0,
@@ -38,23 +39,34 @@ export const useSpinGasha = () => {
   const { seriesItems } = useSeriesItems()
   const [points, setPoints] = useState<number>()
   const router = useRouter()
+  const { address, chainId } = useAccount()
+  const { handleSwitchChain, switched } = useSwitchChain()
 
   const spinGasha = useCallback(
     async (quantity: number) => {
-      try {
-        await sendTx(
-          [BigInt(quantity)],
-          parseEther(
-            String(
-              Number(quantity) * Number(process.env.NEXT_PUBLIC_UNIT_PRICE)
+      if (!address) {
+        toast.error('Please connect your wallet')
+        return
+      }
+
+      if (chainId === Number(process.env.NEXT_PUBLIC_CHAIN_ID) || switched) {
+        try {
+          await sendTx(
+            [BigInt(quantity)],
+            parseEther(
+              String(
+                Number(quantity) * Number(process.env.NEXT_PUBLIC_UNIT_PRICE)
+              )
             )
           )
-        )
-      } catch (error) {
-        toast.error('Failed to spin the gasha')
+        } catch (error) {
+          toast.error('Failed to spin the gasha')
+        }
+      } else {
+        handleSwitchChain()
       }
     },
-    [sendTx]
+    [sendTx, chainId, address, switched]
   )
 
   useEffect(() => {
@@ -161,24 +173,27 @@ export const useResultData = () => {
   useEffect(() => {
     const fetchPoint = async () => {
       if (resultData && address) {
-        // generate query prams of rareness like ?common=1&rare=2&special=3
-        const rareness = resultData.reduce(
-          (acc, { rareness, quantity }) => {
-            const label = rarenessLabel[rareness] as keyof typeof acc
-            acc[label] += quantity
-            return acc
-          },
-          { common: 0, rare: 0, special: 0 }
-        )
-        const query = Object.entries(rareness)
-          .map(([key, value]) => `${key}=${value}`)
-          .join('&')
-        const points = await (
-          await gashaAPI(`/points/${address}/result/?${query}`, {
-            method: 'GET',
-          })
-        ).json()
-        setGotPoints(points)
+        try {
+          const rareness = resultData.reduce(
+            (acc, { rareness, quantity }) => {
+              const label = rarenessLabel[rareness] as keyof typeof acc
+              acc[label] += quantity
+              return acc
+            },
+            { common: 0, rare: 0, special: 0 }
+          )
+          const query = Object.entries(rareness)
+            .map(([key, value]) => `${key}=${value}`)
+            .join('&')
+          const points = await (
+            await gashaAPI(`/points/${address}/result/?${query}`, {
+              method: 'GET',
+            })
+          ).json()
+          setGotPoints(points)
+        } catch (error) {
+          toast.error('Failed to calc points, please retry')
+        }
       }
     }
 
@@ -211,6 +226,7 @@ export const useResultData = () => {
           )
           return {
             ...metadata,
+            tokenId,
             rareness:
               rarenessLabel[
                 resultData?.find((r) => r.tokenId === tokenId)?.rareness || 0

@@ -12,6 +12,7 @@ import { FC, useMemo } from 'react'
 import { StolzlText } from './StolzlText'
 import { useAccount } from 'wagmi'
 import { ResultItem, ResultPoint } from '@/gasha'
+import Image from 'next/image'
 
 type Props = {
   points?: ResultPoint
@@ -21,37 +22,45 @@ type Props = {
 type ItemProps = {
   points: number
   items: ResultItem[]
+  rareness: string
 }
 
-const ScoreCardItem: FC<ItemProps> = ({ points, items }) => {
+const ScoreCardItem: FC<ItemProps> = ({ points, items, rareness }) => {
   return (
-    <Grid gridTemplateColumns="100px 1fr 1fr" mx={1}>
-      <Flex gap={2} alignItems="center" justifyContent="center">
-        <Box w={5} h={5} borderRadius="full" backgroundColor="#ABD193" />
+    <Grid gridTemplateColumns="135px 1fr" mx={1} px={4}>
+      <Flex gap={2} alignItems="center">
+        <Image
+          alt=""
+          src={`/img/ball_${rareness}.png`}
+          width="18"
+          height="18"
+        />
         <Grid lineHeight={1} textAlign="left" fontWeight={500}>
-          <StolzlText fontSize="lg">{points}</StolzlText>
-          <StolzlText fontSize="xs">POINTS</StolzlText>
+          <StolzlText fontSize="lg">
+            <Box as="span" minW="50px" display="inline-block">
+              {points}
+            </Box>
+            <StolzlText as="span" fontSize="10px">
+              POINTS
+            </StolzlText>
+          </StolzlText>
         </Grid>
       </Flex>
-      {items.map((item, index) => (
-        <Box position="relative" key={`${item.rareness}${index}`}>
-          <StolzlText
-            fontSize="md"
-            fontWeight={500}
-            position="absolute"
-            top={-5}
-            right={2}
-          >
-            x{item.quantity}
-          </StolzlText>
-          <Box
-            margin="0 auto"
-            width="55px"
-            height="60px"
-            backgroundColor="grey"
-          />
-        </Box>
-      ))}
+      <HStack gap={1}>
+        {items.map((item, index) => (
+          <HStack minW="55px" gap={1} key={`${item.rareness}${index}`}>
+            <Image
+              width="25"
+              height="25"
+              src={`/img/gacha-item/${item.tokenId}.png`}
+              alt=""
+            />
+            <StolzlText fontSize="11px" fontWeight={500}>
+              x{item.quantity}
+            </StolzlText>
+          </HStack>
+        ))}
+      </HStack>
     </Grid>
   )
 }
@@ -83,71 +92,63 @@ export const Scorecard: FC<Props> = ({ points, items }) => {
     <>
       <Box
         overflow="hidden"
-        borderRadius={10}
-        border="2px solid black"
-        width={300}
-        h={380}
+        border="1px solid black"
+        width={280}
+        h={280}
         backgroundColor="yellow.300"
       >
-        <Box backgroundColor="yellow.400">
-          <Center>
-            <Box
-              margin="10px auto 0"
-              backgroundColor="blue.400"
-              color="yellow.400"
-              border="2px solid black"
-              borderRadius="full"
-              display="inline-block"
-              px={3}
-              py={1}
-            >
-              <StolzlText>ScoreCard</StolzlText>
-            </Box>
-          </Center>
-          <Grid gridTemplateColumns="100px auto 100px" justifyContent="center">
-            <Box width="80px" height="100px" backgroundColor="grey"></Box>
-            <Grid alignItems="center">
-              <Text fontSize="4xl" color="blue.400">
-                <StolzlText fontWeight={500}>{totalPoints}</StolzlText>
+        <Box backgroundColor="yellow.400" position="relative">
+          <Flex alignItems="end" height="140px" py={3} px={4}>
+            <Box>
+              <Text fontSize="4xl" color="blue.400" mb={-3}>
+                <StolzlText fontWeight={500} fontSize="32px">
+                  {totalPoints}
+                </StolzlText>
+                <StolzlText
+                  fontWeight={500}
+                  color="blue.400"
+                  fontSize={Number(totalPoints) > 9999 ? 'sm' : 'md'}
+                  ml={1}
+                >
+                  POINTS
+                </StolzlText>
               </Text>
-            </Grid>
-            <Grid alignItems="end">
-              <Box
-                lineHeight={1.1}
-                mb={4}
-                mr={Number(totalPoints) > 9999 ? 10 : 0}
-              >
-                <Text fontSize="xl">
-                  <StolzlText fontWeight={500} color="blue.400">
-                    POINTS
-                  </StolzlText>
-                </Text>
-                <Text fontSize="xs">
-                  <StolzlText fontWeight={500}>
-                    {address && address.slice(0, 4) + '...' + address.slice(-3)}
-                  </StolzlText>
-                </Text>
-              </Box>
-            </Grid>
-          </Grid>
+              <Text fontSize="sm" ml={1}>
+                <StolzlText fontWeight={500}>
+                  {address && address.slice(0, 4) + '...' + address.slice(-3)}
+                </StolzlText>
+              </Text>
+            </Box>
+          </Flex>
+          <Box width={120} position="absolute" top="5px" right="5px">
+            <Image
+              src="/img/gasha_machine.png"
+              alt=""
+              width="1169"
+              height="1590"
+            />
+          </Box>
         </Box>
-        <Grid rowGap={5} pt={8} pb={5}>
+        <Grid rowGap={2} pt={8} pb={5}>
           {specialItems.length > 0 && (
             <ScoreCardItem
               points={Number(points?.special.points)}
               items={specialItems}
+              rareness="special"
             />
           )}
           {rareItems.length > 0 && (
             <ScoreCardItem
               points={Number(points?.rare.points)}
               items={rareItems}
+              rareness="rare"
             />
           )}
           {commonItems.length > 0 && (
             <ScoreCardItem
               points={Number(points?.common.points)}
               items={commonItems}
+              rareness="common"
             />
           )}
         </Grid>
