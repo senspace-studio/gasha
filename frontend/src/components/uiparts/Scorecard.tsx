@@ -52,7 +52,7 @@ const ScoreCardItem: FC<ItemProps> = ({ points, items, rareness }) => {
             <Image
               width="25"
               height="25"
-              src={`/img/gacha-item/${item.image.slice(7)}`}
+              src={`/img/gacha-item/${item.tokenId}.jpg`}
               alt=""
             />
             <StolzlText fontSize="11px" fontWeight={500}>
