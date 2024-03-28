@@ -168,7 +168,22 @@ export class CronService {
     );
 
     for (const record of claimedList) {
-      await this.viemService;
+      try {
+        await this.viemService.dropByAdmin(
+          record.address as Address,
+          record.tokenId,
+        );
+        await this.allowlistService.updateBatchStatus(
+          [record.address],
+          'minted',
+        );
+      } catch (error) {
+        this.logger.error(error);
+        await this.allowlistService.updateBatchStatus(
+          [record.address],
+          'failed',
+        );
+      }
     }
   }
 }

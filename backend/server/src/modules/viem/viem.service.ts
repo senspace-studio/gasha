@@ -7,6 +7,7 @@ import {
   Address,
   getContract,
   createWalletClient,
+  parseEther,
 } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { baseSepolia as chain, mainnet } from 'viem/chains';
@@ -17,7 +18,7 @@ import { SeriesItem } from 'src/types/contract';
 export class ViemService {
   private get client() {
     return createPublicClient({
-      chain: chain as Chain,
+      chain: { ...chain, fees: { baseFeeMultiplier: 1.5 } } as Chain,
       transport: http(BLOCKCHAIN_API),
     });
   }
@@ -103,14 +104,19 @@ export class ViemService {
   }
 
   async dropByAdmin(address: Address, tokenId: number) {
-    const { request } = await this.client.simulateContract({
-      address: GASHA_ADDRESS as Address,
-      abi: GashaABI,
-      account: this.adminAccount,
-      functionName: 'dropByOwner',
-      args: [address, [BigInt(tokenId)], [BigInt(1)]],
-    });
+    try {
+      const { request } = await this.client.simulateContract({
+        address: GASHA_ADDRESS as Address,
+        abi: GashaABI,
+        account: this.adminAccount,
+        functionName: 'dropByOwner',
+        args: [address, [BigInt(tokenId)], [BigInt(1)]],
+        value: parseEther('0.000777'),
+      });
 
-    await this.walletClient.writeContract(request);
+      await this.walletClient.writeContract(request);
+    } catch (error) {
+      throw error;
+    }
   }
 }
