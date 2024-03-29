@@ -1,3 +1,15 @@
+enum RarenessLabel {
+  Common = 0,
+  Rare = 1,
+  Special = 2,
+}
+
+export const rarenessLabel: Record<number, string> = {
+  [RarenessLabel.Common]: 'common',
+  [RarenessLabel.Rare]: 'rare',
+  [RarenessLabel.Special]: 'special',
+};
+
 export const Gasha = {
   _format: 'hh-sol-artifact-1',
   contractName: 'Gasha',

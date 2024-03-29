@@ -23,21 +23,29 @@ import { XIcon } from './icons/XIcon'
 export const ResultGallery: FC = () => {
   const [swiper, setSwiper] = useState<any>()
 
-  const { gotItems, gotPoints } = useResultData()
+  const { gotItems, gotPoints, scorecardShareId } = useResultData()
 
-  const shareOnFarcaster = useCallback(() => {
-    const index = swiper.activeIndex
-    const item = gotItems?.[index]
-    if (!item) return
+  const shareOnFarcaster = useCallback(
+    (swiper: any) => {
+      const index = swiper.activeIndex
+      const item = gotItems?.[index]
 
-    const url = `${window.location.origin}/frames/share/${item.tokenId}`
-    window.open(
-      `https://warpcast.com/~/compose?text=Got%20Item!%20${encodeURIComponent(
-        url
-      )}`,
-      '_blank'
-    )
-  }, [swiper, gotItems])
+      let url = ''
+      if (!item) {
+        url = `${window.location.origin}/frames/share/scorecard/${scorecardShareId}`
+      } else {
+        url = `${window.location.origin}/frames/share/${item.tokenId}`
+      }
+
+      window.open(
+        `https://warpcast.com/~/compose?text=Got%20Item!%20${encodeURIComponent(
+          url
+        )}`,
+        '_blank'
+      )
+    },
+    [gotItems, scorecardShareId]
+  )
 
   return gotItems ? (
     <Container display="flex" justifyContent="center" flexWrap="wrap">
@@ -138,7 +146,10 @@ export const ResultGallery: FC = () => {
           borderRadius="full"
         >
           <StolzlText fontWeight={400}>Share on</StolzlText>
-          <FarcasterIcon fontSize="30px" onClick={shareOnFarcaster} />
+          <FarcasterIcon
+            fontSize="30px"
+            onClick={() => shareOnFarcaster(swiper)}
+          />
           <XIcon fontSize="30px" />
         </HStack>
       </Box>

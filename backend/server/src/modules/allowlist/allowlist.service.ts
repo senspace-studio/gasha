@@ -19,7 +19,7 @@ export class AllowlistService {
   }
 
   async findByAddress(address: string) {
-    return await this.allowlistRepository.findOne({
+    return await this.allowlistRepository.find({
       where: {
         address,
       },
@@ -52,9 +52,9 @@ export class AllowlistService {
     return await this.allowlistRepository.count();
   }
 
-  async claim(address: string, tokenId: number) {
+  async claim(address: string, tokenId: number, id: number) {
     return await this.allowlistRepository.update(
-      { address },
+      { address, id },
       { tokenId, status: 'claimed' },
     );
   }

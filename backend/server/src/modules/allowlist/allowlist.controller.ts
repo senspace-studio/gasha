@@ -23,7 +23,6 @@ export class AllowlistController {
 
   @Post('/')
   async addAllowlist(@Body() body: any) {
-    console.log(body);
     this.logger.log(this.addAllowlist.name);
 
     const allowlistNum = await this.allowlistService.allowlistCount();
@@ -36,7 +35,6 @@ export class AllowlistController {
       validatedData = await this.neynarService.validateRequest(
         body.trustedData.messageBytes,
       );
-      console.log(validatedData);
     } catch (error) {
       throw new HttpException('Invalid request', 400);
     }
@@ -87,11 +85,31 @@ export class AllowlistController {
   async claim(@Body() body: any) {
     this.logger.log(this.claim.name);
 
-    const address = body.address?.toLowerCase();
-    const record = await this.allowlistService.findByAddress(address);
-    if (!record) {
+    let address: string = body.address;
+
+    if (
+      !(address.startsWith('0x') && address.length === 42) &&
+      !address.endsWith('.eth')
+    ) {
+      throw new HttpException('Invalid request', 400);
+    } else if (address.endsWith('.eth')) {
+      try {
+        address = await this.viemService.lookupENS(address);
+        if (!address) {
+          throw new HttpException('Invalid request', 400);
+        }
+      } catch (error) {
+        throw new HttpException('Invalid request', 400);
+      }
+    }
+
+    const records = await this.allowlistService.findByAddress(
+      address.toLowerCase(),
+    );
+    const waitingRecords = records.filter((record) => record.status === null);
+    if (!records || records.length === 0) {
       throw new HttpException('Not listed', 400);
-    } else if (record.status) {
+    } else if (waitingRecords.length == 0) {
       throw new HttpException('Already claimed', 400);
     }
 
@@ -113,7 +131,7 @@ export class AllowlistController {
       }
     }
 
-    await this.allowlistService.claim(address, tokenId);
+    await this.allowlistService.claim(address, tokenId, waitingRecords[0].id);
 
     return { tokenId };
   }

@@ -11,7 +11,7 @@ import { useAccount, useConfig } from 'wagmi'
 import { useRouter } from 'next/router'
 import { toast } from 'react-toastify'
 import { ipfs2http } from '@/lib/ipfs2http'
-import { gashaAPI } from '@/lib/gashaAPI'
+import { gashaAPI, gashaAxios } from '@/lib/gashaAPI'
 import { ResultItem, ResultPoint } from '@/gasha'
 import { useSwitchChain } from './useChain'
 
@@ -155,6 +155,7 @@ export const useResultData = () => {
   const [gotTokenIds, setGotTokenIds] = useState<number[]>([])
   const [gotItems, setGotItems] = useState<ResultItem[]>()
   const [gotPoints, setGotPoints] = useState<ResultPoint>()
+  const [scorecardShareId, setScorecardShareId] = useState<number>()
 
   const { data } = useMultiReadZoraCreator1155Contract(
     gotTokenIds.map((id) => ({ functionName: 'uri', args: [BigInt(id)] }))
@@ -191,6 +192,11 @@ export const useResultData = () => {
             })
           ).json()
           setGotPoints(points)
+          const { data } = await gashaAxios.post('/ogp/save-result', {
+            address,
+            result: resultData,
+          })
+          setScorecardShareId(data.id)
         } catch (error) {
           toast.error('Failed to calc points, please retry')
         }
@@ -242,5 +248,5 @@ export const useResultData = () => {
     fetchMetadata()
   }, [data, resultData])
 
-  return { gotItems, gotPoints }
+  return { gotItems, gotPoints, scorecardShareId }
 }
