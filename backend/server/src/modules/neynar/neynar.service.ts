@@ -18,7 +18,6 @@ export class NeynarService {
 
   async validateRequest(messageBytes: string) {
     try {
-      this.logger.log('validateRequest', messageBytes);
       const result = await this.client.validateFrameAction(messageBytes);
       return result;
     } catch (error) {

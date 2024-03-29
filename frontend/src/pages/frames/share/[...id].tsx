@@ -34,7 +34,7 @@ export const getServerSideProps: GetServerSideProps = async (c) => {
 
   return {
     props: {
-      imageURL: `${SITE_URL}/img/gacha-item/${tokenId}.jpg`,
+      imageURL: `${SITE_URL}/img/gacha-item/${tokenId}.png`,
     },
   }
 }
