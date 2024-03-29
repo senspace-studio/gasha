@@ -51,7 +51,7 @@ export const ResultGallery: FC = () => {
           onClick={() => {
             swiper.slidePrev()
           }}
-          mt="-90px"
+          mt="-60px"
           cursor="pointer"
         />
         <Box overflow="hidden">
@@ -110,7 +110,7 @@ export const ResultGallery: FC = () => {
                   color="blue.400"
                   fontFamily="freight-big-pro, serif"
                   fontWeight={400}
-                  fontSize="5xl"
+                  fontSize="36px"
                 >
                   Scorecard
                 </Heading>
@@ -123,7 +123,7 @@ export const ResultGallery: FC = () => {
           onClick={() => {
             swiper.slideNext()
           }}
-          mt="-90px"
+          mt="-60px"
           cursor="pointer"
         />
       </Grid>
