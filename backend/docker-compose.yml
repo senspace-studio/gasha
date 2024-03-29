@@ -48,4 +48,6 @@ services:
       ZORA_API_ENDPOINT: ${ZORA_API_ENDPOINT}
       ZORA_API_KEY: ${ZORA_API_KEY}
       CLIENT_URL: ${CLIENT_URL}
+      ADMIN_PRIVATE_KEY: ${ADMIN_PRIVATE_KEY}
+      CHAIN_ID: ${CHAIN_ID}
     command: yarn start:dev

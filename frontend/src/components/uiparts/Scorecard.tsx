@@ -37,7 +37,9 @@ const ScoreCardItem: FC<ItemProps> = ({ points, items, rareness }) => {
         />
         <Grid lineHeight={1} textAlign="left" fontWeight={500}>
           <StolzlText fontSize="lg">
-            {points}{' '}
+            <Box as="span" minW="50px" display="inline-block">
+              {points}
+            </Box>
             <StolzlText as="span" fontSize="10px">
               POINTS
             </StolzlText>
@@ -50,7 +52,7 @@ const ScoreCardItem: FC<ItemProps> = ({ points, items, rareness }) => {
             <Image
               width="25"
               height="25"
-              src={`/img/gacha-item/${item.image.slice(7)}`}
+              src={`/img/gacha-item/${item.tokenId}.png`}
               alt=""
             />
             <StolzlText fontSize="11px" fontWeight={500}>

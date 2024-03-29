@@ -14,5 +14,6 @@ import { ViemModule } from '../viem/viem.module';
   ],
   controllers: [AllowlistController],
   providers: [AllowlistService],
+  exports: [AllowlistService],
 })
 export class AllowlistModule {}
