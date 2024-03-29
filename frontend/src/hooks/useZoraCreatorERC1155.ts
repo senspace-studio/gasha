@@ -4,6 +4,7 @@ import {
   useReadZoraCreator1155Contract,
 } from './useContract'
 import { useMemo } from 'react'
+import { formatEther, parseEther } from 'viem'
 
 const poolAddress = process.env
   .NEXT_PUBLIC_ZORA_PROTOCOL_REWARDS_POOL_ADDRESS! as `0x${string}`
@@ -28,7 +29,9 @@ export const useBalanceOfRewards = () => {
   ])
 
   const rewards = useMemo(() => {
-    return readResult.data?.[0]?.result?.toString()
+    const rewards = readResult.data?.[0]?.result?.toString()
+    if (!rewards) return 0
+    return formatEther(BigInt(rewards))
   }, [readResult])
 
   return rewards
