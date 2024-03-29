@@ -4,6 +4,7 @@ import {
   callSaleForMerkleMinter,
   createZoraCreator1155,
   deployZoraCreatorERC1155Factory,
+  generateMerkleTree,
 } from '../helper/zora'
 import { deployGashaContract, setMinterArguments } from '../helper/gasha'
 import { zeroAddress } from 'viem'
@@ -23,7 +24,8 @@ const main = async () => {
   const zoraCreator1155Address = await createZoraCreator1155(
     zoraCreator1155Factory,
     '0x807C69F16456F92ab2bFc9De8f14AF31051f9678',
-    '0x807C69F16456F92ab2bFc9De8f14AF31051f9678'
+    '0x807C69F16456F92ab2bFc9De8f14AF31051f9678',
+    'ipfs://QmWdGS5HgfGjbXX851xzCd2f5WFnNxK4NjpmDnUCiY8EXz'
   )
 
   const ZoraCreator1155 = await ethers.getContractAt(
@@ -55,29 +57,38 @@ const main = async () => {
 
   const leaves: [string, number, number][] = [
     [zeroAddress, 0, 0],
-    [await gashaContract.getAddress(), 100000, 0],
+    [await gashaContract.getAddress(), 10e9, 0],
   ]
 
-  let tree!: MerkleTree
+  const merkleTree = generateMerkleTree(leaves)
   for (const tokenId of [1, 2, 3]) {
-    const { merkleTree } = await callSaleForMerkleMinter(
+    await callSaleForMerkleMinter(
       ZoraCreator1155,
       await contracts.merkelMinter.getAddress(),
-      leaves,
       fundRecipientAddress,
-      tokenId
+      tokenId,
+      merkleTree
     )
-    tree = merkleTree
   }
 
-  await setMinterArguments(gashaContract, tree)
+  await setMinterArguments(gashaContract, merkleTree)
 
   // Add Gasha series
   let tx = await gashaContract.setNewSeriesItem(1, 0, 800)
   await tx.wait()
+  tx = await gashaContract.activateSeriesItem(1)
+  await tx.wait()
   tx = await gashaContract.setNewSeriesItem(2, 1, 150)
   await tx.wait()
+  tx = await gashaContract.activateSeriesItem(2)
+  await tx.wait()
   tx = await gashaContract.setNewSeriesItem(3, 2, 50)
+  await tx.wait()
+  tx = await gashaContract.activateSeriesItem(3)
+  await tx.wait()
+
+  // Set available time
+  tx = await gashaContract.setAvailableTime(0, 1893456000)
   await tx.wait()
 
   console.log(
