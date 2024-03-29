@@ -1,4 +1,5 @@
 import { API_URL, SITE_URL } from '@/config'
+import { useRedirectTop } from '@/hooks/useFrames'
 import { FrameMetadata } from '@coinbase/onchainkit'
 import { GetServerSideProps, NextPage } from 'next'
 
@@ -7,6 +8,8 @@ type Props = {
 }
 
 export const ScorecardFrame: NextPage<Props> = ({ imageURL }) => {
+  useRedirectTop()
+
   return (
     <>
       <FrameMetadata
