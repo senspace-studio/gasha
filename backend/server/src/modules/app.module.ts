@@ -22,6 +22,7 @@ import { AllowlistEntity } from 'src/entities/allowlist.entity';
 import { CronModule } from './cron/cron.module';
 import { AllowlistModule } from './allowlist/allowlist.module';
 import { OgpModule } from './ogp/ogp.module';
+import { ScorecardEntity } from 'src/entities/scorecard';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { OgpModule } from './ogp/ogp.module';
         EventEntity,
         TotalEntity,
         LogicEntity,
+        ScorecardEntity,
       ],
       synchronize: true,
     }),
