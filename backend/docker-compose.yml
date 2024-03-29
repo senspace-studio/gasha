@@ -23,7 +23,7 @@ services:
     command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
 
   api:
-    image: node:18.0.0
+    image: node:18.17.0
     networks:
       - basic
     depends_on:
@@ -48,4 +48,6 @@ services:
       ZORA_API_ENDPOINT: ${ZORA_API_ENDPOINT}
       ZORA_API_KEY: ${ZORA_API_KEY}
       CLIENT_URL: ${CLIENT_URL}
+      ADMIN_PRIVATE_KEY: ${ADMIN_PRIVATE_KEY}
+      CHAIN_ID: ${CHAIN_ID}
     command: yarn start:dev

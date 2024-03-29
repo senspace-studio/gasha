@@ -28,6 +28,9 @@ contract Gasha is IGasha, OwnableUpgradeable, PausableUpgradeable {
 
     modifier isAvailableTime() {
         uint256 currentTime = block.timestamp;
+        console.log("currentTime: %d", currentTime);
+        console.log("startTime: %d", startTime);
+        console.log("endTime: %d", endTime);
         require(
             startTime <= currentTime && currentTime <= endTime,
             "Gasha: not available now"
@@ -55,21 +58,22 @@ contract Gasha is IGasha, OwnableUpgradeable, PausableUpgradeable {
 
     function spin(
         uint256 quantity
-    ) public payable isAvailableTime whenNotPaused {
+    ) external payable isAvailableTime whenNotPaused {
         require(quantity > 0 && quantity < 1000, "Gasha: quantity is invalid");
         require(msg.value >= unitPrice * quantity, "Gasha: insufficient funds");
 
-        uint256[] memory ids = new uint256[](series.length);
-        uint256[] memory quantities = new uint256[](series.length);
-        for (uint256 i = 0; i < series.length; i++) {
-            ids[i] = series[i].tokenId;
+        SeriesItem[] memory activeSeriesItem = activeSeriesItems();
+        uint256[] memory ids = new uint256[](activeSeriesItem.length);
+        uint256[] memory quantities = new uint256[](activeSeriesItem.length);
+        for (uint256 i = 0; i < activeSeriesItem.length; i++) {
+            ids[i] = activeSeriesItem[i].tokenId;
             quantities[i] = 0;
         }
 
         for (uint256 i = 0; i < quantity; i++) {
             SeriesItem memory item = _pickRandomBall(i);
-            for (uint256 j = 0; j < series.length; j++) {
-                if (series[j].tokenId == item.tokenId) {
+            for (uint256 j = 0; j < activeSeriesItem.length; j++) {
+                if (activeSeriesItem[j].tokenId == item.tokenId) {
                     quantities[j]++;
                     break;
                 }
@@ -83,9 +87,18 @@ contract Gasha is IGasha, OwnableUpgradeable, PausableUpgradeable {
 
     function dropByOwner(
         address to,
-        uint256[] calldata ids,
-        uint256[] calldata quantities
-    ) external onlyOwner {
+        uint256[] memory ids,
+        uint256[] memory quantities
+    ) external payable onlyOwner {
+        uint256 totalQuantity = 0;
+        for (uint256 i = 0; i < quantities.length; i++) {
+            totalQuantity += quantities[i];
+        }
+        require(
+            msg.value >= unitPrice * totalQuantity,
+            "Gasha: insufficient funds"
+        );
+
         _mintAndTransfer(to, ids, quantities);
 
         emit Spin(to, ids, quantities);
@@ -96,7 +109,7 @@ contract Gasha is IGasha, OwnableUpgradeable, PausableUpgradeable {
         uint256[] memory ids,
         uint256[] memory quantities
     ) private {
-        for (uint256 i = 0; i < series.length; i++) {
+        for (uint256 i = 0; i < ids.length; i++) {
             if (quantities[i] > 0) {
                 ZoraCreator1155.mintWithRewards{
                     value: unitPrice * quantities[i]
@@ -180,7 +193,7 @@ contract Gasha is IGasha, OwnableUpgradeable, PausableUpgradeable {
                 "Gasha: tokenId is already exist"
             );
         }
-        series.push(SeriesItem(tokenId, rareness, weight, true));
+        series.push(SeriesItem(tokenId, rareness, weight, false));
     }
 
     function activateSeriesItem(uint256 tokenId) public onlyOwner {
@@ -212,6 +225,8 @@ contract Gasha is IGasha, OwnableUpgradeable, PausableUpgradeable {
         startTime = _startTime;
         endTime = _endTime;
 
+        console.log("startTime: %d", startTime);
+        console.log("endTime: %d", endTime);
         emit SetAvailableTime(_startTime, _endTime);
     }
 

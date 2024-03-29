@@ -17,6 +17,7 @@ import {
   createZoraCreator1155,
   deployGashaContract,
   deployZoraCreatorERC1155Factory,
+  generateMerkleTree,
   setMinterArguments,
 } from './helper'
 
@@ -42,7 +43,8 @@ describe('Gasha', () => {
     const address = await createZoraCreator1155(
       ZoraCreator1155Factory,
       admin.address,
-      fundRecipient.address
+      fundRecipient.address,
+      'https://zora.co'
     )
     ZoraCreator1155 = await ethers.getContractAt(
       'ZoraCreator1155Impl',
@@ -73,18 +75,18 @@ describe('Gasha', () => {
 
     leaves = [
       [zeroAddress, 0, 0],
-      [await Gasha.getAddress(), 100000, 0],
+      [await Gasha.getAddress(), 10e9, 0],
     ]
 
+    tree = generateMerkleTree(leaves)
     for (const tokenId of [1, 2, 3]) {
-      const { merkleTree } = await callSaleForMerkleMinter(
+      await callSaleForMerkleMinter(
         ZoraCreator1155,
         await MerkelMinter.getAddress(),
-        leaves,
         fundRecipient.address,
-        tokenId
+        tokenId,
+        tree
       )
-      tree = merkleTree
     }
 
     await setMinterArguments(Gasha, tree)
@@ -93,9 +95,17 @@ describe('Gasha', () => {
   it('should add series item', async () => {
     let tx = await Gasha.setNewSeriesItem(1, 0, 800)
     await tx.wait()
+    tx = await Gasha.activateSeriesItem(1)
+    await tx.wait()
+
     tx = await Gasha.setNewSeriesItem(2, 1, 150)
     await tx.wait()
+    tx = await Gasha.activateSeriesItem(2)
+    await tx.wait()
+
     tx = await Gasha.setNewSeriesItem(3, 2, 50)
+    await tx.wait()
+    tx = await Gasha.activateSeriesItem(3)
     await tx.wait()
 
     const seriesItem = await Gasha.series(0)
@@ -104,7 +114,10 @@ describe('Gasha', () => {
     expect(seriesItem.weight).to.equal(800)
   })
 
-  it('should revert when not available', async () => {
+  it('should revert when not available time', async () => {
+    await expect(
+      Gasha.setAvailableTime(0, Math.ceil(new Date().getTime() / 1000) - 1e6)
+    ).emit(Gasha, 'SetAvailableTime')
     await expect(
       Gasha.spin(1, { value: parseEther('0.000777') })
     ).to.be.revertedWith('Gasha: not available now')
@@ -162,5 +175,11 @@ describe('Gasha', () => {
     expect(activeItems[0].tokenId).to.equal(1)
     expect(activeItems[0].rareness).to.equal(0)
     expect(activeItems[0].weight).to.equal(800)
+  })
+
+  it('should drop by owner', async () => {
+    await Gasha.dropByOwner(fundRecipient.address, [1], [1], {
+      value: parseEther('0.000777'),
+    })
   })
 })

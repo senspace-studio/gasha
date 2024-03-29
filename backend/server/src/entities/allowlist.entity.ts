@@ -3,16 +3,26 @@ import {
   Column,
   PrimaryColumn,
   CreateDateColumn,
+  PrimaryGeneratedColumn,
   // UpdateDateColumn,
 } from 'typeorm';
 
 @Entity({ name: 'allowlist' })
 export class AllowlistEntity {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
+  readonly id: number;
+
+  @Column({ nullable: true })
   readonly fid: number;
 
-  @PrimaryColumn()
+  @Column()
   readonly address: string;
+
+  @Column({ nullable: true })
+  readonly tokenId: number;
+
+  @Column({ nullable: true })
+  readonly status: 'claimed' | 'pending' | 'minted' | 'failed';
 
   @CreateDateColumn({
     name: 'created_at',
