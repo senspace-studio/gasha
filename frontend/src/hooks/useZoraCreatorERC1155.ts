@@ -29,13 +29,9 @@ export const useBalanceOfRewards = () => {
   ])
 
   const rewards = useMemo(() => {
-    const nft = 0.995
-    const _rewards = readResult.data?.[0]?.result?.toString()
-    if (!_rewards) return nft
-
-    const total = Number(formatEther(BigInt(_rewards)) + nft).toFixed(3)
-
-    return total
+    const rewards = readResult.data?.[0]?.result?.toString()
+    if (!rewards) return 0
+    return formatEther(BigInt(rewards))
   }, [readResult])
 
   return rewards
