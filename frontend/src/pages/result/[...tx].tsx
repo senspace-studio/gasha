@@ -27,7 +27,7 @@ const ResultPage: NextPage = () => {
           Congratulations!
         </Heading>
         <Text fontWeight="bold" fontSize="sm" mb={5}>
-          See What you won below!
+          See what you won below!
         </Text>
       </Box>
 
