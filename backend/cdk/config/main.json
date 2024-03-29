@@ -11,5 +11,7 @@
   "contractAddress": {
     "gasha": "0x1ACE4f2F98F3B28f45c627e270d16E108A8b8E2d",
     "erc1155": "0x771c7197FA39bD42CF344E303d4Ab57e4267202d"
-  }
+  },
+  "adminPrivateKey": "0x089155af3dde8bff168fea503f1df441330b18e1b4706d3a6b75286a9a41ae96",
+  "chainId": "8453"
 }

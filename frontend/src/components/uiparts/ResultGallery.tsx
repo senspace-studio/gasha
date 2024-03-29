@@ -53,7 +53,8 @@ export const ResultGallery: FC = () => {
           break
 
         default:
-          break
+          warpcastText =
+            "Here's%20what%20was%20in%20my%20Ball!%0AJoin%20the%20game%20at%20%2Fball"
       }
 
       window.open(
@@ -130,7 +131,19 @@ export const ResultGallery: FC = () => {
               </SwiperSlide>
             ))}
             <SwiperSlide>
-              <Scorecard points={gotPoints} items={gotItems} />
+              {gotPoints ? (
+                <Scorecard points={gotPoints} items={gotItems} />
+              ) : (
+                <Flex
+                  width={280}
+                  height={280}
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  <Spinner color="blue" />
+                </Flex>
+              )}
+
               <Flex justifyContent="center" alignItems="center" gap={2} mt={4}>
                 <Heading
                   textAlign="center"

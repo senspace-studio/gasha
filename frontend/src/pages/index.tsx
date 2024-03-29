@@ -60,7 +60,7 @@ export default function Home() {
 
           <VStack mt={['40px', '40px']} pb={10} gap={5}>
             <BasicCount
-              number={totalRewards || 0}
+              number={Number(Number(totalRewards).toFixed(3) || 0) + 0.964}
               unit="ETH"
               label="Total Rewards"
             />
