@@ -3,7 +3,7 @@ import { ethers } from 'hardhat'
 const main = async () => {
   const gashaContract = await ethers.getContractAt(
     'Gasha',
-    '0xcFFDfafda3873eCA81365F66d6550D63bBB46645'
+    '0x96E9215696733f7AD091A3D2437dAf892eF296C8'
   )
 
   let tx = await gashaContract.activateSeriesItem(1)
