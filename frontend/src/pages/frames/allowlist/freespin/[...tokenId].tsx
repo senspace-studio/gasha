@@ -4,9 +4,10 @@ import { GetServerSideProps, NextPage } from 'next'
 
 type Props = {
   imageURL: string
+  warpcastText: string
 }
 
-const FreespinCongrats: NextPage<Props> = ({ imageURL }) => {
+const FreespinCongrats: NextPage<Props> = ({ imageURL, warpcastText }) => {
   return (
     <>
       <FrameMetadata
@@ -18,7 +19,7 @@ const FreespinCongrats: NextPage<Props> = ({ imageURL }) => {
           {
             action: 'link',
             label: 'Share',
-            target: `${API_URL}/opensea`,
+            target: warpcastText,
           },
           {
             action: 'link',
@@ -34,9 +35,29 @@ const FreespinCongrats: NextPage<Props> = ({ imageURL }) => {
 export const getServerSideProps: GetServerSideProps = async (c) => {
   const tokenId = c.params?.tokenId
 
+  let warpcastText = ''
+  switch (Number(tokenId)) {
+    case 1:
+      warpcastText =
+        'A%20Common%20Coco%20Shrooms%20was%20in%20the%20Ball!%0AJoin%20the%20game%20at%20%2Fball'
+      break
+    case 2:
+      warpcastText =
+        'A%20Rare%20Tuna%20Mayo%20Ball%20was%20in%20the%20Ball!%0AJoin%20the%20game%20at%20%2Fball'
+      break
+    case 3:
+      warpcastText =
+        'A%20Special%20Ballerchicki%20was%20in%20the%20Ball!%0AJoin%20the%20game%20at%20%2Fball'
+      break
+
+    default:
+      break
+  }
+
   return {
     props: {
       imageURL: `${SITE_URL}/img/frames/congrats/${tokenId}.png`,
+      warpcastText,
     },
   }
 }
