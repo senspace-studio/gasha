@@ -41,8 +41,8 @@ export class Rds extends Construct {
           : ec2.InstanceSize.MICRO
       ),
       multiAz: false,
-      allocatedStorage: 16,
-      maxAllocatedStorage: 32,
+      allocatedStorage: 8,
+      maxAllocatedStorage: 16,
       vpc,
       vpcSubnets: {
         subnetType: ec2.SubnetType.PRIVATE_ISOLATED,

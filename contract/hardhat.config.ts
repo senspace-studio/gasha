@@ -39,6 +39,10 @@ const config: HardhatUserConfig = {
       accounts: [process.env.TEST_PRIVATE_KEY!],
       url: 'https://sepolia.rpc.zora.energy',
     },
+    base: {
+      accounts: [process.env.MAIN_PRIVATE_KEY!],
+      url: 'https://base-mainnet.g.alchemy.com/v2/3UkpGe2fpUEY91zV9ff2Bup-Bk2RTOnY',
+    },
   },
   etherscan: {
     // Your API key for Etherscan
@@ -65,6 +69,7 @@ const config: HardhatUserConfig = {
     apiKey: {
       zora_sepolia: 'zora_sepolia',
       base_sepolia: 'NFUIZFQWPD5UJ6VZ5HDHQ6M3P36Z7SJZZF',
+      base: 'NFUIZFQWPD5UJ6VZ5HDHQ6M3P36Z7SJZZF',
     },
   },
 }

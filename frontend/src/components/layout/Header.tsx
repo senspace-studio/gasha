@@ -1,11 +1,9 @@
 import {
-  Box,
   Button,
   Center,
   Drawer,
   DrawerBody,
   DrawerContent,
-  DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
   Flex,
@@ -18,17 +16,17 @@ import {
 import { CloseIcon, ExternalLinkIcon, HamburgerIcon } from '@chakra-ui/icons'
 import { usePrivy } from '@privy-io/react-auth'
 import { FC, useEffect, useRef } from 'react'
-import { useAccount, useSwitchChain } from 'wagmi'
+import { useAccount } from 'wagmi'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { StolzlText } from '../uiparts/StolzlText'
-import { XIcon } from '../uiparts/icons/XIcon'
 import { FarcasterIcon } from '../uiparts/icons/FarcasterIcon'
 import Image from 'next/image'
 
 const links = [
   { path: '/', name: 'Top' },
   { path: '/rules', name: 'Rules' },
+  // { path: '/leaderboard', name: 'Leaderboard' },
   {
     path: 'https://drive.google.com/drive/folders/1cF1POI3XiuPB5sqGyvL_KIO08o8lQQ0d?usp=drive_link',
     name: (
@@ -50,8 +48,7 @@ const socialLinks: any[] = [
 
 export const Header: FC = () => {
   const { connectWallet } = usePrivy()
-  const { address, chainId } = useAccount()
-  const { switchChainAsync } = useSwitchChain()
+  const { address } = useAccount()
 
   const { isOpen, onOpen, onClose } = useDisclosure()
   const btnRef = useRef<HTMLButtonElement>(null)
@@ -60,16 +57,6 @@ export const Header: FC = () => {
   useEffect(() => {
     onClose()
   }, [asPath])
-
-  useEffect(() => {
-    if (address && chainId !== Number(process.env.NEXT_PUBLIC_CHAIN_ID)) {
-      try {
-        switchChainAsync({
-          chainId: Number(process.env.NEXT_PUBLIC_CHAIN_ID),
-        })
-      } catch (error) {}
-    }
-  }, [chainId, address])
 
   return (
     <header>
@@ -138,7 +125,7 @@ export const Header: FC = () => {
                 </Link>
               ))}
             </Stack>
-            <Stack direction={'row'} gap={8} marginTop={['45vh', '40vh']}>
+            <Stack direction={'row'} gap={8} marginTop={'40vh'}>
               {socialLinks.map((link) => (
                 <Link key={link.path} href={link.path}>
                   <Center w="40px" h="40px">

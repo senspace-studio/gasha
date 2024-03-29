@@ -167,4 +167,8 @@ export class PointsService {
       },
     };
   }
+
+  async getAccountEvents(address: string) {
+    return await this.eventRepository.find({ where: { minter: address } });
+  }
 }

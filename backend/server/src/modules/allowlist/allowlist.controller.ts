@@ -23,7 +23,6 @@ export class AllowlistController {
 
   @Post('/')
   async addAllowlist(@Body() body: any) {
-    console.log(body);
     this.logger.log(this.addAllowlist.name);
 
     const allowlistNum = await this.allowlistService.allowlistCount();
@@ -36,7 +35,6 @@ export class AllowlistController {
       validatedData = await this.neynarService.validateRequest(
         body.trustedData.messageBytes,
       );
-      console.log(validatedData);
     } catch (error) {
       throw new HttpException('Invalid request', 400);
     }
@@ -68,12 +66,9 @@ export class AllowlistController {
       address = inputText;
     }
 
-    const [following, recasted] = await Promise.all([
-      this.neynarService.isUserFollowing(fid),
-      this.neynarService.isUserRecasted(fid),
-    ]);
+    const recasted = await this.neynarService.isUserRecasted(fid);
 
-    if (!following || !recasted) {
+    if (!recasted) {
       throw new HttpException('Is not eligible', 400);
     }
 
@@ -84,5 +79,60 @@ export class AllowlistController {
     }
 
     return { success: true };
+  }
+
+  @Post('/claim')
+  async claim(@Body() body: any) {
+    this.logger.log(this.claim.name);
+
+    let address: string = body.address;
+
+    if (
+      !(address.startsWith('0x') && address.length === 42) &&
+      !address.endsWith('.eth')
+    ) {
+      throw new HttpException('Invalid request', 400);
+    } else if (address.endsWith('.eth')) {
+      try {
+        address = await this.viemService.lookupENS(address);
+        if (!address) {
+          throw new HttpException('Invalid request', 400);
+        }
+      } catch (error) {
+        throw new HttpException('Invalid request', 400);
+      }
+    }
+
+    const records = await this.allowlistService.findByAddress(
+      address.toLowerCase(),
+    );
+    const waitingRecords = records.filter((record) => record.status === null);
+    if (!records || records.length === 0) {
+      throw new HttpException('Not listed', 400);
+    } else if (waitingRecords.length == 0) {
+      throw new HttpException('Already claimed', 400);
+    }
+
+    const seriesItems = await this.viemService.getSeriesItems();
+    const activeTokens = seriesItems.filter((item) => item.isActive);
+
+    const totalWeight = activeTokens.reduce(
+      (acc, item) => acc + Number(item.weight),
+      0,
+    );
+    let randomNumber = Math.random() * totalWeight;
+
+    let tokenId!: number;
+    for (const item of activeTokens) {
+      randomNumber -= Number(item.weight);
+      if (randomNumber <= 0) {
+        tokenId = Number(item.tokenId);
+        break;
+      }
+    }
+
+    await this.allowlistService.claim(address, tokenId, waitingRecords[0].id);
+
+    return { tokenId };
   }
 }
