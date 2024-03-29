@@ -23,21 +23,48 @@ import { XIcon } from './icons/XIcon'
 export const ResultGallery: FC = () => {
   const [swiper, setSwiper] = useState<any>()
 
-  const { gotItems, gotPoints } = useResultData()
+  const { gotItems, gotPoints, scorecardShareId } = useResultData()
 
-  const shareOnFarcaster = useCallback(() => {
-    const index = swiper.activeIndex
-    const item = gotItems?.[index]
-    if (!item) return
+  const shareOnFarcaster = useCallback(
+    (swiper: any) => {
+      const index = swiper.activeIndex
+      const item = gotItems?.[index]
 
-    const url = `${window.location.origin}/frames/share/${item.tokenId}`
-    window.open(
-      `https://warpcast.com/~/compose?text=Got%20Item!%20${encodeURIComponent(
-        url
-      )}`,
-      '_blank'
-    )
-  }, [swiper, gotItems])
+      let url = ''
+      if (!item) {
+        url = `${window.location.origin}/frames/share/scorecard/${scorecardShareId}`
+      } else {
+        url = `${window.location.origin}/frames/share/${item.tokenId}`
+      }
+
+      let warpcastText = ''
+      switch (item?.tokenId) {
+        case 1:
+          warpcastText =
+            'A%20Common%20Coco%20Shrooms%20was%20in%20the%20Ball!%0AJoin%20the%20game%20at%20%2Fball'
+          break
+        case 2:
+          warpcastText =
+            'A%20Rare%20Tuna%20Mayo%20Ball%20was%20in%20the%20Ball!%0AJoin%20the%20game%20at%20%2Fball'
+          break
+        case 3:
+          warpcastText =
+            'A%20Special%20Ballerchicki%20was%20in%20the%20Ball!%0AJoin%20the%20game%20at%20%2Fball'
+          break
+
+        default:
+          break
+      }
+
+      window.open(
+        `https://warpcast.com/~/compose?text=${warpcastText}%0A${encodeURIComponent(
+          url
+        )}`,
+        '_blank'
+      )
+    },
+    [gotItems, scorecardShareId]
+  )
 
   return gotItems ? (
     <Container display="flex" justifyContent="center" flexWrap="wrap">
@@ -51,7 +78,7 @@ export const ResultGallery: FC = () => {
           onClick={() => {
             swiper.slidePrev()
           }}
-          mt="-90px"
+          mt="-60px"
           cursor="pointer"
         />
         <Box overflow="hidden">
@@ -110,7 +137,7 @@ export const ResultGallery: FC = () => {
                   color="blue.400"
                   fontFamily="freight-big-pro, serif"
                   fontWeight={400}
-                  fontSize="5xl"
+                  fontSize="36px"
                 >
                   Scorecard
                 </Heading>
@@ -123,7 +150,7 @@ export const ResultGallery: FC = () => {
           onClick={() => {
             swiper.slideNext()
           }}
-          mt="-90px"
+          mt="-60px"
           cursor="pointer"
         />
       </Grid>
@@ -138,7 +165,10 @@ export const ResultGallery: FC = () => {
           borderRadius="full"
         >
           <StolzlText fontWeight={400}>Share on</StolzlText>
-          <FarcasterIcon fontSize="30px" onClick={shareOnFarcaster} />
+          <FarcasterIcon
+            fontSize="30px"
+            onClick={() => shareOnFarcaster(swiper)}
+          />
           <XIcon fontSize="30px" />
         </HStack>
       </Box>
