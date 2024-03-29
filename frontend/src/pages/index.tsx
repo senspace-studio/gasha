@@ -1,12 +1,14 @@
 import { BasicCount } from '@/components/uiparts/BasicCount'
 import { SpinModule } from '@/components/uiparts/SpinModule'
 import { useCurrentMints, useRemainingTime } from '@/hooks/useCount'
+import { useBalanceOfRewards } from '@/hooks/useZoraCreatorERC1155'
 import { Box, Container, VStack } from '@chakra-ui/react'
 import Image from 'next/image'
 
 export default function Home() {
   const currentMints = useCurrentMints()
   const remainingTime = useRemainingTime()
+  const totalRewards = useBalanceOfRewards()
 
   return (
     <>
@@ -57,7 +59,11 @@ export default function Home() {
           <SpinModule />
 
           <VStack mt={['40px', '40px']} pb={10} gap={5}>
-            <BasicCount number={0} unit="ETH" label="Total Rewards" />
+            <BasicCount
+              number={totalRewards || 0}
+              unit="ETH"
+              label="Total Rewards"
+            />
             <BasicCount
               number={currentMints.mints}
               unit="MINTS"
