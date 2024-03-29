@@ -37,8 +37,27 @@ export const ResultGallery: FC = () => {
         url = `${window.location.origin}/frames/share/${item.tokenId}`
       }
 
+      let warpcastText = ''
+      switch (item?.tokenId) {
+        case 1:
+          warpcastText =
+            'A%20Common%20Coco%20Shrooms%20was%20in%20the%20Ball!%0AJoin%20the%20game%20at%20%2Fball'
+          break
+        case 2:
+          warpcastText =
+            'A%20Rare%20Tuna%20Mayo%20Ball%20was%20in%20the%20Ball!%0AJoin%20the%20game%20at%20%2Fball'
+          break
+        case 3:
+          warpcastText =
+            'A%20Special%20Ballerchicki%20was%20in%20the%20Ball!%0AJoin%20the%20game%20at%20%2Fball'
+          break
+
+        default:
+          break
+      }
+
       window.open(
-        `https://warpcast.com/~/compose?text=Got%20Item!%20${encodeURIComponent(
+        `https://warpcast.com/~/compose?text=${warpcastText}%0A${encodeURIComponent(
           url
         )}`,
         '_blank'
