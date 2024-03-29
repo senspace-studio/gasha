@@ -12,7 +12,7 @@ const main = async () => {
   const adminAddress = '0x807C69F16456F92ab2bFc9De8f14AF31051f9678'
   const fundRecipientAddress = '0xdCb93093424447bF4FE9Df869750950922F1E30B'
   const merkelMinterAddress = '0xf48172CA3B6068B20eE4917Eb27b5472f1f272C7'
-  const ipfsBaseURI = 'ipfs://QmeDd8wEEf6EPqeDSa1Kd5gpYHDA9VDU52GA6S85SuosiH'
+  const ipfsBaseURI = 'ipfs://QmejLqmKQny5XJNhuKf7Q3Net1aJauu2JC8DwnL4DH65ZN'
 
   const ZoraERC1155FactoryAddress = '0x777777C338d93e2C7adf08D102d45CA7CC4Ed021'
 
@@ -25,7 +25,7 @@ const main = async () => {
     zoraCreator1155Factory,
     adminAddress,
     fundRecipientAddress,
-    ipfsBaseURI
+    'ipfs://QmaFzrMn8Y1aHMA9coHdH7fyLT2Jod8QEEADznpw7gfPCk'
   )
 
   const ZoraCreator1155 = await ethers.getContractAt(
