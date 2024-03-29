@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AllowlistEntity } from 'src/entities/allowlist.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 @Injectable()
 export class AllowlistService {
@@ -18,11 +18,44 @@ export class AllowlistService {
     });
   }
 
+  async findByAddress(address: string) {
+    return await this.allowlistRepository.findOne({
+      where: {
+        address,
+      },
+    });
+  }
+
+  async findClaimedList() {
+    return await this.allowlistRepository.find({
+      where: {
+        status: 'claimed',
+      },
+    });
+  }
+
+  async updateBatchStatus(
+    addresses: string[],
+    status: 'claimed' | 'pending' | 'minted' | 'failed',
+  ) {
+    return await this.allowlistRepository.update(
+      { address: In(addresses) },
+      { status },
+    );
+  }
+
   async addAllowlist(address: string, fid: number) {
     return await this.allowlistRepository.save({ address, fid });
   }
 
   async allowlistCount() {
     return await this.allowlistRepository.count();
+  }
+
+  async claim(address: string, tokenId: number) {
+    return await this.allowlistRepository.update(
+      { address },
+      { tokenId, status: 'claimed' },
+    );
   }
 }
