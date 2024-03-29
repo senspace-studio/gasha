@@ -27,8 +27,6 @@ export const ResultGallery: FC = () => {
 
   const { gotItems, gotPoints, scorecardShareId } = useResultData()
 
-  console.log(currentIndex)
-
   const shareOnFarcaster = useCallback(() => {
     const item = gotItems?.[currentIndex]
 
