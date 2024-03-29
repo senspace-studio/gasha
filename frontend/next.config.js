@@ -19,7 +19,7 @@ if (process.env.NODE_ENV === 'production') {
 
       // Suppresses source map uploading logs during build
       silent: true,
-      org: 'senspace',
+      org: 'senspace-1z',
       project: 'javascript-nextjs',
     },
     {
