@@ -1,10 +1,11 @@
-import { SITE_URL } from '@/config'
+import { API_URL, SITE_URL } from '@/config'
 import { FrameButtonMetadata, FrameMetadata } from '@coinbase/onchainkit'
 import { GetServerSideProps, NextPage } from 'next'
 
 interface Props {
   imageURL: string
   holdingTokenIds: number[]
+  address: string
   currentIndex: number
   buttons: [FrameButtonMetadata, ...FrameButtonMetadata[]]
 }
@@ -12,6 +13,7 @@ interface Props {
 const FramesCollection: NextPage<Props> = ({
   imageURL,
   holdingTokenIds,
+  address,
   currentIndex,
   buttons,
 }) => {
@@ -26,6 +28,7 @@ const FramesCollection: NextPage<Props> = ({
         state={{
           holdingTokenIds,
           currentIndex,
+          address,
         }}
       />
     </>
@@ -46,16 +49,16 @@ export const getServerSideProps: GetServerSideProps = async (c) => {
 
   const imageURL = tokenId
     ? `${SITE_URL}/img/gacha-item/${tokenId}.png`
-    : currentIndex === holdingTokenIds.length
-    ? `${SITE_URL}/img/frames/error.png`
-    : `${SITE_URL}/img/frames/empty.png`
+    : holdingTokenIds.length === 0
+    ? `${SITE_URL}/img/frames/empty.png`
+    : `${API_URL}/ogp/${parsedState.address}/square.png`
 
   const buttons: [FrameButtonMetadata, ...FrameButtonMetadata[]] = [
     {
       action: 'post',
       label: '< Back',
       target:
-        tokenId && currentIndex === 0
+        currentIndex === 0
           ? `${SITE_URL}/api/frames/home`
           : `${SITE_URL}/api/frames/collection/back`,
     },
@@ -68,12 +71,6 @@ export const getServerSideProps: GetServerSideProps = async (c) => {
       target: `${SITE_URL}`,
     })
   } else {
-    buttons.push({
-      action: 'link',
-      label: 'Share',
-      target: `${SITE_URL}/opensea`,
-    })
-
     if (currentIndex < holdingTokenIds.length) {
       buttons.push({
         action: 'post',
@@ -93,6 +90,7 @@ export const getServerSideProps: GetServerSideProps = async (c) => {
     props: {
       imageURL,
       holdingTokenIds,
+      address: parsedState.address,
       currentIndex,
       buttons,
     },
