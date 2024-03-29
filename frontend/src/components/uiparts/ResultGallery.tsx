@@ -67,6 +67,37 @@ export const ResultGallery: FC = () => {
     [gotItems, scorecardShareId]
   )
 
+  const shareOnX = useCallback(
+    (swiper: any) => {
+      const index = swiper.activeIndex
+      const item = gotItems?.[index]
+
+      let xText = ''
+
+      switch (item?.tokenId) {
+        case 1:
+          xText = 'A Common Coco Shrooms was in the Ball!\nJoin the game at'
+          break
+        case 2:
+          xText = 'A Rare Tuna Mayo Ball was in the Ball!\nJoin the game at'
+          break
+        case 3:
+          xText = 'A Special Ballerchicki was in the Ball!\nJoin the game at'
+          break
+
+        default:
+          xText = "Here's what was in my Ball!\nJoin the game at"
+      }
+
+      window.open(
+        `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+          xText
+        )}%20https%3A%2F%2Ftheball.fun`
+      )
+    },
+    [gotItems, scorecardShareId]
+  )
+
   return gotItems ? (
     <Container display="flex" justifyContent="center" flexWrap="wrap">
       <Grid
@@ -182,7 +213,7 @@ export const ResultGallery: FC = () => {
             fontSize="30px"
             onClick={() => shareOnFarcaster(swiper)}
           />
-          <XIcon fontSize="30px" />
+          <XIcon fontSize="30px" onClick={() => shareOnX(swiper)} />
         </HStack>
       </Box>
     </Container>
