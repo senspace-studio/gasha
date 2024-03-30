@@ -41,7 +41,7 @@ const ScoreCardItem: FC<ItemProps> = ({ points, items, rareness }) => {
               {points}
             </Box>
             <StolzlText as="span" fontSize="10px">
-              POINTS
+              $BALL
             </StolzlText>
           </StolzlText>
         </Grid>
@@ -111,7 +111,7 @@ export const Scorecard: FC<Props> = ({ points, items }) => {
                 mb={0}
               >
                 <StolzlText fontWeight={500} color="blue.400" ml={1}>
-                  POINTS
+                  $BALL
                 </StolzlText>
               </Text>
               <Text fontSize="sm" ml={1}>
