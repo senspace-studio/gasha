@@ -9,7 +9,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     })
     res.redirect(303, `${SITE_URL}/frames/allowlist/freespin/${data.tokenId}`)
   } catch (error: any) {
-    console.log(error.response.data.message)
     switch (error.response.data.message) {
       case 'Not listed':
         res.redirect(303, `${SITE_URL}/frames/allowlist/freespin/not-listed`)
