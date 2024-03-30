@@ -38,7 +38,7 @@ export class ViemService {
 
   private get client() {
     return createPublicClient({
-      chain: { ...this.chain, fees: { baseFeeMultiplier: 1.5 } } as Chain,
+      chain: { ...this.chain, fees: { baseFeeMultiplier: 1.25 } } as Chain,
       transport: http(BLOCKCHAIN_API),
     });
   }

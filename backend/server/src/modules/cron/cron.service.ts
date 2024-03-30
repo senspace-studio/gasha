@@ -164,11 +164,16 @@ export class CronService {
       this.logger.log('this process does not cron worker');
       return;
     }
-    this.logger.log('mintAllowlist');
+
+    const isPending = await this.allowlistService.isPending();
+    if (isPending) {
+      this.logger.log('Pending drop');
+      return;
+    }
 
     const claimedList = await this.allowlistService.findClaimedList();
     await this.allowlistService.updateBatchStatus(
-      claimedList.map((e) => e.address),
+      claimedList.map((e) => e.id),
       'pending',
     );
 
@@ -178,16 +183,10 @@ export class CronService {
           record.address as Address,
           record.tokenId,
         );
-        await this.allowlistService.updateBatchStatus(
-          [record.address],
-          'minted',
-        );
+        await this.allowlistService.updateBatchStatus([record.id], 'minted');
       } catch (error) {
         this.logger.error(error);
-        await this.allowlistService.updateBatchStatus(
-          [record.address],
-          'failed',
-        );
+        await this.allowlistService.updateBatchStatus([record.id], 'failed');
       }
     }
   }

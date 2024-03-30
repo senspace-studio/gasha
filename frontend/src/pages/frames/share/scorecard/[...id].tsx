@@ -32,9 +32,14 @@ export const ScorecardFrame: NextPage<Props> = ({ imageURL }) => {
 export const getServerSideProps: GetServerSideProps = async (c) => {
   const id = c.params?.id
 
+  const imageURL =
+    String(id).length > 40
+      ? `${API_URL}/ogp/${id}/square.png`
+      : `${API_URL}/ogp/result/${id}/square.png`
+
   return {
     props: {
-      imageURL: `${API_URL}/ogp/result/${id}/square.png`,
+      imageURL,
     },
   }
 }
