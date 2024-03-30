@@ -34,7 +34,7 @@ export const getServerSideProps: GetServerSideProps = async (c) => {
 
   return {
     props: {
-      imageURL: `${API_URL}/result/${id}/square.png`,
+      imageURL: `${API_URL}/ogp/result/${id}/square.png`,
     },
   }
 }

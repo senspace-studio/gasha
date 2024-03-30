@@ -2,6 +2,11 @@ import { GashaAbi } from '@/abi/gasha'
 import { ZoraProtocolRewardsAbi } from '@/abi/protocolRewards'
 import { ZoraCreator1155Abi } from '@/abi/zoraCreator1155'
 import {
+  GASHA_ADDRESS,
+  ZORA_CREATOR_ERC1155_ADDRESS,
+  ZORA_PROTOCOL_REWARDS_ADDRESS,
+} from '@/config'
+import {
   GashaReadArgs,
   GashaReadFunctionName,
   GashaWriteFunctionName,
@@ -15,12 +20,6 @@ import {
 } from '@/contract'
 import { useCallback } from 'react'
 import { useReadContract, useReadContracts, useWriteContract } from 'wagmi'
-
-const GASHA_ADDRESS = process.env.NEXT_PUBLIC_GASHA_ADDRESS as `0x${string}`
-const ZORA_CREATOR_ERC1155_ADDRESS = process.env
-  .NEXT_PUBLIC_ZORA_CREATOR_ERC1155_ADDRESS as `0x${string}`
-const ZORA_PROTOCOL_REWARDS_ADDRESS = process.env
-  .NEXT_PUBLIC_ZORA_PROTOCOL_REWARDS_ADDRESS as `0x${string}`
 
 export const useMultiReadGashaContract = (
   params: {
