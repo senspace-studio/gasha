@@ -40,11 +40,10 @@ export class CronService {
     let startBlockNumber = BigInt(total.latestBlockNumber) + 1n;
     const currentBlockNumber = await this.viemService.getLatestBlockNumber();
     const events = await this.viemService.getSpinEvents(0n, 0n);
-    startBlockNumber++;
     while (startBlockNumber < currentBlockNumber) {
       // 100ブロックずつ取得
       const unit = 100n;
-      this.logger.debug(`${startBlockNumber} < ${currentBlockNumber}`);
+      this.logger.log(`${startBlockNumber} < ${currentBlockNumber}`);
       const endBlockNumber = startBlockNumber + unit;
       events.push(
         ...(await this.viemService.getSpinEvents(
