@@ -9,6 +9,7 @@ import {
 } from '@chakra-ui/react'
 import { FC, useCallback, useState } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
+import { Swiper as _Swiper } from 'swiper'
 import { Autoplay } from 'swiper/modules'
 import 'swiper/css'
 import { StolzlText } from './StolzlText'
@@ -21,31 +22,75 @@ import { FarcasterIcon } from './icons/FarcasterIcon'
 import { XIcon } from './icons/XIcon'
 
 export const ResultGallery: FC = () => {
-  const [swiper, setSwiper] = useState<any>()
+  const [swiper, setSwiper] = useState<_Swiper>()
+  const [currentIndex, setCurrentIndex] = useState<number>(0)
 
   const { gotItems, gotPoints, scorecardShareId } = useResultData()
 
-  const shareOnFarcaster = useCallback(
-    (swiper: any) => {
-      const index = swiper.activeIndex
-      const item = gotItems?.[index]
+  const shareOnFarcaster = useCallback(() => {
+    const item = gotItems?.[currentIndex]
 
-      let url = ''
-      if (!item) {
-        url = `${window.location.origin}/frames/share/scorecard/${scorecardShareId}`
-      } else {
-        url = `${window.location.origin}/frames/share/${item.tokenId}`
-      }
+    let url = ''
+    if (!item) {
+      url = `${window.location.origin}/frames/share/scorecard/${scorecardShareId}`
+    } else {
+      url = `${window.location.origin}/frames/share/${item.tokenId}`
+    }
 
-      window.open(
-        `https://warpcast.com/~/compose?text=Got%20Item!%20${encodeURIComponent(
-          url
-        )}`,
-        '_blank'
-      )
-    },
-    [gotItems, scorecardShareId]
-  )
+    let warpcastText = ''
+    switch (item?.tokenId) {
+      case 1:
+        warpcastText =
+          'A%20Common%20Coco%20Shrooms%20was%20in%20the%20Ball!%0AJoin%20the%20game%20at%20%2Fball'
+        break
+      case 2:
+        warpcastText =
+          'A%20Rare%20Tuna%20Mayo%20Ball%20was%20in%20the%20Ball!%0AJoin%20the%20game%20at%20%2Fball'
+        break
+      case 3:
+        warpcastText =
+          'A%20Special%20Ballerchicki%20was%20in%20the%20Ball!%0AJoin%20the%20game%20at%20%2Fball'
+        break
+
+      default:
+        warpcastText =
+          "Here's%20what%20was%20in%20my%20Ball!%0AJoin%20the%20game%20at%20%2Fball"
+    }
+
+    window.open(
+      `https://warpcast.com/~/compose?text=${warpcastText}%0A${encodeURIComponent(
+        url
+      )}`,
+      '_blank'
+    )
+  }, [gotItems, scorecardShareId, currentIndex])
+
+  const shareOnX = useCallback(() => {
+    const item = gotItems?.[currentIndex]
+
+    let xText = ''
+
+    switch (item?.tokenId) {
+      case 1:
+        xText = 'A Common Coco Shrooms was in the Ball!\nJoin the game at'
+        break
+      case 2:
+        xText = 'A Rare Tuna Mayo Ball was in the Ball!\nJoin the game at'
+        break
+      case 3:
+        xText = 'A Special Ballerchicki was in the Ball!\nJoin the game at'
+        break
+
+      default:
+        xText = "Here's what was in my Ball!\nJoin the game at"
+    }
+
+    window.open(
+      `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+        xText
+      )}%20https%3A%2F%2Ftheball.fun`
+    )
+  }, [gotItems, scorecardShareId, currentIndex])
 
   return gotItems ? (
     <Container display="flex" justifyContent="center" flexWrap="wrap">
@@ -57,7 +102,7 @@ export const ResultGallery: FC = () => {
         <PrevIcon
           fontSize="40px"
           onClick={() => {
-            swiper.slidePrev()
+            swiper?.slidePrev()
           }}
           mt="-60px"
           cursor="pointer"
@@ -69,7 +114,10 @@ export const ResultGallery: FC = () => {
             onInit={(ev) => {
               setSwiper(ev)
             }}
-            modules={[Autoplay]}
+            onSlideChange={(ev) => {
+              setCurrentIndex(ev.activeIndex)
+            }}
+            // modules={[Autoplay]}
           >
             {gotItems.map((item, index) => (
               <SwiperSlide key={index}>
@@ -111,7 +159,19 @@ export const ResultGallery: FC = () => {
               </SwiperSlide>
             ))}
             <SwiperSlide>
-              <Scorecard points={gotPoints} items={gotItems} />
+              {gotPoints ? (
+                <Scorecard points={gotPoints} items={gotItems} />
+              ) : (
+                <Flex
+                  width={280}
+                  height={280}
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  <Spinner color="blue" />
+                </Flex>
+              )}
+
               <Flex justifyContent="center" alignItems="center" gap={2} mt={4}>
                 <Heading
                   textAlign="center"
@@ -129,7 +189,7 @@ export const ResultGallery: FC = () => {
         <NextIcon
           fontSize="40px"
           onClick={() => {
-            swiper.slideNext()
+            swiper?.slideNext()
           }}
           mt="-60px"
           cursor="pointer"
@@ -146,11 +206,8 @@ export const ResultGallery: FC = () => {
           borderRadius="full"
         >
           <StolzlText fontWeight={400}>Share on</StolzlText>
-          <FarcasterIcon
-            fontSize="30px"
-            onClick={() => shareOnFarcaster(swiper)}
-          />
-          <XIcon fontSize="30px" />
+          <FarcasterIcon fontSize="30px" onClick={() => shareOnFarcaster()} />
+          <XIcon fontSize="30px" onClick={() => shareOnX()} />
         </HStack>
       </Box>
     </Container>

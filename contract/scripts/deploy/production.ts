@@ -9,8 +9,8 @@ import { deployGashaContract, setMinterArguments } from '../helper/gasha'
 import { zeroAddress } from 'viem'
 
 const main = async () => {
-  const adminAddress = '0x807C69F16456F92ab2bFc9De8f14AF31051f9678'
-  const fundRecipientAddress = '0xdCb93093424447bF4FE9Df869750950922F1E30B'
+  const adminAddress = '0xb17e447d0Eb15c444789886F2bff6A4907140bC5'
+  const fundRecipientAddress = '0xb17e447d0Eb15c444789886F2bff6A4907140bC5'
   const merkelMinterAddress = '0xf48172CA3B6068B20eE4917Eb27b5472f1f272C7'
   const ipfsBaseURI = 'ipfs://QmejLqmKQny5XJNhuKf7Q3Net1aJauu2JC8DwnL4DH65ZN'
 
