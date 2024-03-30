@@ -60,9 +60,13 @@ export const useSpinGasha = () => {
               )
             )
           )
-        } catch (error) {
-          captureException(error)
-          toast.error('Failed to spin the gasha')
+        } catch (error: any) {
+          if (error.message.includes('insufficient funds')) {
+            toast.error('Insufficient funds. Base ETH is required to spin.')
+          } else {
+            captureException(error)
+            toast.error('Failed to spin the gasha')
+          }
         }
       } else {
         handleSwitchChain()
