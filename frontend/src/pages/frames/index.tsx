@@ -1,8 +1,11 @@
 import { SITE_URL } from '@/config'
+import { useRedirectTop } from '@/hooks/useFrames'
 import { FrameMetadata } from '@coinbase/onchainkit'
 import { NextPage } from 'next'
 
 const MainFrame: NextPage = () => {
+  useRedirectTop()
+
   return (
     <>
       <FrameMetadata
