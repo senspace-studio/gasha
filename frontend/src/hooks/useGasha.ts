@@ -14,6 +14,7 @@ import { ipfs2http } from '@/lib/ipfs2http'
 import { gashaAPI, gashaAxios } from '@/lib/gashaAPI'
 import { ResultItem, ResultPoint } from '@/gasha'
 import { useSwitchChain } from './useChain'
+import { captureException } from '@sentry/nextjs'
 
 enum RarenessLabel {
   Common = 0,
@@ -59,8 +60,13 @@ export const useSpinGasha = () => {
               )
             )
           )
-        } catch (error) {
-          toast.error('Failed to spin the gasha')
+        } catch (error: any) {
+          if (error.message.includes('insufficient funds')) {
+            toast.error('Insufficient funds. Base ETH is required to spin.')
+          } else {
+            captureException(error)
+            toast.error('Failed to spin the gasha')
+          }
         }
       } else {
         handleSwitchChain()
