@@ -16,7 +16,12 @@ async function bootstrap() {
   app.enableCors({
     origin: '*',
   });
-  app.use(helmet());
+  app.use(
+    helmet({
+      crossOriginEmbedderPolicy: false,
+      crossOriginResourcePolicy: false,
+    }),
+  );
   await app.listen(process.env.PORT || 3000);
 }
 // bootstrap();
