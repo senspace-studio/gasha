@@ -16,4 +16,7 @@ export class TotalEntity {
 
   @Column({ name: 'latest_block_number' })
   latestBlockNumber: string;
+
+  @Column({ name: 'is_running', default: false })
+  isRunning: boolean;
 }

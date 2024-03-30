@@ -101,24 +101,23 @@ export class PointsService {
   async getTotal() {
     const exists = await this.totalRepository.exists({ where: { id: 0 } });
     if (!exists) {
-      await this.updateTotal('0', '0', '0', '0');
+      await this.totalRepository.save({
+        id: 0,
+        points: '0',
+        events: '0',
+        latestBlockNumber: '0',
+        isRunning: false,
+      });
     }
     return await this.totalRepository.findOne({ where: { id: 0 } });
   }
 
-  async updateTotal(
-    points: string,
-    events: string,
-    nfts: string,
-    latestBlockNumber: string,
-  ) {
-    await this.totalRepository.save({
-      id: 0,
-      points,
-      events,
-      nfts,
-      latestBlockNumber,
-    });
+  async switchTotalRunning(isRunning: boolean) {
+    await this.totalRepository.update({ id: 0 }, { isRunning });
+  }
+
+  async updateTotal(id: number, TotalEntity: Partial<TotalEntity>) {
+    await this.totalRepository.update(id, TotalEntity);
   }
 
   async getLogics() {
