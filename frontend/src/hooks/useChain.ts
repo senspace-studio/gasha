@@ -1,12 +1,6 @@
-import { wagmiConfig } from '@/lib/wagmi'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { toast } from 'react-toastify'
 import { useSwitchChain as wagmiSwitchChain } from 'wagmi'
-
-export const useChain = () => {
-  const config = useMemo(() => wagmiConfig(), [])
-  return config
-}
 
 export const useSwitchChain = () => {
   const { switchChainAsync, status } = wagmiSwitchChain()
