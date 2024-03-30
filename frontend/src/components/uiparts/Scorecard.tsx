@@ -101,15 +101,16 @@ export const Scorecard: FC<Props> = ({ points, items }) => {
           <Flex alignItems="end" height="140px" py={3} px={4}>
             <Box>
               <Text fontSize="4xl" color="blue.400" mb={-3}>
-                <StolzlText fontWeight={500} fontSize="32px">
+                <StolzlText fontWeight={700} fontSize="32px">
                   {totalPoints}
                 </StolzlText>
-                <StolzlText
-                  fontWeight={500}
-                  color="blue.400"
-                  fontSize={Number(totalPoints) > 9999 ? 'sm' : 'md'}
-                  ml={1}
-                >
+              </Text>
+              <Text
+                fontSize={Number(totalPoints) > 9999 ? 'sm' : 'md'}
+                color="blue.400"
+                mb={0}
+              >
+                <StolzlText fontWeight={500} color="blue.400" ml={1}>
                   POINTS
                 </StolzlText>
               </Text>

@@ -18,6 +18,9 @@ export interface Config {
     gasha: string
     erc1155: string
   }
+
+  adminPrivateKey: string
+  chainId: string
 }
 
 export function getConfig(stage: string): Config {

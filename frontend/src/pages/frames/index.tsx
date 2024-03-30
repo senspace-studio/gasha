@@ -12,9 +12,9 @@ const MainFrame: NextPage = () => {
         }}
         buttons={[
           {
-            action: 'post',
-            label: 'Free Spin',
-            target: `${SITE_URL}/api/frames/allowlist/freespin`,
+            action: 'link',
+            label: 'Spin',
+            target: `${SITE_URL}`,
           },
           // {
           //   action: 'post',
@@ -27,9 +27,9 @@ const MainFrame: NextPage = () => {
             target: `${SITE_URL}/api/frames/collection`,
           },
           {
-            action: 'link',
-            label: 'Spin',
-            target: `${SITE_URL}`,
+            action: 'post',
+            label: 'Free Spin',
+            target: `${SITE_URL}/api/frames/allowlist/freespin`,
           },
         ]}
       />
