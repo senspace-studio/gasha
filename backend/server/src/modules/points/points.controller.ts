@@ -53,10 +53,11 @@ export class PointsController {
     const adminAccounts = await Promise.all(
       ADMIN_ADDRESSES.map((address) => this.pointsService.getAccount(address)),
     );
-    const adminPoints = adminAccounts.reduce(
-      (acc, account) => acc + account.points,
-      0,
-    );
+    const adminPoints = adminAccounts
+      .filter((aa) => aa)
+      .reduce((acc, account) => acc + account.points, 0);
+
+    console.log(total.points, adminPoints);
 
     return { ...total, points: Number(total.points) - adminPoints };
   }
