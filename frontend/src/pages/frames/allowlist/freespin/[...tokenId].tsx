@@ -18,13 +18,18 @@ const FreespinCongrats: NextPage<Props> = ({ imageURL, warpcastText }) => {
         buttons={[
           {
             action: 'link',
-            label: 'Share',
-            target: warpcastText,
+            label: 'Spin Again',
+            target: `${SITE_URL}`,
+          },
+          {
+            action: 'post',
+            label: '< Back',
+            target: `${SITE_URL}/api/frames/home`,
           },
           {
             action: 'link',
-            label: 'Spin Again',
-            target: `${SITE_URL}`,
+            label: 'Share',
+            target: warpcastText,
           },
         ]}
       />
