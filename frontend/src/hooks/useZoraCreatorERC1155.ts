@@ -3,11 +3,15 @@ import {
   useMultiReadProtocolRewardsContract,
   useReadZoraCreator1155Contract,
 } from './useContract'
-import { useMemo } from 'react'
-import { formatEther, parseEther } from 'viem'
-
-const poolAddress = process.env
-  .NEXT_PUBLIC_ZORA_PROTOCOL_REWARDS_POOL_ADDRESS! as `0x${string}`
+import { useEffect, useMemo, useState } from 'react'
+import { createPublicClient, formatEther, http, parseEther } from 'viem'
+import { base, zora } from 'viem/chains'
+import { ZoraProtocolRewardsAbi } from '@/abi/protocolRewards'
+import {
+  GASHA_ADDRESS,
+  POOL_WALLET_ADDRESS,
+  ZORA_PROTOCOL_REWARDS_ADDRESS,
+} from '@/config'
 
 export const useBalanceOf = () => {
   const { address } = useAccount()
@@ -21,18 +25,53 @@ export const useBalanceOf = () => {
 }
 
 export const useBalanceOfRewards = () => {
-  const readResult = useMultiReadProtocolRewardsContract([
-    {
-      functionName: 'balanceOf',
-      args: [poolAddress],
-    },
-  ])
+  const [totalRewards, setTotalRewards] = useState(0)
 
-  const rewards = useMemo(() => {
-    const rewards = readResult.data?.[0]?.result?.toString()
-    if (!rewards) return 0
-    return formatEther(BigInt(rewards))
-  }, [readResult])
+  useEffect(() => {
+    const fetch = async () => {
+      const basePublicClient = createPublicClient({
+        chain: base,
+        transport: http(),
+      })
 
-  return rewards
+      const zoraPublicClient = createPublicClient({
+        chain: zora,
+        transport: http(),
+      })
+
+      const addresses = [
+        POOL_WALLET_ADDRESS,
+        '0xF98B7e44EFe4c60264564554B885ab884D0dd904',
+      ] as `0x${string}`[]
+
+      const results = await Promise.all([
+        ...addresses.map((address) =>
+          basePublicClient.readContract({
+            abi: ZoraProtocolRewardsAbi,
+            address: ZORA_PROTOCOL_REWARDS_ADDRESS,
+            functionName: 'balanceOf',
+            args: [address],
+          })
+        ),
+        ...addresses.map((address) =>
+          zoraPublicClient.readContract({
+            abi: ZoraProtocolRewardsAbi,
+            address: ZORA_PROTOCOL_REWARDS_ADDRESS,
+            functionName: 'balanceOf',
+            args: [address],
+          })
+        ),
+      ])
+
+      const totalRewards = results.reduce((acc, result) => {
+        return acc + result
+      }, BigInt(0))
+
+      setTotalRewards(Number(formatEther(totalRewards)))
+    }
+
+    fetch()
+  }, [])
+
+  return totalRewards
 }

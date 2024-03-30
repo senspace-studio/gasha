@@ -1,10 +1,15 @@
 import { Controller, Get, Param, Query, Logger } from '@nestjs/common';
-import { Address } from 'viem';
 import { PointsService } from './points.service';
 import { NeynarService } from 'src/modules/neynar/neynar.service';
 import { ZoraService } from 'src/modules/zora/zora.service';
 import { ViemService } from 'src/modules/viem/viem.service';
-import { SpinEvent } from 'src/types/contract';
+
+const ADMIN_ADDRESSES = [
+  '0xF98B7e44EFe4c60264564554B885ab884D0dd904',
+  '0xdCb93093424447bF4FE9Df869750950922F1E30B',
+  '0x62ad333E0C4164D86644A1D73Fb792254FF0E1c6',
+  '0xA5d7901510512c876617a6D24E820a0EFc39aa92',
+];
 
 @Controller('points')
 export class PointsController {
@@ -30,10 +35,12 @@ export class PointsController {
         page,
       }),
     );
+
     return await this.pointsService.getEvents(
       orderBy || 'DESC',
       Number(page || 1),
       20,
+      ADMIN_ADDRESSES,
     );
   }
 
@@ -41,7 +48,17 @@ export class PointsController {
   @Get('/total')
   async getTotalPoint() {
     this.logger.log(this.getTotalPoint.name);
-    return this.pointsService.getTotal();
+    const total = await this.pointsService.getTotal();
+
+    const adminAccounts = await Promise.all(
+      ADMIN_ADDRESSES.map((address) => this.pointsService.getAccount(address)),
+    );
+    const adminPoints = adminAccounts.reduce(
+      (acc, account) => acc + account.points,
+      0,
+    );
+
+    return { ...total, points: Number(total.points) - adminPoints };
   }
 
   @Get('/:address')
