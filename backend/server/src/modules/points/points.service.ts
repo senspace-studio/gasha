@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { LessThanOrEqual, MoreThan, Repository } from 'typeorm';
+import { In, LessThanOrEqual, MoreThan, Not, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EventEntity } from 'src/entities/event.entity';
 import { AccountEntity } from 'src/entities/account.entity';
@@ -54,11 +54,17 @@ export class PointsService {
     return events;
   }
 
-  async getEvents(orderBy: 'DESC' | 'ASC', page: number, pageSize: number) {
+  async getEvents(
+    orderBy: 'DESC' | 'ASC',
+    page: number,
+    pageSize: number,
+    exeptAddresses: string[] = [],
+  ) {
     const [events, total] = await this.accountRepository.findAndCount({
       take: pageSize,
       skip: (page - 1) * pageSize,
       order: { points: orderBy },
+      where: { address: Not(In(exeptAddresses)) },
     });
     return {
       data: events,
