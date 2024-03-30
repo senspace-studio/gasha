@@ -126,6 +126,14 @@ export class AppRunner extends Construct {
                 name: 'CLIENT_URL',
                 value: props.config.clientURL,
               },
+              {
+                name: 'CHAIN_ID',
+                value: props.config.chainId,
+              },
+              {
+                name: 'ADMIN_PRIVATE_KEY',
+                value: props.config.adminPrivateKey,
+              },
             ],
           },
         },

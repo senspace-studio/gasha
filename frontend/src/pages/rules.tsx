@@ -104,8 +104,7 @@ const Rules: NextPage = () => {
       </Text>
 
       <Text mb={6}>
-        The “What’s in the Ball” project is made for entertainment purposes
-        only.
+        It is very unlikely that you will win the prize pool and you should not play the game for that purpose. The “What’s in the Ball” project is made for entertainment purposes only and you should play for fun.
       </Text>
 
       <Text>
