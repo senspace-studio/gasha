@@ -34,7 +34,7 @@ export const getServerSideProps: GetServerSideProps = async (c) => {
 
   const imageURL =
     String(id).length > 40
-      ? `${API_URL}/ogp/${id}/square.png`
+      ? `${API_URL}/ogp/${id}/square.png?${new Date().getTime()}`
       : `${API_URL}/ogp/result/${id}/square.png`
 
   return {
