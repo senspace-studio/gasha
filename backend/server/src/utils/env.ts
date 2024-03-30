@@ -17,3 +17,5 @@ export const ADMIN_PRIVATE_KEY =
   process.env.ADMIN_PRIVATE_KEY ||
   '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80';
 export const CHAIN_ID = Number(process.env.CHAIN_ID) || 31337;
+export const UPDATE_SCORE_INTERVAL_MINUTES =
+  Number(process.env.UPDATE_SCORE_INTERVAL_MINUTES) || 60;
