@@ -1,4 +1,5 @@
 import { API_URL, SITE_URL } from '@/config'
+import { generateWarpcastCompose } from '@/lib/warpcast'
 import { FrameButtonMetadata, FrameMetadata } from '@coinbase/onchainkit'
 import { GetServerSideProps, NextPage } from 'next'
 
@@ -77,11 +78,21 @@ export const getServerSideProps: GetServerSideProps = async (c) => {
         label: 'Next >',
         target: `${SITE_URL}/api/frames/collection/next`,
       })
+      buttons.push({
+        action: 'link',
+        label: 'Share',
+        target: generateWarpcastCompose({ tokenId }),
+      })
     } else {
       buttons.push({
         action: 'post',
         label: 'Home',
         target: `${SITE_URL}/api/frames/home`,
+      })
+      buttons.push({
+        action: 'link',
+        label: 'Share',
+        target: generateWarpcastCompose({ address: parsedState.address }),
       })
     }
   }
