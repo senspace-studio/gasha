@@ -4,7 +4,7 @@ import { ViemService } from '../viem/viem.service';
 import { SpinEvent } from 'src/types/contract';
 import { Address } from 'viem';
 import { Interval } from '@nestjs/schedule';
-import { RUN_CRON } from 'src/utils/env';
+import { RUN_CRON, UPDATE_SCORE_INTERVAL_MINUTES } from 'src/utils/env';
 import { AllowlistService } from '../allowlist/allowlist.service';
 
 @Injectable()
@@ -16,14 +16,23 @@ export class CronService {
     private readonly viemService: ViemService,
   ) {}
 
-  @Interval(5 * 60 * 1e3)
+  @Interval(UPDATE_SCORE_INTERVAL_MINUTES * 60 * 1e3)
   async updateScore() {
     if (!RUN_CRON) {
       this.logger.log('this process does not cron worker');
       return;
     }
+
     const timestamps: { [hash: Address]: number } = {};
     const total = await this.pointsService.getTotal();
+
+    if (total.isRunning) {
+      this.logger.log('already running');
+      return;
+    }
+
+    await this.pointsService.switchTotalRunning(true);
+
     const seriesItems = await this.viemService.getSeriesItems();
     let totalPoints = BigInt(total.points);
     let totalEvents = BigInt(total.events);
@@ -33,8 +42,8 @@ export class CronService {
     const events = await this.viemService.getSpinEvents(0n, 0n);
     startBlockNumber++;
     while (startBlockNumber < currentBlockNumber) {
-      // 500ブロックずつ取得
-      const unit = 500n;
+      // 100ブロックずつ取得
+      const unit = 100n;
       this.logger.debug(`${startBlockNumber} < ${currentBlockNumber}`);
       const endBlockNumber = startBlockNumber + unit;
       events.push(
@@ -46,6 +55,8 @@ export class CronService {
         )),
       );
       startBlockNumber += unit;
+
+      await new Promise((resolve) => setTimeout(resolve, 2e3));
     }
     const accounts: { [address: string]: { points: bigint } } = {};
     for (const event of events) {
@@ -135,22 +146,17 @@ export class CronService {
           Number(accounts[minter].points),
         );
         // 集計アップデート
-        await this.pointsService.updateTotal(
-          totalPoints.toString(),
-          totalEvents.toString(),
-          totalNfts.toString(),
-          startBlockNumber.toString(),
-        );
+        await this.pointsService.updateTotal(0, {
+          points: totalPoints.toString(),
+          events: totalEvents.toString(),
+          nfts: totalNfts.toString(),
+        });
       }
     }
-    // response
-    const serializedAccounts: { address: string; points: string }[] = [];
-    for (const address in accounts) {
-      serializedAccounts.push({
-        address,
-        points: `${accounts[address].points}`,
-      });
-    }
+    await this.pointsService.updateTotal(0, {
+      isRunning: false,
+      latestBlockNumber: currentBlockNumber.toString(),
+    });
   }
 
   @Interval(1 * 60 * 1e3)
