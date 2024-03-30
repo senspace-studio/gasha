@@ -35,6 +35,8 @@ const FreespinCongrats: NextPage<Props> = ({ imageURL, warpcastText }) => {
 export const getServerSideProps: GetServerSideProps = async (c) => {
   const tokenId = c.params?.tokenId
 
+  const url = `${SITE_URL}/frames/share/${tokenId}`
+
   let warpcastText = ''
   switch (Number(tokenId)) {
     case 1:
@@ -57,7 +59,7 @@ export const getServerSideProps: GetServerSideProps = async (c) => {
   return {
     props: {
       imageURL: `${SITE_URL}/img/frames/congrats/${tokenId}.png`,
-      warpcastText,
+      warpcastText: `https://warpcast.com/~/compose?text=${warpcastText}%0A${url}`,
     },
   }
 }

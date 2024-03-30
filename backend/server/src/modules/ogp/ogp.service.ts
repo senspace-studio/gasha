@@ -162,7 +162,7 @@ export class OgpService {
           .toBuffer();
         return {
           input: points,
-          left: 180 + item.points.toString().length * 35,
+          left: 180 + item.points.toString().length * 40,
           top: 652 + index * 128,
         };
       }),
