@@ -14,9 +14,9 @@ import {
   useDisclosure,
 } from '@chakra-ui/react'
 import { CloseIcon, ExternalLinkIcon, HamburgerIcon } from '@chakra-ui/icons'
-import { usePrivy } from '@privy-io/react-auth'
 import { FC, useEffect, useRef } from 'react'
 import { useAccount } from 'wagmi'
+import { useWeb3Modal } from '@web3modal/wagmi/react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { StolzlText } from '../uiparts/StolzlText'
@@ -47,7 +47,7 @@ const socialLinks: any[] = [
 ]
 
 export const Header: FC = () => {
-  const { connectWallet } = usePrivy()
+  const { open } = useWeb3Modal()
   const { address } = useAccount()
 
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -74,7 +74,7 @@ export const Header: FC = () => {
           </Link>
         </Flex>
         <Button
-          onClick={connectWallet}
+          onClick={() => open()}
           backgroundColor="yellow.300"
           borderRadius="full"
         >
