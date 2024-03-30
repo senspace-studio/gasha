@@ -23,7 +23,7 @@ const FreespinCongrats: NextPage<Props> = ({ imageURL, warpcastText }) => {
           },
           {
             action: 'post',
-            label: '< Back',
+            label: 'Back',
             target: `${SITE_URL}/api/frames/home`,
           },
           {
