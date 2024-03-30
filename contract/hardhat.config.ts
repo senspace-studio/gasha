@@ -33,7 +33,7 @@ const config: HardhatUserConfig = {
     },
     base_sepolia: {
       accounts: [process.env.TEST_PRIVATE_KEY!],
-      url: 'https://base-sepolia.g.alchemy.com/v2/5kVob7zDOtjcG4NjjhECSAFH15_LVZsk',
+      url: 'https://base-sepolia.g.alchemy.com/v2/MYloSJq0Z0iYnAE7k36ApaRl5RfHtjlh',
     },
     zora_sepolia: {
       accounts: [process.env.TEST_PRIVATE_KEY!],

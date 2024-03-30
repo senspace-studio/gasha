@@ -26,6 +26,14 @@ export class AllowlistService {
     });
   }
 
+  async isPending() {
+    return await this.allowlistRepository.exists({
+      where: {
+        status: 'pending',
+      },
+    });
+  }
+
   async findClaimedList() {
     return await this.allowlistRepository.find({
       where: {
@@ -35,13 +43,10 @@ export class AllowlistService {
   }
 
   async updateBatchStatus(
-    addresses: string[],
+    ids: number[],
     status: 'claimed' | 'pending' | 'minted' | 'failed',
   ) {
-    return await this.allowlistRepository.update(
-      { address: In(addresses) },
-      { status },
-    );
+    return await this.allowlistRepository.update({ id: In(ids) }, { status });
   }
 
   async addAllowlist(address: string, fid: number) {
