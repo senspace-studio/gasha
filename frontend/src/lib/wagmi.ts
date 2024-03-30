@@ -1,6 +1,7 @@
-import { createConfig, http } from 'wagmi'
+import { WALLETCONNECT_PROJECT_ID } from '@/config'
+import { defaultWagmiConfig } from '@web3modal/wagmi'
+import { cookieStorage, createStorage } from 'wagmi'
 import {
-  Chain,
   baseSepolia,
   hardhat,
   localhost,
@@ -23,14 +24,19 @@ const selectChain = () => {
   }
 }
 
-export const wagmiConfig = () => {
-  const chain: Chain = selectChain()
-
-  return createConfig({
-    chains: [chain],
-    transports: {
-      [chain.id]: http(),
-    },
-    ssr: true,
-  })
+const metadata = {
+  name: 'The Ball',
+  description: '',
+  url: 'https://www.theball.fun',
+  icons: ['https://www.theball.fun/favicon.ico'],
 }
+
+export const wagmiConfig = defaultWagmiConfig({
+  chains: [selectChain()],
+  projectId: WALLETCONNECT_PROJECT_ID!,
+  metadata,
+  ssr: true,
+  storage: createStorage({
+    storage: cookieStorage,
+  }),
+})
