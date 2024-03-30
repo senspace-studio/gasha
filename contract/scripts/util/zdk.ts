@@ -5,16 +5,14 @@ const main = async () => {
     endpoint: 'https://api.zora.co/graphql',
     networks: [
       {
-        network: ZDKNetwork.Base,
-        chain: ZDKChain.BaseMainnet,
+        network: ZDKNetwork.Zora,
+        chain: ZDKChain.ZoraMainnet,
       },
     ],
   })
 
-  const events = await zdk.events({
-    where: {
-      collectionAddresses: ['0x5E48E48B0FEE255783b295214D6E375FF8bf8aCF'],
-    },
+  const events = await zdk.collection({
+    address: '0xb5d00e222daad1b3030a6a1d0ce5f2edd8de7fd0',
   })
 
   console.log(events)
