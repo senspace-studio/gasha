@@ -5,12 +5,14 @@ import {
   Logger,
   Param,
   Post,
+  Query,
   Res,
 } from '@nestjs/common';
 import { OgpService } from './ogp.service';
 import { Response } from 'express';
 import { PointsService } from '../points/points.service';
 import { rarenessLabel } from 'src/constants/Gasha';
+import { ADMIN_ADDRESSES } from 'src/constants/Admin';
 
 @Controller('ogp')
 export class OgpController {
@@ -152,6 +154,32 @@ export class OgpController {
       Number(totalPoints),
       result.address,
       items.filter((item) => item.points > 0) as any,
+    );
+    res.set({ 'Content-Type': 'image/png' });
+    res.send(file);
+  }
+
+  @Get('/leaderboard.png')
+  async getLeaderboardOgp(
+    @Res() res: Response,
+    @Query('address') address: string,
+  ) {
+    this.logger.log(this.getLeaderboardOgp.name);
+    address = address?.toLocaleLowerCase() || null;
+
+    const me = address ? await this.pointsService.getAccount(address) : null;
+    const { data: leaderBoard } = await this.pointsService.getEvents(
+      'DESC',
+      1,
+      me ? 3 : 4,
+      ADMIN_ADDRESSES,
+    );
+    const total = await this.pointsService.getTotal();
+
+    const file = await this.ogpService.generateLeaderboardOgp(
+      me ? [me, ...leaderBoard] : leaderBoard,
+      me,
+      Number(total.points),
     );
     res.set({ 'Content-Type': 'image/png' });
     res.send(file);
