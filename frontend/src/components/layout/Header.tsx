@@ -26,7 +26,7 @@ import Image from 'next/image'
 const links = [
   { path: '/', name: 'Top' },
   { path: '/rules', name: 'Rules' },
-  { path: '/leaderboard', name: 'Leaderboard' },
+  // { path: '/leaderboard', name: 'Leaderboard' },
   {
     path: 'https://drive.google.com/drive/folders/1cF1POI3XiuPB5sqGyvL_KIO08o8lQQ0d?usp=drive_link',
     name: (
