@@ -174,7 +174,9 @@ export class OgpController {
       me ? 3 : 4,
       ADMIN_ADDRESSES,
     );
-    const total = await this.pointsService.getTotal();
+    const total = await this.pointsService.getTotal({
+      includeOfficialNFTs: true,
+    });
 
     const file = await this.ogpService.generateLeaderboardOgp(
       me ? [me, ...leaderBoard] : leaderBoard,
