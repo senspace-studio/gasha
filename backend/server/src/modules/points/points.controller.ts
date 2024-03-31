@@ -3,13 +3,7 @@ import { PointsService } from './points.service';
 import { NeynarService } from 'src/modules/neynar/neynar.service';
 import { ZoraService } from 'src/modules/zora/zora.service';
 import { ViemService } from 'src/modules/viem/viem.service';
-
-const ADMIN_ADDRESSES = [
-  '0xF98B7e44EFe4c60264564554B885ab884D0dd904',
-  '0xdCb93093424447bF4FE9Df869750950922F1E30B',
-  '0x62ad333E0C4164D86644A1D73Fb792254FF0E1c6',
-  '0xA5d7901510512c876617a6D24E820a0EFc39aa92',
-];
+import { ADMIN_ADDRESSES } from 'src/constants/Admin';
 
 @Controller('points')
 export class PointsController {
@@ -28,13 +22,7 @@ export class PointsController {
     @Query('orderBy') orderBy?: 'DESC' | 'ASC',
     @Query('page') page?: string,
   ) {
-    this.logger.log(
-      this.getAllPoints.name,
-      JSON.stringify({
-        orderBy,
-        page,
-      }),
-    );
+    this.logger.log(this.getAllPoints.name);
 
     return await this.pointsService.getEvents(
       orderBy || 'DESC',
@@ -50,16 +38,7 @@ export class PointsController {
     this.logger.log(this.getTotalPoint.name);
     const total = await this.pointsService.getTotal();
 
-    const adminAccounts = await Promise.all(
-      ADMIN_ADDRESSES.map((address) => this.pointsService.getAccount(address)),
-    );
-    const adminPoints = adminAccounts
-      .filter((aa) => aa)
-      .reduce((acc, account) => acc + account.points, 0);
-
-    console.log(total.points, adminPoints);
-
-    return { ...total, points: Number(total.points) - adminPoints };
+    return total;
   }
 
   @Get('/:address')

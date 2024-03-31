@@ -9,6 +9,7 @@ import { EventEntity } from 'src/entities/event.entity';
 import { AccountEntity } from 'src/entities/account.entity';
 import { TotalEntity } from 'src/entities/total.entity';
 import { LogicEntity } from 'src/entities/logic.entity';
+import { OfficialNFTDataEntity } from 'src/entities/officialnft_data.entity';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { LogicEntity } from 'src/entities/logic.entity';
       AccountEntity,
       TotalEntity,
       LogicEntity,
+      OfficialNFTDataEntity,
     ]),
     NeynarModule,
     ZoraModule,
