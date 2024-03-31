@@ -71,14 +71,29 @@ export class PointsService {
       where: { address: Not(In(exeptAddresses)) },
     });
 
-    for (const account of accounts) {
-      const officialPoint = await this.officialNFTDataRepository.findOne({
-        where: { address: account.address },
+    const [officialNftAccounts] =
+      await this.officialNFTDataRepository.findAndCount({
+        take: pageSize,
+        skip: (page - 1) * pageSize,
+        order: { points: orderBy },
+        where: { address: Not(In(exeptAddresses)) },
       });
-      if (officialPoint) {
-        account.points += officialPoint.points;
+
+    console.log(officialNftAccounts, accounts);
+
+    for (const officialNftAccount of officialNftAccounts) {
+      const account = accounts.find(
+        (a) => a?.address === officialNftAccount.address,
+      );
+      if (account) {
+        account.points += officialNftAccount.points;
+      } else {
+        accounts.push(officialNftAccount);
       }
     }
+
+    accounts.sort((a, b) => Number(b.points) - Number(a.points));
+    accounts.splice(pageSize);
 
     return {
       data: accounts,
