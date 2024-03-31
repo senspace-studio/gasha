@@ -42,7 +42,7 @@ export const LeaderboardListItem: FC<Props> = ({
           <StolzlText fontWeight={500}>{points?.toLocaleString()}</StolzlText>
         </Text>
         <Text fontSize="xs">
-          <StolzlText fontWeight={500}>WINNING RATE {winnigRate}%</StolzlText>
+          <StolzlText fontWeight={500}>WIN RATE {winnigRate}%</StolzlText>
         </Text>
       </Box>
     </Flex>

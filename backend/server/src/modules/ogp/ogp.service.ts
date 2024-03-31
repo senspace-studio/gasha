@@ -5,6 +5,7 @@ import { join } from 'path';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ScorecardEntity } from 'src/entities/scorecard';
 import { Repository } from 'typeorm';
+import { AccountEntity } from 'src/entities/account.entity';
 
 const blue = '#0554F2';
 
@@ -374,5 +375,92 @@ export class OgpService {
     });
 
     return res;
+  }
+
+  async generateLeaderboardOgp(
+    leaderBoard: AccountEntity[],
+    me: AccountEntity | null,
+    totalPoints: number,
+  ) {
+    const base = readFileSync(
+      join(
+        __dirname,
+        me
+          ? '../../assets/images/ogp/leaderboard_me.png'
+          : '../../assets/images/ogp/leaderboard.png',
+      ),
+    );
+
+    const container = sharp(base).resize(1000, 1000);
+
+    const addressListContainer = await Promise.all(
+      leaderBoard.map(async (account, index) => {
+        const point = await sharp({
+          text: {
+            text: `<span>${account.address.slice(0, 6) + '...' + account.address.slice(-4)}</span>`,
+            font: 'Albert Sans',
+            fontfile: fontMedium,
+            rgba: true,
+            width: 550,
+            height: 27,
+          },
+        })
+          .png()
+          .toBuffer();
+
+        return {
+          input: point,
+          left: 90,
+          top: 284 + index * 168,
+        };
+      }),
+    );
+
+    const pointListContainer = await Promise.all(
+      leaderBoard.map(async (account, index) => {
+        const point = await createTextSVG(
+          account.points.toString(),
+          420,
+          80,
+          'black',
+          'end',
+          54,
+        );
+
+        return {
+          input: point,
+          left: 500,
+          top: 263 + index * 168,
+        };
+      }),
+    );
+
+    const winnigRateContainer = await Promise.all(
+      leaderBoard.map(async (account, index) => {
+        const point = await createTextSVG(
+          `WIN RATE ${((account.points / totalPoints) * 100).toFixed(3)} %`,
+          417,
+          80,
+          'black',
+          'end',
+          20,
+        );
+
+        return {
+          input: point,
+          left: 500,
+          top: 293 + index * 168,
+        };
+      }),
+    );
+
+    container.composite([
+      ...addressListContainer,
+      ...pointListContainer,
+      ...winnigRateContainer,
+    ]);
+
+    const buffer = await container.toBuffer();
+    return buffer;
   }
 }
