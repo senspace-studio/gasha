@@ -7,6 +7,8 @@ import { TotalEntity } from 'src/entities/total.entity';
 import { LogicEntity } from 'src/entities/logic.entity';
 import { BonusAddress } from 'src/constants/BonusAddress';
 import { PointCalcResponse } from 'src/types/point';
+import { OfficialNFTDataEntity } from 'src/entities/officialnft_data.entity';
+import { ADMIN_ADDRESSES } from 'src/constants/Admin';
 
 // DB
 // '0','1711116000','1711177200','200','400','800'
@@ -27,6 +29,8 @@ export class PointsService {
     private readonly totalRepository: Repository<TotalEntity>,
     @InjectRepository(LogicEntity)
     private readonly logicRepository: Repository<LogicEntity>,
+    @InjectRepository(OfficialNFTDataEntity)
+    private readonly officialNFTDataRepository: Repository<OfficialNFTDataEntity>,
   ) {
     // const eventDates = [
     //   1711116000, // [0] Fri Mar 22 2024 23:00:00 GMT+0900 (Japan Standard Time) 開始時間
@@ -60,14 +64,24 @@ export class PointsService {
     pageSize: number,
     exeptAddresses: string[] = [],
   ) {
-    const [events, total] = await this.accountRepository.findAndCount({
+    const [accounts, total] = await this.accountRepository.findAndCount({
       take: pageSize,
       skip: (page - 1) * pageSize,
       order: { points: orderBy },
       where: { address: Not(In(exeptAddresses)) },
     });
+
+    for (const account of accounts) {
+      const officialPoint = await this.officialNFTDataRepository.findOne({
+        where: { address: account.address },
+      });
+      if (officialPoint) {
+        account.points += officialPoint.points;
+      }
+    }
+
     return {
-      data: events,
+      data: accounts,
       total,
       page,
       pageSize,
@@ -97,7 +111,20 @@ export class PointsService {
   }
 
   async getAccount(address: string) {
-    return await this.accountRepository.findOne({ where: { address } });
+    const account = await this.accountRepository.findOne({
+      where: { address },
+    });
+
+    if (!account) return;
+
+    const officialPoint = await this.officialNFTDataRepository.findOne({
+      where: { address },
+    });
+    if (officialPoint) {
+      account.points += officialPoint.points;
+    }
+
+    return account;
   }
 
   async updateAccount(address: string, points: number) {
@@ -115,7 +142,39 @@ export class PointsService {
         isRunning: false,
       });
     }
-    return await this.totalRepository.findOne({ where: { id: 0 } });
+
+    const total = await this.totalRepository.findOne({ where: { id: 0 } });
+
+    // Zora 公式NFTのデータを追加
+    const officialNFTMintsTotal =
+      await this.officialNFTDataRepository.sum('mints');
+
+    const officialNFTPointsTotal =
+      await this.officialNFTDataRepository.sum('points');
+
+    // Adminのポイントを引く
+    const adminAccounts = await Promise.all(
+      ADMIN_ADDRESSES.map((address) => this.getAccount(address)),
+    );
+    const adminPoints = adminAccounts
+      .filter((aa) => aa)
+      .reduce((acc, account) => acc + account.points, 0);
+    const adminOfficialNFTs = await this.officialNFTDataRepository.sum(
+      'mints',
+      {
+        address: In(ADMIN_ADDRESSES),
+      },
+    );
+
+    total.nfts = String(
+      Number(total.nfts) + officialNFTMintsTotal - adminOfficialNFTs,
+    );
+
+    total.points = String(
+      Number(total.points) + officialNFTPointsTotal - adminPoints,
+    );
+
+    return total;
   }
 
   async switchTotalRunning(isRunning: boolean) {

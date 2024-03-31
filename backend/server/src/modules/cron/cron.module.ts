@@ -9,6 +9,7 @@ import { LogicEntity } from 'src/entities/logic.entity';
 import { TotalEntity } from 'src/entities/total.entity';
 import { AllowlistService } from '../allowlist/allowlist.service';
 import { AllowlistEntity } from 'src/entities/allowlist.entity';
+import { OfficialNFTDataEntity } from 'src/entities/officialnft_data.entity';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { AllowlistEntity } from 'src/entities/allowlist.entity';
       TotalEntity,
       LogicEntity,
       AllowlistEntity,
+      OfficialNFTDataEntity,
     ]),
   ],
   providers: [ViemService, PointsService, CronService, AllowlistService],
