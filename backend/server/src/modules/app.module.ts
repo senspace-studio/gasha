@@ -23,6 +23,7 @@ import { CronModule } from './cron/cron.module';
 import { AllowlistModule } from './allowlist/allowlist.module';
 import { OgpModule } from './ogp/ogp.module';
 import { ScorecardEntity } from 'src/entities/scorecard';
+import { OfficialNFTDataEntity } from 'src/entities/officialnft_data.entity';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { ScorecardEntity } from 'src/entities/scorecard';
         TotalEntity,
         LogicEntity,
         ScorecardEntity,
+        OfficialNFTDataEntity,
       ],
       synchronize: true,
     }),
