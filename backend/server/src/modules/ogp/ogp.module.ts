@@ -10,6 +10,7 @@ import { EventEntity } from 'src/entities/event.entity';
 import { AccountEntity } from 'src/entities/account.entity';
 import { LogicEntity } from 'src/entities/logic.entity';
 import { TotalEntity } from 'src/entities/total.entity';
+import { OfficialNFTDataEntity } from 'src/entities/officialnft_data.entity';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { TotalEntity } from 'src/entities/total.entity';
       AccountEntity,
       LogicEntity,
       TotalEntity,
+      OfficialNFTDataEntity,
     ]),
   ],
   controllers: [OgpController],
