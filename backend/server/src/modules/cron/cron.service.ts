@@ -184,6 +184,7 @@ export class CronService {
           record.tokenId,
         );
         await this.allowlistService.updateBatchStatus([record.id], 'minted');
+        await new Promise((resolve) => setTimeout(resolve, 2e3));
       } catch (error) {
         this.logger.error(error);
         await this.allowlistService.updateBatchStatus([record.id], 'failed');

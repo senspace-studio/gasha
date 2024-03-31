@@ -67,7 +67,7 @@ export const useBalanceOfRewards = () => {
         return acc + result
       }, BigInt(0))
 
-      setTotalRewards(Number(formatEther(totalRewards)))
+      setTotalRewards(Number(formatEther(totalRewards)) + 0.771228)
     }
 
     fetch()

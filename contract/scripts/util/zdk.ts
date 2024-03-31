@@ -11,11 +11,11 @@ const main = async () => {
     ],
   })
 
-  const events = await zdk.collection({
+  const c = await zdk.collection({
     address: '0xb5d00e222daad1b3030a6a1d0ce5f2edd8de7fd0',
   })
 
-  console.log(events)
+  console.log(c)
 }
 
 main()
