@@ -438,7 +438,7 @@ export class OgpService {
     const winnigRateContainer = await Promise.all(
       leaderBoard.map(async (account, index) => {
         const point = await createTextSVG(
-          `WINNING RATE ${((account.points / totalPoints) * 100).toFixed(3)} %`,
+          `WIN RATE ${((account.points / totalPoints) * 100).toFixed(3)} %`,
           417,
           80,
           'black',
