@@ -3,7 +3,7 @@ import { useRedirectTop } from '@/hooks/useFrames'
 import { FrameMetadata } from '@coinbase/onchainkit'
 import { NextPage } from 'next'
 
-export const LeaderboardFrame: NextPage = () => {
+const LeaderboardFrame: NextPage = () => {
   useRedirectTop()
 
   return (
@@ -11,7 +11,7 @@ export const LeaderboardFrame: NextPage = () => {
       <FrameMetadata
         image={{
           aspectRatio: '1:1',
-          src: `${API_URL}/ogp/leaderboard.png`,
+          src: `${API_URL}/ogp/leaderboard.png?${new Date().getTime()}`,
         }}
         buttons={[
           {
