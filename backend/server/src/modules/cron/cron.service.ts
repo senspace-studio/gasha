@@ -24,7 +24,9 @@ export class CronService {
     }
 
     const timestamps: { [hash: Address]: number } = {};
-    const total = await this.pointsService.getTotal();
+    const total = await this.pointsService.getTotal({
+      includeOfficialNFTs: false,
+    });
 
     if (total.isRunning) {
       this.logger.log('already running');

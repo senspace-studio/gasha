@@ -19,11 +19,11 @@ const MainFrame: NextPage = () => {
             label: 'Spin',
             target: `${SITE_URL}`,
           },
-          // {
-          //   action: 'post',
-          //   label: 'Leaderboard',
-          //   target: `${SITE_URL}/api/frames/leaderboard`,
-          // },
+          {
+            action: 'post',
+            label: 'Leaderboard',
+            target: `${SITE_URL}/api/frames/leaderboard`,
+          },
           {
             action: 'post',
             label: 'Collection',

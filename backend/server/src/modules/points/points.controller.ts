@@ -36,7 +36,9 @@ export class PointsController {
   @Get('/total')
   async getTotalPoint() {
     this.logger.log(this.getTotalPoint.name);
-    const total = await this.pointsService.getTotal();
+    const total = await this.pointsService.getTotal({
+      includeOfficialNFTs: true,
+    });
 
     return total;
   }
