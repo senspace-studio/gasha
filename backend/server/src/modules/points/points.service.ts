@@ -79,8 +79,6 @@ export class PointsService {
         where: { address: Not(In(exeptAddresses)) },
       });
 
-    console.log(officialNftAccounts, accounts);
-
     for (const officialNftAccount of officialNftAccounts) {
       const account = accounts.find(
         (a) => a?.address === officialNftAccount.address,
@@ -146,7 +144,7 @@ export class PointsService {
     await this.accountRepository.save({ address, points });
   }
 
-  async getTotal() {
+  async getTotal(params?: { includeOfficialNFTs: boolean }) {
     const exists = await this.totalRepository.exists({ where: { id: 0 } });
     if (!exists) {
       await this.totalRepository.save({
@@ -159,6 +157,8 @@ export class PointsService {
     }
 
     const total = await this.totalRepository.findOne({ where: { id: 0 } });
+
+    if (!params?.includeOfficialNFTs) return total;
 
     // Zora 公式NFTのデータを追加
     const officialNFTMintsTotal =
