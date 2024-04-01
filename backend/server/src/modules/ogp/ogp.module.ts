@@ -11,6 +11,7 @@ import { AccountEntity } from 'src/entities/account.entity';
 import { LogicEntity } from 'src/entities/logic.entity';
 import { TotalEntity } from 'src/entities/total.entity';
 import { OfficialNFTDataEntity } from 'src/entities/officialnft_data.entity';
+import { ViemService } from '../viem/viem.service';
 
 @Module({
   imports: [
@@ -26,6 +27,6 @@ import { OfficialNFTDataEntity } from 'src/entities/officialnft_data.entity';
     ]),
   ],
   controllers: [OgpController],
-  providers: [OgpService, PointsService],
+  providers: [OgpService, PointsService, ViemService],
 })
 export class OgpModule {}
