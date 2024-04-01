@@ -52,7 +52,7 @@ export const getServerSideProps: GetServerSideProps = async (c) => {
     ? `${SITE_URL}/img/gacha-item/${tokenId}.png`
     : holdingTokenIds.length === 0
     ? `${SITE_URL}/img/frames/empty.png`
-    : `${API_URL}/ogp/${parsedState.address}/square.png`
+    : `${API_URL}/ogp/${parsedState.address}/square.png?${new Date().getTime()}`
 
   const buttons: [FrameButtonMetadata, ...FrameButtonMetadata[]] = [
     {
