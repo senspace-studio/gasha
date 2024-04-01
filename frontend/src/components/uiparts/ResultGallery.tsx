@@ -20,6 +20,7 @@ import { PrevIcon } from './icons/PrevIcon'
 import { NextIcon } from './icons/NextIcon'
 import { FarcasterIcon } from './icons/FarcasterIcon'
 import { XIcon } from './icons/XIcon'
+import { generateWarpcastCompose, generateXCompose } from '@/lib/warpcast'
 
 export const ResultGallery: FC = () => {
   const [swiper, setSwiper] = useState<_Swiper>()
@@ -30,66 +31,25 @@ export const ResultGallery: FC = () => {
   const shareOnFarcaster = useCallback(() => {
     const item = gotItems?.[currentIndex]
 
-    let url = ''
-    if (!item) {
-      url = `${window.location.origin}/frames/share/scorecard/${scorecardShareId}`
-    } else {
-      url = `${window.location.origin}/frames/share/${item.tokenId}`
-    }
+    const link = generateWarpcastCompose({
+      tokenId: item?.tokenId,
+      address: scorecardShareId?.toString(),
+    })
 
-    let warpcastText = ''
-    switch (item?.tokenId) {
-      case 1:
-        warpcastText =
-          'A%20Common%20Coco%20Shrooms%20was%20in%20the%20Ball!%0AJoin%20the%20game%20at%20%2Fball'
-        break
-      case 2:
-        warpcastText =
-          'A%20Rare%20Tuna%20Mayo%20Ball%20was%20in%20the%20Ball!%0AJoin%20the%20game%20at%20%2Fball'
-        break
-      case 3:
-        warpcastText =
-          'A%20Special%20Ballerchicki%20was%20in%20the%20Ball!%0AJoin%20the%20game%20at%20%2Fball'
-        break
+    console.log(link)
 
-      default:
-        warpcastText =
-          "Here's%20what%20was%20in%20my%20Ball!%0AJoin%20the%20game%20at%20%2Fball"
-    }
-
-    window.open(
-      `https://warpcast.com/~/compose?text=${warpcastText}%0A${encodeURIComponent(
-        url
-      )}`,
-      '_blank'
-    )
+    window.open(link, '_blank')
   }, [gotItems, scorecardShareId, currentIndex])
 
   const shareOnX = useCallback(() => {
     const item = gotItems?.[currentIndex]
 
-    let xText = ''
+    const link = generateXCompose({
+      tokenId: item?.tokenId,
+      address: scorecardShareId?.toString(),
+    })
 
-    switch (item?.tokenId) {
-      case 1:
-        xText = 'A Common Coco Shrooms was in the Ball!\nJoin the game at'
-        break
-      case 2:
-        xText = 'A Rare Tuna Mayo Ball was in the Ball!\nJoin the game at'
-        break
-      case 3:
-        xText = 'A Special Ballerchicki was in the Ball!\nJoin the game at'
-        break
-
-      default:
-        xText = "Here's what was in my Ball!\nJoin the game at"
-    }
-
-    window.open(
-      `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-        xText
-      )}%20https%3A%2F%2Ftheball.fun`
-    )
+    window.open(link, '_blank')
   }, [gotItems, scorecardShareId, currentIndex])
 
   return gotItems ? (

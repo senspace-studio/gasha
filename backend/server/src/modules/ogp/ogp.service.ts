@@ -171,40 +171,59 @@ export class OgpService {
 
     const itemsImageContainer = await Promise.all(
       items.map(async (item, index) => {
-        const itemImage = readFileSync(
-          join(
-            __dirname,
-            `../../assets/images/ogp/gasha_item/${item.tokens[0].tokenId}.png`,
-          ),
+        const itemImages = await Promise.all(
+          item.tokens
+            .filter((t) => t.quantity > 0)
+            .map(async (token, tokenIndex) => {
+              const itemImage = readFileSync(
+                join(
+                  __dirname,
+                  `../../assets/images/ogp/gasha_item/${token.tokenId}.png`,
+                ),
+              );
+              const img = await sharp(itemImage)
+                .resize(96, 96)
+                .png()
+                .toBuffer();
+              return {
+                input: img,
+                left: 548 + tokenIndex * 210,
+                top: 604 + index * 125,
+              };
+            }),
         );
-        const img = await sharp(itemImage).resize(96, 96).png().toBuffer();
-        return {
-          input: img,
-          left: 548,
-          top: 604 + index * 125,
-        };
+
+        return itemImages;
       }),
     );
 
     const itemsQuantityContainer = await Promise.all(
       items.map(async (item, index) => {
-        const img = await sharp({
-          text: {
-            text: `<span foreground="black" font_weight="bold">x ${item.tokens[0].quantity}</span>`,
-            font: 'Albert Sans',
-            fontfile: fontBold,
-            rgba: true,
-            width: 100,
-            height: 23,
-          },
-        })
-          .png()
-          .toBuffer();
-        return {
-          input: img,
-          left: 660,
-          top: 642 + index * 125,
-        };
+        const quantityImages = await Promise.all(
+          item.tokens
+            .filter((t) => t.quantity > 0)
+            .map(async (token, tokenIndex) => {
+              const img = await sharp({
+                text: {
+                  text: `<span foreground="black" font_weight="bold">x${token.quantity}</span>`,
+                  font: 'Albert Sans',
+                  fontfile: fontBold,
+                  rgba: true,
+                  width: 100,
+                  height: 23,
+                },
+              })
+                .png()
+                .toBuffer();
+              return {
+                input: img,
+                left: 660 + tokenIndex * 215,
+                top: 642 + index * 125,
+              };
+            }),
+        );
+
+        return quantityImages;
       }),
     );
 
@@ -224,11 +243,11 @@ export class OgpService {
         left: 53,
         top: 425,
       },
-      ...itemsContainer,
-      ...pointsContainer,
-      ...pointLabelsContainer,
-      ...itemsImageContainer,
-      ...itemsQuantityContainer,
+      ...itemsContainer.filter((c) => c),
+      ...pointsContainer.filter((c) => c),
+      ...pointLabelsContainer.filter((c) => c),
+      ...itemsImageContainer.flat().filter((c) => c),
+      ...itemsQuantityContainer.flat().filter((c) => c),
     ]);
 
     const buffer = await container.toBuffer();
