@@ -205,7 +205,7 @@ export class OgpService {
             .map(async (token, tokenIndex) => {
               const img = await sharp({
                 text: {
-                  text: `<span foreground="black" font_weight="bold">x ${token.quantity}</span>`,
+                  text: `<span foreground="black" font_weight="bold">x${token.quantity}</span>`,
                   font: 'Albert Sans',
                   fontfile: fontBold,
                   rgba: true,
