@@ -4,28 +4,76 @@ export const generateWarpcastCompose = (params: {
   tokenId?: number
   address?: string
 }) => {
-  let text = 'https://warpcast.com/~/compose?text='
+  let text = ''
+
+  if (params.tokenId) {
+    switch (params.tokenId) {
+      case 1:
+        text += 'A Common Coco Shrooms was in the Ball!\nJoin the game at /ball'
+        break
+      case 2:
+        text += 'A Rare Tuna Mayo Ball was in the Ball!\nJoin the game at /ball'
+        break
+      case 3:
+        text +=
+          'A Special Ballerchicki was in the Ball!\nJoin the game at /ball'
+        break
+      case 4:
+        text += 'A Common Baller Socks was in the Ball!\nJoin the game at /ball'
+        break
+      case 5:
+        text += 'A Rare Kanéball Drink was in the Ball!\nJoin the game at /ball'
+        break
+      case 6:
+        text +=
+          'A Special Golden Onigiri was in the Ball!\nJoin the game at /ball'
+        break
+    }
+    text += `\n${SITE_URL}/frames/share/${params.tokenId}`
+  } else if (params.address) {
+    text += `Here's what was in my Ball!\nJoin the game at /ball`
+    text += `\n${SITE_URL}/frames/share/scorecard/${params.address}`
+  }
+
+  return `https://warpcast.com/~/compose?text=${encodeURIComponent(text)}`
+}
+
+export const generateXCompose = (params: {
+  tokenId?: number
+  address?: string
+}) => {
+  let text = ''
 
   if (params.tokenId) {
     switch (params.tokenId) {
       case 1:
         text +=
-          'A%20Common%20Coco%20Shrooms%20was%20in%20the%20Ball!%0AJoin%20the%20game%20at%20%2Fball'
+          'A Common Coco Shrooms was in the Ball!\nJoin the game at https://theball.fun'
         break
       case 2:
         text +=
-          'A%20Rare%20Tuna%20Mayo%20Ball%20was%20in%20the%20Ball!%0AJoin%20the%20game%20at%20%2Fball'
+          'A Rare Tuna Mayo Ball was in the Ball!\nJoin the game at https://theball.fun'
         break
       case 3:
         text +=
-          'A%20Special%20Ballerchicki%20was%20in%20the%20Ball!%0AJoin%20the%20game%20at%20%2Fball'
+          'A Special Ballerchicki was in the Ball!\nJoin the game at https://theball.fun'
+        break
+      case 4:
+        text +=
+          'A Common Baller Socks was in the Ball!\nJoin the game at https://theball.fun'
+        break
+      case 5:
+        text +=
+          'A Rare Kanéball Drink was in the Ball!\nJoin the game at https://theball.fun'
+        break
+      case 6:
+        text +=
+          'A Special Golden Onigiri was in the Ball!\nJoin the game at https://theball.fun'
         break
     }
-    text += `%0A${SITE_URL}/frames/share/${params.tokenId}`
   } else if (params.address) {
-    text += `Here's%20what%20was%20in%20my%20Ball!%0AJoin%20the%20game%20at%20%2Fball`
-    text += `%0A${SITE_URL}/frames/share/scorecard/${params.address}`
+    text += `Here's what was in my Ball!\nJoin the game at https://theball.fun`
   }
 
-  return text
+  return `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`
 }
