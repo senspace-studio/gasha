@@ -11,12 +11,15 @@ const main = async () => {
   let gashaAddress = ''
   let erc1155Address = ''
   let merkleMinterAddress = ''
-  let fundRecipientAddress = '0xb17e447d0Eb15c444789886F2bff6A4907140bC5'
+  let fundRecipientAddress = '0xdCb93093424447bF4FE9Df869750950922F1E30B' // for Dev
+  // let fundRecipientAddress = '0xb17e447d0Eb15c444789886F2bff6A4907140bC5' // for Prod
 
   switch (name) {
     case 'base':
-      gashaAddress = '0x96E9215696733f7AD091A3D2437dAf892eF296C8'
-      erc1155Address = '0xDC4b663FF330bdDE6551b66c1F94C0Bb9584cC3d'
+      gashaAddress = '0xcFFDfafda3873eCA81365F66d6550D63bBB46645' // For Dev
+      // gashaAddress = '0x96E9215696733f7AD091A3D2437dAf892eF296C8' //For Prod
+      erc1155Address = '0xF87A823a4FC78d1DdEF35E3F161a49B36202810f' // For Dev
+      // erc1155Address = '0xDC4b663FF330bdDE6551b66c1F94C0Bb9584cC3d' // For Prod
       merkleMinterAddress = '0xf48172CA3B6068B20eE4917Eb27b5472f1f272C7'
       break
     case 'base_sepolia':
