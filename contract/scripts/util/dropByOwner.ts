@@ -2,7 +2,7 @@ import { parseEther } from 'ethers'
 import { ethers } from 'hardhat'
 
 const main = async () => {
-  const to = '0x19D8da2674E8A025154153297ea3AB918DebF96d'
+  const to = '0x3F134398b2758777694Bb13CEB24B28F1700a9e3'
   const Gasha = await ethers.getContractAt(
     'Gasha',
     '0x96E9215696733f7AD091A3D2437dAf892eF296C8'
