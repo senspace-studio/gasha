@@ -1,11 +1,7 @@
 # Metadata
 
-1. ipfs://QmWdGS5HgfGjbXX851xzCd2f5WFnNxK4NjpmDnUCiY8EXz/1
-2. ipfs://QmWdGS5HgfGjbXX851xzCd2f5WFnNxK4NjpmDnUCiY8EXz/2
-3. ipfs://QmWdGS5HgfGjbXX851xzCd2f5WFnNxK4NjpmDnUCiY8EXz/3
+4. ipfs://Qmd53U3s9DdwLbwhCQ1B4Pxetb3kef5A5fpS8rCVJHAcax/4
+5. ipfs://Qmd53U3s9DdwLbwhCQ1B4Pxetb3kef5A5fpS8rCVJHAcax/5
+6. ipfs://Qmd53U3s9DdwLbwhCQ1B4Pxetb3kef5A5fpS8rCVJHAcax/6
 
 # Image
-
-1. ipfs://QmUSurAcjEoQFWWjrwxArFtpaN5p15fgGsve6XBLPH1Yzn/1.jpg
-2. ipfs://QmUSurAcjEoQFWWjrwxArFtpaN5p15fgGsve6XBLPH1Yzn/2.jpg
-3. ipfs://QmUSurAcjEoQFWWjrwxArFtpaN5p15fgGsve6XBLPH1Yzn/3.jpg

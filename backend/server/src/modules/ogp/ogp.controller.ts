@@ -13,6 +13,8 @@ import { Response } from 'express';
 import { PointsService } from '../points/points.service';
 import { rarenessLabel } from 'src/constants/Gasha';
 import { ADMIN_ADDRESSES } from 'src/constants/Admin';
+import { ViemService } from '../viem/viem.service';
+import { Address } from 'viem';
 
 @Controller('ogp')
 export class OgpController {
@@ -21,6 +23,7 @@ export class OgpController {
   constructor(
     private readonly ogpService: OgpService,
     private readonly pointsService: PointsService,
+    private readonly viemService: ViemService,
   ) {}
 
   @Get('/:address/square.png')
@@ -41,6 +44,10 @@ export class OgpController {
             tokenId: 3,
             quantity: 0,
           },
+          {
+            tokenId: 6,
+            quantity: 0,
+          },
         ],
       },
       {
@@ -51,6 +58,10 @@ export class OgpController {
             tokenId: 2,
             quantity: 0,
           },
+          {
+            tokenId: 5,
+            quantity: 0,
+          },
         ],
       },
       {
@@ -59,6 +70,10 @@ export class OgpController {
         tokens: [
           {
             tokenId: 1,
+            quantity: 0,
+          },
+          {
+            tokenId: 4,
             quantity: 0,
           },
         ],
@@ -82,12 +97,22 @@ export class OgpController {
       items.find((item) => item.rareness === 'special').points += Number(
         calclated.special.points,
       );
-      items.find((item) => item.rareness === 'common').tokens[0].quantity +=
-        Number(event.common);
-      items.find((item) => item.rareness === 'rare').tokens[0].quantity +=
-        Number(event.rare);
-      items.find((item) => item.rareness === 'special').tokens[0].quantity +=
-        Number(event.special);
+    }
+
+    const balanceOfTokens = await this.viemService.balanceOf(
+      address as Address,
+    );
+    for (let index = 0; index < balanceOfTokens.length; index++) {
+      const balance = balanceOfTokens[index];
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        for (let j = 0; j < item.tokens.length; j++) {
+          const token = item.tokens[j];
+          if (token.tokenId === index + 1) {
+            token.quantity = Number(balance);
+          }
+        }
+      }
     }
 
     const { points: totalPoints } =
@@ -107,6 +132,7 @@ export class OgpController {
     this.logger.log(this.getResultSquareOgp.name);
 
     const result = await this.ogpService.getResult(Number(id));
+
     const rareness = result.result.reduce(
       (acc, { rareness, quantity }) => {
         const label = rarenessLabel[rareness] as keyof typeof acc;
@@ -123,6 +149,7 @@ export class OgpController {
       BigInt(rareness.special),
       BigInt(result.date * 1000),
     );
+
     const totalPoints =
       calclated.common.points +
       calclated.rare.points +
@@ -139,15 +166,14 @@ export class OgpController {
         | 'common'
         | 'rare'
         | 'special';
-      items.find((item) => item.rareness === rareness).points += Number(
-        calclated[rareness].points,
-      );
-      items
-        .find((item) => item.rareness === rareness)
-        .tokens.push({
-          tokenId: result.result[i].tokenId,
-          quantity: result.result[i].quantity,
-        });
+      const item = items.find((item) => item.rareness === rareness);
+      if (item.points === 0) {
+        item.points += Number(calclated[rareness].points);
+      }
+      item.tokens.push({
+        tokenId: result.result[i].tokenId,
+        quantity: result.result[i].quantity,
+      });
     }
 
     const file = await this.ogpService.generateSquareOgp(

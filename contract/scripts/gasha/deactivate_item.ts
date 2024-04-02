@@ -17,14 +17,14 @@ const main = async () => {
 
   const gashaContract = await ethers.getContractAt('Gasha', gashaAddress)
 
-  let tx = await gashaContract.activateSeriesItem(1)
+  let tx = await gashaContract.deactivateSeriesItem(1)
   await tx.wait()
-  tx = await gashaContract.activateSeriesItem(2)
+  tx = await gashaContract.deactivateSeriesItem(2)
   await tx.wait()
-  tx = await gashaContract.activateSeriesItem(3)
+  tx = await gashaContract.deactivateSeriesItem(3)
   await tx.wait()
 
-  console.log('Activated series items')
+  console.log('Deactivated series items')
 }
 
 main()
