@@ -59,11 +59,7 @@ export default function Home() {
           <SpinModule />
 
           <VStack mt={['40px', '40px']} pb={10} gap={5}>
-            <BasicCount
-              number={Math.floor(totalRewards * 1000) / 1000 || 0}
-              unit="ETH"
-              label="Total Rewards"
-            />
+            <BasicCount number={'9.496'} unit="ETH" label="Total Rewards" />
             <BasicCount
               number={currentMints.mints}
               unit="MINTS"
