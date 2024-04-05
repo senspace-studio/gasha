@@ -19,7 +19,7 @@ export const useRemainingTime = () => {
       const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes
       const seconds = Math.floor((diff % (1000 * 60)) / 1000)
       const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds
-      if (seconds > 0) {
+      if (seconds > -1) {
         setTime(
           `${days}:${formattedHours}:${formattedMinutes}:${formattedSeconds}`
         )
