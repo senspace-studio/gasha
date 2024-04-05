@@ -19,9 +19,13 @@ export const useRemainingTime = () => {
       const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes
       const seconds = Math.floor((diff % (1000 * 60)) / 1000)
       const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds
-      setTime(
-        `${days}:${formattedHours}:${formattedMinutes}:${formattedSeconds}`
-      )
+      if (seconds > 0) {
+        setTime(
+          `${days}:${formattedHours}:${formattedMinutes}:${formattedSeconds}`
+        )
+      } else {
+        setTime('END')
+      }
     }, 1000)
 
     return () => clearInterval(interval)
