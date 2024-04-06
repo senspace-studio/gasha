@@ -1,6 +1,6 @@
-import { LeaderboardListItem } from '@/components/uiparts/LeaderboardListItem'
-import { StolzlText } from '@/components/uiparts/StolzlText'
-import { useLeaderboard } from '@/hooks/useLeaderboard'
+import { LeaderboardListItem } from "@/components/uiparts/LeaderboardListItem"
+import { StolzlText } from "@/components/uiparts/StolzlText"
+import { useLeaderboard } from "@/hooks/useLeaderboard"
 import {
   Box,
   Container,
@@ -10,13 +10,20 @@ import {
   ListItem,
   Text,
   VStack,
-} from '@chakra-ui/react'
-import { NextPage } from 'next'
-import { useState } from 'react'
-import { useAccount } from 'wagmi'
+} from "@chakra-ui/react"
+import { NextPage } from "next"
+import { useState } from "react"
+import { useAccount } from "wagmi"
 
 const Leaderboard: NextPage = () => {
-  const { myPoints, totalPoints, leaderboard } = useLeaderboard()
+  const {
+    myPoints,
+    totalPoints,
+    leaderboard,
+    fixedLeaderboard,
+    fixedTotal,
+    fiexedMyPoints,
+  } = useLeaderboard()
   const { address } = useAccount()
   const [page, setPage] = useState(1)
 
@@ -56,19 +63,19 @@ const Leaderboard: NextPage = () => {
         {address && (
           <LeaderboardListItem
             address={address}
-            points={myPoints}
-            totalPoints={totalPoints}
+            points={fiexedMyPoints}
+            totalPoints={fixedTotal}
             backgroundColor="blue.300"
           />
         )}
-        {leaderboard?.data.map((item, i) => (
+        {fixedLeaderboard?.map((item, i) => (
           <LeaderboardListItem
             key={i}
             address={item.address}
             points={Number(item.points)}
-            totalPoints={totalPoints}
+            totalPoints={fixedTotal}
             backgroundColor={
-              page === 1 && i === 0 ? 'yellow.400' : 'yellow.300'
+              page === 1 && i === 0 ? "yellow.400" : "yellow.300"
             }
           />
         ))}
