@@ -397,8 +397,8 @@ export class OgpService {
   }
 
   async generateLeaderboardOgp(
-    leaderBoard: AccountEntity[],
-    me: AccountEntity | null,
+    leaderBoard: { address: string; points: number }[],
+    me: { address: string; points: number } | null,
     totalPoints: number,
   ) {
     const base = readFileSync(
