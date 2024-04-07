@@ -1676,7 +1676,7 @@ export const useLeaderboard = (page: number = 1) => {
   )
 
   const fiexedMyPoints = useMemo(() => {
-    return fixedLeaderboard[address as string] || 0
+    return fixedLeaderboard[address?.toLowerCase() as string] || 0
   }, [address])
 
   return {
