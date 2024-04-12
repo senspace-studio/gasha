@@ -53,21 +53,21 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       case quantities >= 500:
         res.redirect(
           302,
-          `https://testnet.zora.co/collect/zsep:0x907c3855c2e87ed65d2f88083d4580ecd88b1c65/1`
+          `https://zora.co/collect/base:0x9aca367cc335acc784ab2cca59e0f1a9797d9d12/1`
         )
         return
 
       case quantities >= 50:
         res.redirect(
           302,
-          `https://testnet.zora.co/collect/zsep:0x907c3855c2e87ed65d2f88083d4580ecd88b1c65/2`
+          `https://zora.co/collect/base:0x9aca367cc335acc784ab2cca59e0f1a9797d9d12/2`
         )
         return
 
       case quantities >= 1:
         res.redirect(
           302,
-          `https://testnet.zora.co/collect/zsep:0x907c3855c2e87ed65d2f88083d4580ecd88b1c65/3`
+          `https://zora.co/collect/base:0x9aca367cc335acc784ab2cca59e0f1a9797d9d12/3`
         )
         return
 
