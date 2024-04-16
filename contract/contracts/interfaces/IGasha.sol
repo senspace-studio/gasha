@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.17;
+pragma solidity ^0.8.20;
 
 interface IGasha {
     // ***********************
@@ -44,13 +44,17 @@ interface IGasha {
         uint256 quantity;
     }
 
+    struct BonusPointDuration {
+        uint64 startTime;
+        uint64 endTime;
+        uint32 multiplier;
+    }
+
     // ***********************
     // *** Functions Section ****
     // ***********************
 
     function spin(uint256 quantity) external payable;
-
-    function setMinterArguments(bytes memory _minterArguments) external;
 
     function setAvailableTime(uint64 _startTime, uint64 _endTime) external;
 

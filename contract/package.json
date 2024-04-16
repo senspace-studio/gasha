@@ -10,7 +10,8 @@
     "@nomicfoundation/hardhat-toolbox": "^4.0.0",
     "@nomicfoundation/hardhat-verify": "^2.0.0",
     "@nomiclabs/hardhat-etherscan": "^3.1.8",
-    "@openzeppelin/contracts-upgradeable": "4",
+    "@openzeppelin/contracts": "^5.0.2",
+    "@openzeppelin/contracts-upgradeable": "^5.0.2",
     "@openzeppelin/hardhat-upgrades": "^3.0.5",
     "@typechain/ethers-v6": "^0.5.0",
     "@typechain/hardhat": "^9.0.0",
@@ -18,10 +19,6 @@
     "@types/mocha": ">=9.1.0",
     "@types/node": ">=18.0.0",
     "@types/papaparse": "^5.3.14",
-    "@zoralabs/openzeppelin-contracts-upgradeable": "^4.8.4",
-    "@zoralabs/protocol-rewards": "^1.2.3",
-    "@zoralabs/protocol-sdk": "^0.5.6",
-    "@zoralabs/zdk": "^2.4.0",
     "chai": "^4.2.0",
     "dotenv": "^16.4.5",
     "ethers": "^6.4.0",
@@ -35,8 +32,9 @@
   },
   "dependencies": {
     "@openzeppelin/merkle-tree": "^1.0.6",
+    "@reservoir0x/relay-sdk": "^0.3.9",
     "papaparse": "^5.4.1",
     "react-toastify": "^10.0.5",
-    "viem": "^2.8.5"
+    "viem": "^2.9.16"
   }
 }
