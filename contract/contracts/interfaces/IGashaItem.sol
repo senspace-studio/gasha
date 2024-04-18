@@ -8,5 +8,5 @@ import "@openzeppelin/contracts/interfaces/IERC1155MetadataURI.sol";
 interface IGashaItem is IERC1155, IERC1155MetadataURI {
     function mint(address to, uint256 tokenId, uint256 amount) external;
 
-    function setupNewToken() external;
+    function setupNewToken(string memory tokenURI) external returns (uint256);
 }

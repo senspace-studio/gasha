@@ -1,16 +1,16 @@
-import { ethers } from 'hardhat'
+import { ethers } from "hardhat"
 
 const main = async () => {
   const gashaContract = await ethers.getContractAt(
-    'Gasha',
-    '0x96E9215696733f7AD091A3D2437dAf892eF296C8'
+    "Gasha",
+    "0x8cC40aa52A79b378AC4C5d9CB155521778372b76"
   )
 
   // let tx = await gashaContract.setAvailableTime(1711639025, 1811640405)
-  let tx = await gashaContract.setAvailableTime(1711000000, 1712300400)
+  let tx = await gashaContract.setAvailableTime(1711000000, 1912300400)
   await tx.wait()
 
-  console.log('Set Available Time')
+  console.log("Set Available Time")
 }
 
 main()

@@ -2,7 +2,9 @@
 
 pragma solidity ^0.8.20;
 
-interface IBall {
+import "./IERC404.sol";
+
+interface IHat is IERC404 {
     function mint(address to, uint256 amount) external;
 
     function useTicket(address user) external;

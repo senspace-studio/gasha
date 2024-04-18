@@ -3,15 +3,14 @@ pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/PausableUpgradeable.sol";
-import "./interfaces/IGasha.sol";
-import "./interfaces/IGashaItem.sol";
-import "./interfaces/IBall.sol";
-import "hardhat/console.sol";
+import "../interfaces/IGasha.sol";
+import "../interfaces/IGashaItem.sol";
+import "../interfaces/IHat.sol";
 
 contract Gasha is IGasha, OwnableUpgradeable, PausableUpgradeable {
     IGashaItem public GashaItem;
 
-    IBall public Ball;
+    IHat public Hat;
 
     SeriesItem[] public series;
 
@@ -27,6 +26,8 @@ contract Gasha is IGasha, OwnableUpgradeable, PausableUpgradeable {
 
     BonusPointDuration public bonusPoint;
 
+    mapping(address => bool) public operators;
+
     modifier isAvailableTime() {
         uint256 currentTime = block.timestamp;
         require(
@@ -36,25 +37,31 @@ contract Gasha is IGasha, OwnableUpgradeable, PausableUpgradeable {
         _;
     }
 
+    modifier onlyOperator() {
+        require(operators[msg.sender], "Gasha: caller is not the operator");
+        _;
+    }
+
     function initialize(
         address _initialOwner,
         address _gashaItemERC1155,
-        address _ballERC404,
+        address _hatERC404,
         uint256 _initialSeed,
         uint256 _unitPrice
     ) public initializer {
         __Ownable_init(_initialOwner);
         __Pausable_init();
         GashaItem = IGashaItem(_gashaItemERC1155);
-        Ball = IBall(_ballERC404);
+        Hat = IHat(_hatERC404);
         seed = _initialSeed;
         unitPrice = _unitPrice;
         basePoint = [200, 400, 800];
     }
 
     function spin(
-        uint256 quantity
-    ) external payable isAvailableTime whenNotPaused {
+        uint256 quantity,
+        address to
+    ) external payable onlyOperator isAvailableTime whenNotPaused {
         require(quantity > 0 && quantity < 1000, "Gasha: quantity is invalid");
         require(msg.value >= unitPrice * quantity, "Gasha: insufficient funds");
 
@@ -77,14 +84,17 @@ contract Gasha is IGasha, OwnableUpgradeable, PausableUpgradeable {
                     break;
                 }
             }
-            earnedPoint += basePoint[uint256(item.rareness)] * bonusMultiplier * (10 ** 18);
+            earnedPoint +=
+                basePoint[uint256(item.rareness)] *
+                bonusMultiplier *
+                (10 ** 18);
         }
 
-        _mint(msg.sender, ids, quantities);
+        _mint(to, ids, quantities);
 
-        emit Spin(msg.sender, ids, quantities);
+        emit Spin(to, ids, quantities);
 
-        Ball.mint(msg.sender, earnedPoint);
+        Hat.mint(to, earnedPoint);
     }
 
     function dropByOwner(
@@ -113,7 +123,7 @@ contract Gasha is IGasha, OwnableUpgradeable, PausableUpgradeable {
     ) private {
         for (uint256 i = 0; i < ids.length; i++) {
             if (quantities[i] > 0) {
-               GashaItem.mint(to, ids[i], quantities[i]);
+                GashaItem.mint(to, ids[i], quantities[i]);
             }
         }
     }
@@ -123,8 +133,12 @@ contract Gasha is IGasha, OwnableUpgradeable, PausableUpgradeable {
     ) internal view returns (SeriesItem memory item) {
         uint256 totalWeight = 0;
         SeriesItem[] memory seriesItem = activeSeriesItems();
+        SeriesItem memory defaultItem;
         for (uint256 i = 0; i < seriesItem.length; i++) {
             totalWeight += seriesItem[i].weight;
+            if (seriesItem[i].rareness == Rareness.Common) {
+                defaultItem = seriesItem[i];
+            }
         }
 
         uint256 randomNum = uint256(
@@ -141,12 +155,15 @@ contract Gasha is IGasha, OwnableUpgradeable, PausableUpgradeable {
             }
         }
 
-        revert("Gasha: failed to pick a random ball");
+        return defaultItem;
     }
 
     function _bonusMultiplier() internal view returns (uint32) {
         uint256 currentTime = block.timestamp;
-        if (bonusPoint.startTime <= currentTime && currentTime < bonusPoint.endTime) {
+        if (
+            bonusPoint.startTime <= currentTime &&
+            currentTime < bonusPoint.endTime
+        ) {
             return bonusPoint.multiplier;
         }
         return 1;
@@ -228,6 +245,10 @@ contract Gasha is IGasha, OwnableUpgradeable, PausableUpgradeable {
         } else {
             _pause();
         }
+    }
+
+    function setOperator(address _operator, bool _status) external onlyOwner {
+        operators[_operator] = _status;
     }
 
     function onERC1155Received(
