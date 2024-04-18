@@ -1,29 +1,30 @@
 import { expect } from "chai"
-import { Ball, Gasha, GashaItem } from "../typechain-types"
+import { Gasha, GashaItem, Hat } from "../typechain-types"
 import { ethers } from "hardhat"
 import { SignerWithAddress } from "@nomicfoundation/hardhat-ethers/signers"
 import { parseEther } from "ethers"
 import { deployGashaContract, deployGashaItemContract } from "./helper"
-import { deployBallContract } from "../scripts/helper/ball"
+import { deployHatContract } from "../scripts/helper/hat"
 
 describe("Gasha", () => {
   let Gasha: Gasha
   let GashaItem: GashaItem
-  let Ball: Ball
+  let Hat: Hat
   let admin: SignerWithAddress
   let user: SignerWithAddress
+  let operator: SignerWithAddress
 
   before(async () => {
-    ;[admin, user] = await ethers.getSigners()
+    ;[admin, user, operator] = await ethers.getSigners()
 
     GashaItem = await deployGashaItemContract(admin.address)
 
-    Ball = await deployBallContract(admin.address)
+    Hat = await deployHatContract(admin.address)
 
     Gasha = await deployGashaContract(
       admin.address,
       await GashaItem.getAddress(),
-      await Ball.getAddress(),
+      await Hat.getAddress(),
       0.000777
     )
 
@@ -33,6 +34,11 @@ describe("Gasha", () => {
     }
 
     let tx = await GashaItem.setMinter(await Gasha.getAddress(), true)
+    await tx.wait()
+    tx = await Hat.setForwarder(await Gasha.getAddress(), true)
+    await tx.wait()
+
+    tx = await Gasha.setOperator(operator.address, true)
     await tx.wait()
   })
 
@@ -63,7 +69,9 @@ describe("Gasha", () => {
       Gasha.setAvailableTime(0, Math.ceil(new Date().getTime() / 1000) - 1e6)
     ).emit(Gasha, "SetAvailableTime")
     await expect(
-      Gasha.spin(1, { value: parseEther("0.000777") })
+      Gasha.connect(operator).spin(1, admin.address, {
+        value: parseEther("0.000777"),
+      })
     ).to.be.revertedWith("Gasha: not available now")
   })
 
@@ -77,17 +85,31 @@ describe("Gasha", () => {
   it("shoud spin", async () => {
     let amount = 10
     await expect(
-      Gasha.spin(amount, {
+      Gasha.connect(operator).spin(amount, admin.address, {
         value: parseEther(String(0.000777 * amount)),
       })
     ).emit(Gasha, "Spin")
 
     amount = 999
     await expect(
-      Gasha.connect(user).spin(amount, {
+      Gasha.connect(operator).spin(amount, user.address, {
         value: parseEther(String(0.000777 * amount)),
       })
     ).emit(Gasha, "Spin")
+  })
+
+  it("should fail to spin when not enough ether", async () => {
+    await expect(
+      Gasha.connect(operator).spin(1, admin.address, {
+        value: parseEther("0.000776"),
+      })
+    ).to.be.revertedWith("Gasha: insufficient funds")
+  })
+
+  it("should fail to spin when not operator", async () => {
+    await expect(
+      Gasha.spin(1, admin.address, { value: parseEther("0.000777") })
+    ).to.be.revertedWith("Gasha: caller is not the operator")
   })
 
   it("should get active items", async () => {

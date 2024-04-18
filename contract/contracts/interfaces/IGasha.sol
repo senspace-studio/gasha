@@ -54,7 +54,13 @@ interface IGasha {
     // *** Functions Section ****
     // ***********************
 
-    function spin(uint256 quantity) external payable;
+    function spin(uint256 quantity, address to) external payable;
+
+    function dropByOwner(
+        address to,
+        uint256[] memory ids,
+        uint256[] memory quantities
+    ) external payable;
 
     function setAvailableTime(uint64 _startTime, uint64 _endTime) external;
 
@@ -71,4 +77,6 @@ interface IGasha {
         Rareness rareness,
         uint256 weight
     ) external;
+
+    function setOperator(address _operator, bool _status) external;
 }
