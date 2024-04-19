@@ -177,8 +177,6 @@ export class ViemService {
       args: [Array(numOfToken).fill(address), ids.map((id) => BigInt(id))],
     });
 
-    console.log(ids, res);
-
     return { balanceOfAll: res.map((n) => Number(n)), ids };
   }
 }

@@ -13,6 +13,7 @@ type State = {
   quantities: number[]
   minter: string
   verifiedAddress: string
+  numOfMint: number
 }
 
 export const theballApp = new Frog<{ State: State }>({
@@ -114,6 +115,7 @@ theballApp.frame("/mint/:numOfMint", async (c) => {
 
   c.deriveState((prevState) => {
     prevState.transactionId = data.transactionId
+    prevState.numOfMint = Number(c.req.param("numOfMint"))
   })
 
   return c.res({
@@ -149,12 +151,25 @@ theballApp.frame("/score", async (c) => {
         <Button.Link href="https://google.com">Share</Button.Link>,
       ],
     })
-  } catch (error) {
-    return c.res({
-      image: "/card/mint.png",
-      imageAspectRatio: "1:1",
-      intents: [<Button action="/score">Retry</Button>],
-    })
+  } catch (error: any) {
+    switch (error.response.data.statusCode) {
+      case 400:
+        return c.res({
+          image: "/card/mint.png",
+          imageAspectRatio: "1:1",
+          intents: [
+            <Button action={`/mint/${c.previousState.numOfMint}`}>
+              Retry
+            </Button>,
+          ],
+        })
+      default:
+        return c.res({
+          image: "/card/mint.png",
+          imageAspectRatio: "1:1",
+          intents: [<Button action="/score">Retry</Button>],
+        })
+    }
   }
 })
 
