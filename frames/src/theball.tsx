@@ -9,11 +9,18 @@ import { apiClient } from "../lib/api"
 
 type State = {
   transactionId: string
+  ids: number[]
+  quantities: number[]
+  minter: string
+  verifiedAddress: string
 }
 
 export const theballApp = new Frog<{ State: State }>({
   initialState: {
-    transactionId: "",
+    transactionId: "07e466cc-d284-44a2-ac0b-cc96b6411439",
+    ids: [],
+    quantities: [],
+    minter: "",
   },
 })
 
@@ -25,15 +32,42 @@ theballApp.frame("/", (c) => {
   })
 })
 
-theballApp.frame("/top", (c) => {
-  return c.res({
-    image: "/card/top.png",
-    imageAspectRatio: "1:1",
-    intents: [
-      <Button action="/draw">Draw</Button>,
-      <Button action="/stats">Stats</Button>,
-    ],
-  })
+theballApp.frame("/top", async (c) => {
+  const reqData = await c.req.bodyCache.json
+
+  try {
+    const { data } = await apiClient.post("/neynar/verify", {
+      messageBytes: reqData.trustedData.messageBytes,
+    })
+    const verifiedAddress =
+      data.action.interactor.verified_addresses.eth_addresses[0]
+
+    if (verifiedAddress) {
+      c.deriveState((prevState) => {
+        prevState.verifiedAddress = verifiedAddress
+      })
+      return c.res({
+        image: "/card/top.png",
+        imageAspectRatio: "1:1",
+        intents: [
+          <Button action="/draw">Draw</Button>,
+          <Button action="/stats">Stats</Button>,
+        ],
+      })
+    } else {
+      return c.res({
+        image: "/card/verify.png",
+        imageAspectRatio: "1:1",
+        intents: [<Button action="/">Back</Button>],
+      })
+    }
+  } catch (error) {
+    return c.res({
+      image: "/card/verify.png",
+      imageAspectRatio: "1:1",
+      intents: [<Button action="/">Back</Button>],
+    })
+  }
 })
 
 theballApp.frame("/draw", (c) => {
@@ -98,11 +132,20 @@ theballApp.frame("/score", async (c) => {
       `/gasha/syndicate/spin/result/${transactionId}`
     )
 
+    c.deriveState((prevState) => {
+      prevState.ids = result.ids
+      prevState.quantities = result.quantities
+      prevState.minter = result.minter
+    })
+
     return c.res({
-      image: `${API_BASE_URL}/ogp/square.png?score=${JSON.stringify(result)}`,
+      image: `${API_BASE_URL}/ogp/square.png?score=${encodeURIComponent(
+        JSON.stringify(result)
+      )}`,
       imageAspectRatio: "1:1",
       intents: [
-        <Button action="/top">Back</Button>,
+        <Button action="/score">-</Button>,
+        <Button action="/score-card">Next</Button>,
         <Button.Link href="https://google.com">Share</Button.Link>,
       ],
     })
@@ -113,6 +156,65 @@ theballApp.frame("/score", async (c) => {
       intents: [<Button action="/score">Retry</Button>],
     })
   }
+})
+
+theballApp.frame("/score-card", async (c) => {
+  const { ids, quantities, minter } = c.previousState
+  return c.res({
+    image: `${API_BASE_URL}/ogp/square.png?score=${encodeURIComponent(
+      JSON.stringify({
+        ids,
+        quantities,
+        minter,
+      })
+    )}`,
+    imageAspectRatio: "1:1",
+    intents: [
+      <Button action="/score">Back</Button>,
+      <Button action={`/card/${getNextCard(ids, quantities, 15)}`}>
+        Next
+      </Button>,
+      <Button.Link href="https://google.com">Share</Button.Link>,
+    ],
+  })
+})
+
+theballApp.frame("/card/:id", (c) => {
+  const { ids, quantities } = c.previousState
+
+  const prevCard = getPrevCard(ids, quantities, Number(c.req.param("id")))
+  const nextCard = getNextCard(ids, quantities, Number(c.req.param("id")))
+
+  return c.res({
+    image: `/card/${c.req.param("id")}.png`,
+    imageAspectRatio: "1:1",
+    intents: [
+      prevCard ? (
+        <Button action={`/card/${prevCard}`}>Back</Button>
+      ) : (
+        <Button action="/score-card">Back</Button>
+      ),
+      nextCard ? (
+        <Button action={`/card/${nextCard}`}>Next</Button>
+      ) : (
+        <Button action={`/`}>Top</Button>
+      ),
+      <Button.Link href="https://google.com">Share</Button.Link>,
+    ],
+  })
+})
+
+theballApp.frame("/stats", async (c) => {
+  const { verifiedAddress } = c.previousState
+  console.log(`${API_BASE_URL}/ogp/${verifiedAddress}/square.png`)
+  return c.res({
+    image: `${API_BASE_URL}/ogp/${verifiedAddress}/square.png`,
+    imageAspectRatio: "1:1",
+    intents: [
+      <Button action="/top">Back</Button>,
+      <Button.Link href="https://google.com/stats">Share</Button.Link>,
+    ],
+  })
 })
 
 theballApp.transaction("/send-degen/:numOfMint", async (c) => {
@@ -138,3 +240,27 @@ theballApp.frame("/stats", (c) => {
     ],
   })
 })
+
+const getPrevCard = (
+  ids: number[],
+  quantities: number[],
+  currentId: number
+) => {
+  const prevId = ids
+    .filter((id, i) => id > currentId && quantities[i] > 0)
+    .sort((a, b) => a - b)[0]
+
+  return prevId
+}
+
+const getNextCard = (
+  ids: number[],
+  quantities: number[],
+  currentId: number
+) => {
+  const nextId = ids
+    .filter((id, i) => id < currentId && quantities[i] > 0)
+    .sort((a, b) => b - a)[0]
+
+  return nextId
+}

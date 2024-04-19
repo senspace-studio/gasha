@@ -21,6 +21,7 @@ import { baseSepolia, base, hardhat, mainnet, degen } from 'viem/chains';
 import { Gasha, GashaABI } from 'src/constants/Gasha';
 import { SeriesItem } from 'src/types/contract';
 import { ZoraCreator1155ABI } from 'src/constants/ZoraCreator1155Impl';
+import { ERC1155ABI } from 'src/constants/ERC1155';
 
 @Injectable()
 export class ViemService {
@@ -162,5 +163,22 @@ export class ViemService {
     } catch (error) {
       throw error;
     }
+  }
+
+  async balanceOfAll(address: Address, numOfToken: number) {
+    const ids = Array(numOfToken)
+      .fill('')
+      .map((_, i) => i + 1);
+
+    const res = await this.client.readContract({
+      address: ERC1155_ADDRESS as Address,
+      abi: ERC1155ABI,
+      functionName: 'balanceOfBatch',
+      args: [Array(numOfToken).fill(address), ids.map((id) => BigInt(id))],
+    });
+
+    console.log(ids, res);
+
+    return { balanceOfAll: res.map((n) => Number(n)), ids };
   }
 }

@@ -13,6 +13,7 @@ import { Response } from 'express';
 import { PointsService } from '../points/points.service';
 import { ViemService } from '../viem/viem.service';
 import { SpinResult } from 'src/types/point';
+import { Address } from 'viem';
 
 @Controller('ogp')
 export class OgpController {
@@ -25,11 +26,8 @@ export class OgpController {
   ) {}
 
   @Get('/square.png')
-  async getAddressSquareOgp(
-    @Query('score') score: string,
-    @Res() res: Response,
-  ) {
-    this.logger.log(this.getAddressSquareOgp.name);
+  async getSquareOgp(@Query('score') score: string, @Res() res: Response) {
+    this.logger.log(this.getSquareOgp.name);
 
     const mintResult: SpinResult = JSON.parse(score);
     const { result, totalPoint } = this.pointsService.calcHat(
@@ -46,14 +44,26 @@ export class OgpController {
     res.send(file);
   }
 
-  @Get('/result/square.png')
-  async getResultSquareOgp(@Query() result: any, @Res() res: Response) {
-    this.logger.log(this.getResultSquareOgp.name);
+  @Get('/:address/square.png')
+  async getAddressSquareOgp(
+    @Param() params: { address: Address },
+    @Res() res: Response,
+  ) {
+    this.logger.log(this.getAddressSquareOgp.name);
+
+    const { balanceOfAll, ids } = await this.viemService.balanceOfAll(
+      params.address,
+      14,
+    );
+    const { result, totalPoint } = this.pointsService.calcHat(
+      ids,
+      balanceOfAll,
+    );
 
     const file = await this.ogpService.generateSquareOgp(
-      4000,
-      result.address,
-      [],
+      totalPoint,
+      params.address,
+      result,
     );
     res.set({ 'Content-Type': 'image/png' });
     res.send(file);

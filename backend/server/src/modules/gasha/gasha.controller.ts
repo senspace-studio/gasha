@@ -58,7 +58,7 @@ export class GashaController {
       'spin(uint256 quantity, address to)',
       {
         quantity: quantity,
-        to: '0xD0575cA24D907b35d39383a53c3300D510446BaE',
+        to: address,
       },
     );
 
