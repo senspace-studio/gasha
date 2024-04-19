@@ -21,4 +21,5 @@ export const UPDATE_SCORE_INTERVAL_MINUTES =
   Number(process.env.UPDATE_SCORE_INTERVAL_MINUTES) || 60;
 export const SYNDICATE_PROJECT_ID = process.env.SYNDICATE_PROJECT_ID || '';
 export const SYNDICATE_API_KEY = process.env.SYNDICATE_API_KEY || '';
-export const WIH_ADDRESS = process.env.WIH_ADDRESS || '';
+export const FORWARDER_ADDRESS = process.env.FORWARDER_ADDRESS || '';
+export const WIH_SIGN_SECKEY = process.env.WIH_SIGN_SECKEY || '';
