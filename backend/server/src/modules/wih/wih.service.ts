@@ -8,17 +8,15 @@ import { Repository } from 'typeorm';
 
 const secret = WIH_SIGN_SECKEY;
 
-// const rewardTable = [
-//   { percentage: 2, value: 100000 },
-//   { percentage: 5, value: 5000 },
-//   { percentage: 40, value: 500 },
-//   { percentage: 100, value: 100 },
-// ].sort((a, b) => a.percentage - b.percentage);
 const rewardTable = [
-  { percentage: 2, value: 10 },
-  { percentage: 5, value: 20 },
-  { percentage: 40, value: 30 },
-  { percentage: 100, value: 40 },
+  // 2%
+  { percentage: 2, value: 100000 },
+  // 3%
+  { percentage: 5, value: 5000 },
+  // 35%
+  { percentage: 40, value: 500 },
+  // 60%
+  { percentage: 100, value: 100 },
 ].sort((a, b) => a.percentage - b.percentage);
 
 @Injectable()
