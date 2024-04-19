@@ -250,4 +250,36 @@ export class PointsService {
   async getAccountEvents(address: string) {
     return await this.eventRepository.find({ where: { minter: address } });
   }
+
+  calcHat(ids: number[], quantities: number[]) {
+    const base_points = {
+      1: 200,
+      2: 200,
+      3: 200,
+      4: 200,
+      5: 200,
+      6: 200,
+      7: 200,
+      8: 200,
+      9: 200,
+      10: 200,
+      11: 600,
+      12: 600,
+      13: 600,
+      14: 1800,
+    };
+
+    const result = Array(14)
+      .fill(0)
+      .map((_, index) => {
+        const tokenId = index + 1;
+        const quantity = quantities[ids.indexOf(tokenId)] || 0;
+        const point = base_points[tokenId] * quantity;
+        return { tokenId, quantity, point };
+      });
+
+    const totalPoint = result.reduce((acc, r) => acc + r.point, 0);
+
+    return { result, totalPoint };
+  }
 }

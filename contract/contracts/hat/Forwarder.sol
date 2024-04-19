@@ -13,6 +13,8 @@ contract Forwarder is Ownable {
 
     mapping(address => bool) public operators;
 
+    event Forwarded(address indexed to, uint256 rewardValue, string memo);
+
     modifier onlyOperator() {
         require(operators[msg.sender], "Forwarder: caller is not the operator");
         _;
@@ -27,24 +29,36 @@ contract Forwarder is Ownable {
         lostNFT = ITokenERC1155(_lostNFT);
     }
 
-    function burnAndRedeemReward(address to) external payable onlyOperator {
+    receive() external payable {}
+
+    fallback() external payable {}
+
+    function burnAndRedeemReward(address to, uint256 rewardValue, string memory memo) external onlyOperator {
         require(hat.erc721BalanceOf(to) > 0, "Forwarder: NFT required");
-        require(msg.value > 0, "Forwarder: msg.value required");
 
         hat.useTicket(to);
 
-        (bool success, ) = to.call{value: msg.value}("");
+        (bool success, ) = to.call{value: rewardValue}("");
         require(success, "Transfer failed.");
+
+        emit Forwarded(to, rewardValue, memo);
     }
 
-    function burnAndRedeemLostNFT(address to) external onlyOperator {
+    function burnAndRedeemLostNFT(address to, string memory memo) external onlyOperator {
         require(hat.erc721BalanceOf(to) > 0, "Forwarder: NFT required");
         hat.useTicket(to);
 
         lostNFT.mintTo(to, 1, "", 1);
+
+        emit Forwarded(to, 0, memo);
     }
 
     function setOperator(address operator, bool enabled) external onlyOwner {
         operators[operator] = enabled;
+    }
+
+    function withdraw() external onlyOwner {
+        uint256 balance = address(this).balance;
+        payable(owner()).transfer(balance);
     }
 }

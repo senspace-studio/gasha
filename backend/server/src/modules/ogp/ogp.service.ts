@@ -5,13 +5,14 @@ import { join } from 'path';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ScorecardEntity } from 'src/entities/scorecard';
 import { Repository } from 'typeorm';
-import { AccountEntity } from 'src/entities/account.entity';
 
-const blue = '#0554F2';
+const fontRegular = join(
+  __dirname,
+  '../../assets/fonts/BigelowRules-Regular.ttf',
+);
 
-const fontMedium = join(__dirname, '../../assets/fonts/AlbertSans-Medium.ttf');
-const fontBold = join(__dirname, '../../assets/fonts/AlbertSans-ExtraBold.ttf');
-const fontBlack = join(__dirname, '../../assets/fonts/AlbertSans-Black.ttf');
+const white = '#FFFFFF';
+const yellow = '#FFD700';
 
 const createTextSVG = async (
   text: string,
@@ -49,13 +50,10 @@ const createTextSVG = async (
     .toBuffer();
 };
 
-type item = {
-  rareness: 'common' | 'rare' | 'special';
-  points: number;
-  tokens: {
-    tokenId: number;
-    quantity: number;
-  }[];
+type Item = {
+  tokenId: number;
+  quantity: number;
+  point: number;
 };
 
 @Injectable()
@@ -65,189 +63,102 @@ export class OgpService {
     private readonly scorecardRepository: Repository<ScorecardEntity>,
   ) {}
 
-  async generateSquareOgp(totalPoint: number, address: string, items: item[]) {
+  async generateSquareOgp(totalPoint: number, address: string, items: Item[]) {
     const base = readFileSync(
       join(__dirname, '../../assets/images/ogp/square-base.png'),
     );
 
-    const container = sharp(base);
+    const container = sharp(base).resize(1000, 1000);
 
     const point = await sharp({
       text: {
-        text: `<span foreground="${blue}" font_weight="bold">${totalPoint}</span>`,
-        font: 'Albert Sans',
-        fontfile: fontBold,
+        text: `<span foreground="${white}" font_weight="bold">${totalPoint}</span>`,
+        font: 'Bigelow Rules',
+        fontfile: fontRegular,
         rgba: true,
-        width: 550,
-        height: 84,
+        width: 250,
+        height: 64,
       },
     })
       .png()
       .toBuffer();
 
-    const pointLabel = await sharp({
-      text: {
-        text: `<span foreground="${blue}" font_weight="bold">$BALL</span>`,
-        font: 'Albert Sans',
-        fontfile: fontBold,
-        rgba: true,
-        width: 150,
-        height: 34,
-      },
-    })
-      .png()
-      .toBuffer();
+    const eachQuantity = await Promise.all(
+      items.map(async (item, index) => {
+        const quantity = item.quantity;
+        const input = await sharp({
+          text: {
+            text: `<span foreground="${white}" font_weight="bold"
+            >x ${quantity}</span>`,
+            font: 'Bigelow Rules',
+            fontfile: fontRegular,
+            rgba: true,
+            width: 250,
+            height: 25,
+          },
+        })
+          .png()
+          .toBuffer();
+        return {
+          input,
+          left: 780 - quantity.toString().length * 2,
+          top: 120 + index * 42,
+        };
+      }),
+    );
+
+    const eachPoints = await Promise.all(
+      items.map(async (item, index) => {
+        const input = await sharp({
+          text: {
+            text: `<span foreground="${white}" font_weight="bold"
+            >${item.point}</span>`,
+            font: 'Bigelow Rules',
+            fontfile: fontRegular,
+            rgba: true,
+            width: 250,
+            height: 25,
+          },
+        })
+          .png()
+          .toBuffer();
+        return {
+          input,
+          left: 910 - item.point.toString().length * 5,
+          top: 120 + index * 42,
+        };
+      }),
+    );
 
     const addressImage = await sharp({
       text: {
-        text: `<span foreground="black">${
+        text: `<span foreground="white">${
           address.slice(0, 6) + '...' + address.slice(-4)
         }</span>`,
-        font: 'Albert Sans',
-        fontfile: fontMedium,
+        font: 'Bigelow Rules',
+        fontfile: fontRegular,
         rgba: true,
         width: 550,
-        height: 28,
+        height: 40,
+        align: 'left',
       },
     })
       .png()
       .toBuffer();
 
-    const itemsContainer = await Promise.all(
-      items.map(async (item, index) => {
-        const ballImage = readFileSync(
-          join(__dirname, `../../assets/images/ogp/ball_${item.rareness}.png`),
-        );
-        const ball = await sharp(ballImage).resize(72, 72).png().toBuffer();
-        return {
-          input: ball,
-          left: 51,
-          top: 616 + index * 125,
-        };
-      }),
-    );
-    const pointsContainer = await Promise.all(
-      items.map(async (item, index) => {
-        const points = await sharp({
-          text: {
-            text: `<span foreground="black" font_weight="bold">${item.points}</span>`,
-            font: 'Albert Sans',
-            fontfile: fontBold,
-            rgba: true,
-            width: 550,
-            height: 45,
-          },
-        })
-          .png()
-          .toBuffer();
-        return {
-          input: points,
-          left: 155,
-          top: 630 + index * 128,
-        };
-      }),
-    );
-    const pointLabelsContainer = await Promise.all(
-      items.map(async (item, index) => {
-        const points = await sharp({
-          text: {
-            text: `<span foreground="black" font_weight="bold">$BALL</span>`,
-            font: 'Albert Sans',
-            fontfile: fontBlack,
-            rgba: true,
-            width: 100,
-            height: 23,
-          },
-        })
-          .png()
-          .toBuffer();
-        return {
-          input: points,
-          left: 180 + item.points.toString().length * 40,
-          top: 652 + index * 128,
-        };
-      }),
-    );
-
-    const itemsImageContainer = await Promise.all(
-      items.map(async (item, index) => {
-        const itemImages = await Promise.all(
-          item.tokens
-            .filter((t) => t.quantity > 0)
-            .map(async (token, tokenIndex) => {
-              const itemImage = readFileSync(
-                join(
-                  __dirname,
-                  `../../assets/images/ogp/gasha_item/${token.tokenId}.png`,
-                ),
-              );
-              const img = await sharp(itemImage)
-                .resize(96, 96)
-                .png()
-                .toBuffer();
-              return {
-                input: img,
-                left: 548 + tokenIndex * 210,
-                top: 604 + index * 125,
-              };
-            }),
-        );
-
-        return itemImages;
-      }),
-    );
-
-    const itemsQuantityContainer = await Promise.all(
-      items.map(async (item, index) => {
-        const quantityImages = await Promise.all(
-          item.tokens
-            .filter((t) => t.quantity > 0)
-            .map(async (token, tokenIndex) => {
-              const img = await sharp({
-                text: {
-                  text: `<span foreground="black" font_weight="bold">x${token.quantity}</span>`,
-                  font: 'Albert Sans',
-                  fontfile: fontBold,
-                  rgba: true,
-                  width: 100,
-                  height: 23,
-                },
-              })
-                .png()
-                .toBuffer();
-              return {
-                input: img,
-                left: 660 + tokenIndex * 215,
-                top: 642 + index * 125,
-              };
-            }),
-        );
-
-        return quantityImages;
-      }),
-    );
-
     container.composite([
+      ...eachPoints,
+      ...eachQuantity,
       {
         input: point,
-        left: 50,
-        top: 250,
-      },
-      {
-        input: pointLabel,
-        left: 50,
-        top: 360,
+        left: 700 - totalPoint.toString().length * 15,
+        top: 830,
       },
       {
         input: addressImage,
-        left: 53,
-        top: 425,
+        left: 387,
+        top: 764,
       },
-      ...itemsContainer.filter((c) => c),
-      ...pointsContainer.filter((c) => c),
-      ...pointLabelsContainer.filter((c) => c),
-      ...itemsImageContainer.flat().filter((c) => c),
-      ...itemsQuantityContainer.flat().filter((c) => c),
     ]);
 
     const buffer = await container.toBuffer();
@@ -262,8 +173,8 @@ export class OgpService {
     const container = sharp(base);
 
     const pointNum = '200900';
-    const point = await createTextSVG(pointNum, 512, 128, blue, 'end', 80);
-    const pointLabel = await createTextSVG('$BALL', 150, 64, blue, 'end', 40);
+    const point = await createTextSVG(pointNum, 512, 128, white, 'end', 80);
+    const pointLabel = await createTextSVG('$BALL', 150, 64, white, 'end', 40);
     const address = await createTextSVG(
       '0x12...678E',
       256,
@@ -418,7 +329,7 @@ export class OgpService {
           text: {
             text: `<span>${account.address.slice(0, 6) + '...' + account.address.slice(-4)}</span>`,
             font: 'Albert Sans',
-            fontfile: fontMedium,
+            fontfile: fontRegular,
             rgba: true,
             width: 550,
             height: 27,

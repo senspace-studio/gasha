@@ -25,6 +25,7 @@ import { OgpModule } from './ogp/ogp.module';
 import { ScorecardEntity } from 'src/entities/scorecard';
 import { OfficialNFTDataEntity } from 'src/entities/officialnft_data.entity';
 import { WIHCountEntity } from 'src/entities/wih_count.entity';
+import { GashaModule } from './gasha/gasha.module';
 
 @Module({
   imports: [
@@ -55,6 +56,7 @@ import { WIHCountEntity } from 'src/entities/wih_count.entity';
     CronModule,
     AllowlistModule,
     OgpModule,
+    GashaModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,16 +1,11 @@
 import { Button, Frog, parseEther, TextInput } from "frog"
 import {
+  API_BASE_URL,
   DEGEN_CONTRACT_ADDRESS,
   DEPOSIT_WALLET_ADDRESS,
 } from "../constants/config"
 import { DEGEN_ABI } from "../constants/abi"
-import { SyndicateClient } from "@syndicateio/syndicate-node"
-import {
-  gashaContractTransactionReceipt,
-  parseGashaContractLog,
-} from "../lib/viem"
-
-const syndicate = new SyndicateClient({ token: "0zXOhfKdn0xvW7vDBWCQ" })
+import { apiClient } from "../lib/api"
 
 type State = {
   transactionId: string
@@ -24,7 +19,7 @@ export const theballApp = new Frog<{ State: State }>({
 
 theballApp.frame("/", (c) => {
   return c.res({
-    image: <>The Ball</>,
+    image: "/card/top.png",
     imageAspectRatio: "1:1",
     intents: [<Button action="/top">Start</Button>],
   })
@@ -32,115 +27,98 @@ theballApp.frame("/", (c) => {
 
 theballApp.frame("/top", (c) => {
   return c.res({
-    image: <div>The Ball Top</div>,
+    image: "/card/top.png",
     imageAspectRatio: "1:1",
     intents: [
-      <Button action="/spin">Spin</Button>,
+      <Button action="/draw">Draw</Button>,
       <Button action="/stats">Stats</Button>,
     ],
   })
 })
 
-theballApp.frame("/spin", (c) => {
+theballApp.frame("/draw", (c) => {
+  const numOfMint = Number(c.inputText)
+
   return c.res({
-    image: (
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          fontSize: 60,
-          fontStyle: "normal",
-          marginLeft: "220px",
-        }}
-      >
-        The Ball Spin
-      </div>
-    ),
+    image: "/card/draw.png",
     imageAspectRatio: "1:1",
-    action: "/mint",
     intents: [
-      <TextInput placeholder="Number of Spin" />,
-      <Button.Transaction target="/send-degen">Add Tokens</Button.Transaction>,
+      typeof numOfMint == "number" &&
+      numOfMint > 0 &&
+      numOfMint < 1000 ? null : (
+        <TextInput placeholder="Number of cards to draw" />
+      ),
+      <Button.Transaction target="/send-degen/1" action={`/mint/1`}>
+        1 card
+      </Button.Transaction>,
+      <Button.Transaction target="/send-degen/5" action={`/mint/5`}>
+        5 cards
+      </Button.Transaction>,
+      <Button.Transaction target="/send-degen/10" action={`/mint/10`}>
+        10 cards
+      </Button.Transaction>,
+      typeof numOfMint == "number" && numOfMint > 0 && numOfMint < 1000 ? (
+        <Button.Transaction
+          target={`/send-degen/${numOfMint}`}
+          action={`/mint/${numOfMint}`}
+        >
+          {`${numOfMint}`} cards
+        </Button.Transaction>
+      ) : (
+        <Button action="/draw">Custom</Button>
+      ),
     ],
   })
 })
 
-theballApp.frame("/mint", async (c) => {
-  const tx = await syndicate.transact.sendTransaction({
-    projectId: "3dea3dbd-83bc-4625-97aa-28161dc27aa4",
-    contractAddress: "0x8cC40aa52A79b378AC4C5d9CB155521778372b76",
-    chainId: 666666666,
-    functionSignature: "spin(uint256 quantity, address to)",
-    args: {
-      quantity: 10,
-      to: "0xdCb93093424447bF4FE9Df869750950922F1E30B",
-    },
+theballApp.frame("/mint/:numOfMint", async (c) => {
+  const frameData = await c.req.bodyCache.json
+  const { data } = await apiClient.post("/gasha/syndicate/spin", {
+    messageBytes: frameData.trustedData.messageBytes,
+    numOfMint: Number(c.req.param("numOfMint")),
   })
 
-  c.deriveState((prev) => {
-    prev.transactionId = tx.transactionId
+  c.deriveState((prevState) => {
+    prevState.transactionId = data.transactionId
   })
 
   return c.res({
-    image: (
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          fontSize: 60,
-          fontStyle: "normal",
-          padding: "0 220px",
-        }}
-      >
-        The Ball Mint Page
-      </div>
-    ),
+    image: "/card/mint.png",
     imageAspectRatio: "1:1",
-    intents: [<Button action="/result">Open</Button>],
+    intents: [<Button action="/score">Open</Button>],
   })
 })
 
-theballApp.frame("/result", async (c) => {
-  const transactionId = c.previousState.transactionId
+theballApp.frame("/score", async (c) => {
+  const { transactionId } = c.previousState
+  await new Promise((resolve) => setTimeout(resolve, 1000))
 
-  const tx = await (
-    await fetch(
-      `https://api.syndicate.io/wallet/project/3dea3dbd-83bc-4625-97aa-28161dc27aa4/request/${transactionId}`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer 0zXOhfKdn0xvW7vDBWCQ",
-        },
-      }
+  try {
+    const { data: result } = await apiClient.get(
+      `/gasha/syndicate/spin/result/${transactionId}`
     )
-  ).json()
 
-  const txHash = tx.transactionAttempts[0].hash
-
-  const logs = await gashaContractTransactionReceipt(txHash)
-
-  const events = parseGashaContractLog(logs.logs)
-
-  console.log(events[0].args)
-
-  return c.res({
-    image: <div>The Ball Result</div>,
-    imageAspectRatio: "1:1",
-    intents: [
-      <Button action="/top">Back</Button>,
-      <Button.Link href="/">Share</Button.Link>,
-    ],
-  })
+    return c.res({
+      image: `${API_BASE_URL}/ogp/square.png?score=${JSON.stringify(result)}`,
+      imageAspectRatio: "1:1",
+      intents: [
+        <Button action="/top">Back</Button>,
+        <Button.Link href="https://google.com">Share</Button.Link>,
+      ],
+    })
+  } catch (error) {
+    return c.res({
+      image: "/card/mint.png",
+      imageAspectRatio: "1:1",
+      intents: [<Button action="/score">Retry</Button>],
+    })
+  }
 })
 
-theballApp.transaction("/send-degen", (c) => {
-  const numOfSpin = Number(c.inputText)
+theballApp.transaction("/send-degen/:numOfMint", async (c) => {
+  const numOfMint = Number(c.req.param("numOfMint"))
+  const requiredDegen = numOfMint * 100
 
-  if (typeof numOfSpin !== "number" || numOfSpin < 1) {
-    return c.contract({} as any)
-  }
-
-  const requiredDegen = Number(c.inputText) * 100
   return c.contract({
     chainId: "eip155:84532",
     to: DEGEN_CONTRACT_ADDRESS,
