@@ -83,9 +83,12 @@ export class GashaController {
       ).json();
 
       const txHash = tx.transactionAttempts[0].hash;
-
       const txReceipt =
         await this.viemService.getContractTransactionReceipt(txHash);
+
+      if (txReceipt.status === 'reverted') {
+        throw 'Transaction reverted';
+      }
 
       const events = parseEventLogs({
         abi: GashaABI,
@@ -95,7 +98,7 @@ export class GashaController {
       const spinEvent: any = events.find((event) => event.eventName === 'Spin');
 
       if (!spinEvent) {
-        throw new HttpException('Event not found', 404);
+        throw 'Spin event not found';
       }
 
       const result = {
@@ -110,7 +113,13 @@ export class GashaController {
     } catch (error) {
       this.logger.error(error);
 
-      throw new HttpException('Internal server error', 500);
+      if (error === 'Transaction reverted') {
+        throw new HttpException('Transaction reverted', 400);
+      } else if (error === 'Spin event not found') {
+        throw new HttpException('Spin event not found', 400);
+      } else {
+        throw new HttpException('Internal server error', 500);
+      }
     }
   }
 }
