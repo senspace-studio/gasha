@@ -13,13 +13,16 @@ export class SyndicateService {
     functionSignature: string,
     args: Record<string, unknown>,
   ) {
-    const tx = await this.client.transact.sendTransaction({
-      projectId: SYNDICATE_PROJECT_ID,
-      contractAddress,
-      chainId,
-      functionSignature,
-      args,
-    });
-    return tx;
+    const { transactionId } = await this.client.transact.sendTransaction(
+      {
+        projectId: SYNDICATE_PROJECT_ID,
+        contractAddress,
+        chainId,
+        functionSignature,
+        args,
+      },
+      {},
+    );
+    return transactionId;
   }
 }

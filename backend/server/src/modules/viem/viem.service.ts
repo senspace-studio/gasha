@@ -5,6 +5,7 @@ import {
   CHAIN_ID,
   ERC1155_ADDRESS,
   GASHA_ADDRESS,
+  UNIT_PRICE,
 } from 'src/utils/env';
 import {
   http,
@@ -16,7 +17,7 @@ import {
   parseEther,
 } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
-import { baseSepolia, base, hardhat, mainnet } from 'viem/chains';
+import { baseSepolia, base, hardhat, mainnet, degen } from 'viem/chains';
 import { Gasha, GashaABI } from 'src/constants/Gasha';
 import { SeriesItem } from 'src/types/contract';
 import { ZoraCreator1155ABI } from 'src/constants/ZoraCreator1155Impl';
@@ -31,6 +32,8 @@ export class ViemService {
         return baseSepolia;
       case 8453:
         return base;
+      case 666666666:
+        return degen;
       default:
         return hardhat;
     }
@@ -112,6 +115,11 @@ export class ViemService {
     return block.timestamp;
   }
 
+  async getContractTransactionReceipt(hash: Address) {
+    const tx = await this.client.getTransactionReceipt({ hash });
+    return tx;
+  }
+
   async getContractEvent(
     eventName: string,
     fromBlock: bigint,
@@ -147,7 +155,7 @@ export class ViemService {
         account: this.adminAccount,
         functionName: 'dropByOwner',
         args: [address, [BigInt(tokenId)], [BigInt(1)]],
-        value: parseEther('0.000777'),
+        value: parseEther(UNIT_PRICE),
       });
 
       await this.walletClient.writeContract(request);

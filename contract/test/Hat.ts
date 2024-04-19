@@ -87,6 +87,12 @@ describe("Hat", () => {
     tx = await Forwarder.setOperator(operator.address, true)
     await tx.wait()
 
+    const sendEth = await admin.sendTransaction({
+      to: await Forwarder.getAddress(),
+      value: parseEther("2000"),
+    })
+    await sendEth.wait()
+
     tx = await Hat.setForwarder(await Gasha.getAddress(), true)
     await tx.wait()
     tx = await Hat.setForwarder(await Forwarder.getAddress(), true)
@@ -96,32 +102,22 @@ describe("Hat", () => {
   it("shoud burn and redeem reward", async () => {
     const userHatERC721Balance = await Hat.erc721BalanceOf(user.address)
     const userEtherBalance = await ethers.provider.getBalance(user.address)
-    const operatorEtherBalance = await ethers.provider.getBalance(
-      operator.address
-    )
 
     const tx = await Forwarder.connect(operator).burnAndRedeemReward(
       user.address,
-      {
-        value: parseEther("1000"),
-      }
+      parseEther("1000"),
+      ""
     )
     await tx.wait()
 
     const userHatERC721BalanceAfter = await Hat.erc721BalanceOf(user.address)
     const userEtherBalanceAfter = await ethers.provider.getBalance(user.address)
-    const operatorEtherBalanceAfter = await ethers.provider.getBalance(
-      operator.address
-    )
 
     expect(Number(userHatERC721BalanceAfter)).to.equal(
       Number(userHatERC721Balance) - 1
     )
     expect(Number(formatEther(userEtherBalanceAfter))).to.equal(
       Number(formatEther(userEtherBalance)) + 1000
-    )
-    expect(Number(formatEther(operatorEtherBalanceAfter))).to.lessThan(
-      Number(formatEther(operatorEtherBalance)) - 1000
     )
   })
 
@@ -130,7 +126,8 @@ describe("Hat", () => {
     const userLostNFTBalance = await LostNFTERC1155.balanceOf(user.address, 1)
 
     const tx = await Forwarder.connect(operator).burnAndRedeemLostNFT(
-      user.address
+      user.address,
+      ""
     )
     await tx.wait()
 

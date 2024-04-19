@@ -22,3 +22,4 @@ export const UPDATE_SCORE_INTERVAL_MINUTES =
 export const SYNDICATE_PROJECT_ID = process.env.SYNDICATE_PROJECT_ID || '';
 export const SYNDICATE_API_KEY = process.env.SYNDICATE_API_KEY || '';
 export const WIH_ADDRESS = process.env.WIH_ADDRESS || '';
+export const UNIT_PRICE = process.env.UNIT_PRICE || '1';

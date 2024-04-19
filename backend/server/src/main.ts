@@ -7,7 +7,7 @@ import { Logger } from '@nestjs/common';
 import { AppModule } from './modules/app.module';
 
 const cluster = __cluster__ as unknown as Cluster;
-const numCPUs = os.cpus().length;
+const numCPUs = os.cpus().length > 8 ? 8 : os.cpus().length;
 
 const logger = new Logger(cluster.isPrimary ? 'Primary' : 'Worker');
 

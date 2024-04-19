@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 networks:
   basic:
@@ -38,7 +38,7 @@ services:
       TZ: Asia/Tokyo
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
-      DB_DOMAIN: 'db'
+      DB_DOMAIN: "db"
       DB_PORT: ${DB_PORT}
       DB_NAME: ${DB_NAME}
       BLOCKCHAIN_API: ${BLOCKCHAIN_API}
@@ -51,4 +51,7 @@ services:
       ADMIN_PRIVATE_KEY: ${ADMIN_PRIVATE_KEY}
       CHAIN_ID: ${CHAIN_ID}
       UPDATE_SCORE_INTERVAL_MINUTES: ${UPDATE_SCORE_INTERVAL_MINUTES}
+      SYNDICATE_PROJECT_ID: ${SYNDICATE_PROJECT_ID}
+      SYNDICATE_API_KEY: ${SYNDICATE_API_KEY}
+
     command: yarn start:dev

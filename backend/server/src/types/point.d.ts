@@ -12,3 +12,9 @@ export type PointCalcResponse = {
     points: bigint;
   };
 };
+
+export type SpinResult = {
+  minter: string;
+  ids: number[];
+  quantities: number[];
+};

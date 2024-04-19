@@ -4,7 +4,10 @@ import { deployForwarderContract, deployHatContract } from "../helper/hat"
 
 const main = async () => {
   const adminAddress = "0x807C69F16456F92ab2bFc9De8f14AF31051f9678"
-  const syndicateAddress = "0x6A835d6bd3d5fE1D1Ac8dB2Ce2f707f95892Ea28"
+  const syndicateAddresses = [
+    "0x6A835d6bd3d5fE1D1Ac8dB2Ce2f707f95892Ea28",
+    "0xe79B0AF60EECd70eb738C113734483D9D14959Ae",
+  ]
 
   const gashaItemERC1155Contract = await deployGashaItemContract(adminAddress)
 
@@ -43,10 +46,14 @@ const main = async () => {
   await tx.wait()
 
   // Set syndicate as Operator of Gasha
-  tx = await gashaContract.setOperator(syndicateAddress, true)
+  for (const syndicateAddress of syndicateAddresses) {
+    tx = await gashaContract.setOperator(syndicateAddress, true)
+    await tx.wait()
+  }
 
   // Set available time for gasha
   tx = await gashaContract.setAvailableTime(1711000000, 1912300400)
+  await tx.wait()
 
   // Set minter of GashaItem
   tx = await gashaItemERC1155Contract.setMinter(
@@ -60,7 +67,10 @@ const main = async () => {
   await tx.wait()
 
   // Set syndicate as operator of Forwarder
-  tx = await forwarderContract.setOperator(syndicateAddress, true)
+  for (const syndicateAddress of syndicateAddresses) {
+    tx = await forwarderContract.setOperator(syndicateAddress, true)
+    await tx.wait()
+  }
 
   // set forwarder of hat
   tx = await hatContract.setForwarder(await gashaContract.getAddress(), true)
