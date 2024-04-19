@@ -31,7 +31,7 @@ export class WIHController {
     const { count } = await this.wihService.getWIHCount(address);
     const hat = this.wihService.createHat(address, count);
     const hash = hat.hash.map((e) => Buffer.from(e).toString('hex'));
-    return { options: hash };
+    return { options: hash, count };
   }
 
   @Post('/choosehat/:options')
@@ -55,9 +55,7 @@ export class WIHController {
     const hat = this.wihService.createHat(address, count);
     const selection = hat.selection;
     const pubkey = Buffer.from(hat.pubkey).toString('hex');
-    const signature = hat.signature.map((e) =>
-      Buffer.from(e).toString('hex'),
-    );
+    const signature = hat.signature.map((e) => Buffer.from(e).toString('hex'));
     const hash = hat.hash.map((e) => Buffer.from(e).toString('hex'));
     const proof = JSON.stringify({ selection, pubkey, signature, hash });
     if (hat.selected === buttonIndex) {
@@ -70,7 +68,7 @@ export class WIHController {
       return {
         hit: true,
         degen_amount: hat.reward.value,
-      }
+      };
     } else {
       await this.syndicateService.sendTransaction(
         FORWARDER_ADDRESS,
@@ -81,7 +79,7 @@ export class WIHController {
       return {
         hit: false,
         degen_amount: 0,
-      }
+      };
     }
   }
 }
