@@ -26,6 +26,8 @@ import { ScorecardEntity } from 'src/entities/scorecard';
 import { OfficialNFTDataEntity } from 'src/entities/officialnft_data.entity';
 import { WIHCountEntity } from 'src/entities/wih_count.entity';
 import { GashaModule } from './gasha/gasha.module';
+import { WIHModule } from './wih/wih.module';
+import { SyndicateModule } from './syndicate/syndicate.module';
 
 @Module({
   imports: [
@@ -57,6 +59,8 @@ import { GashaModule } from './gasha/gasha.module';
     AllowlistModule,
     OgpModule,
     GashaModule,
+    SyndicateModule,
+    WIHModule,
   ],
   controllers: [AppController],
   providers: [AppService],

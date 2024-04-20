@@ -1,15 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { WIHCountEntity } from 'src/entities/wih_count.entity';
-import nacl from 'tweetnacl';
+import { WIH_SIGN_SECKEY } from 'src/utils/env';
+import { sign as naclSign } from 'tweetnacl';
+import { hash as naclHash } from 'tweetnacl';
 import { Repository } from 'typeorm';
 
-const secret = '';
-const bonusTable = [
+const secret = WIH_SIGN_SECKEY;
+
+const rewardTable = [
+  // 2%
   { percentage: 2, value: 100000 },
-  { percentage: 3, value: 5000 },
-  { percentage: 35, value: 500 },
-  { percentage: 60, value: 100 },
+  // 3%
+  { percentage: 5, value: 5000 },
+  // 35%
+  { percentage: 40, value: 500 },
+  // 60%
+  { percentage: 100, value: 100 },
 ].sort((a, b) => a.percentage - b.percentage);
 
 @Injectable()
@@ -19,28 +26,62 @@ export class WIHService {
     private readonly wihCountRepositry: Repository<WIHCountEntity>,
   ) {}
 
-  createHat(address: string, count: number) {
-    const kp = nacl.sign.keyPair.fromSeed(Buffer.from(secret));
-    const base = Buffer.from(`${address}_${count}`);
-    const seed = nacl.sign(base, kp.secretKey);
-    const valueIndex = this.randomFromSeed(seed, 100);
-    const bonus = bonusTable.filter((e) => 100 - e.percentage <= valueIndex)[0];
-    const selectedIndex = this.randomFromSeed(seed, 3);
+  async getWIHCount(address: string) {
+    address = address.toLowerCase();
+    const wihcount = await this.wihCountRepositry.findOne({
+      where: { address },
+    });
+    return wihcount || { address, count: 0 };
+  }
 
+  async initWIHCount(address: string) {
+    const count = await this.getWIHCount(address);
+    if (!count || count.count === 0) {
+      await this.wihCountRepositry.save({ address, count: 0 });
+    }
+  }
+
+  async incrementWIHCount(address: string) {
+    const count = await this.getWIHCount(address);
+    if (!count) {
+      await this.wihCountRepositry.save({ address, count: 1 });
+    } else {
+      await this.wihCountRepositry.save({ address, count: count.count + 1 });
+    }
+  }
+
+  createHat(address: string, count: number) {
+    address = address.toLowerCase();
+    const kp = naclSign.keyPair.fromSeed(naclHash(Buffer.from(secret)).subarray(0, naclSign.seedLength));
+    const base = Buffer.from(`${address}_${count}`);
+    const seed = naclSign(base, kp.secretKey);
+    const valueIndex = this.randomFromSeed(seed, 100);
+    const reward = rewardTable.filter(
+      (e) => { console.log(e.percentage); return 100 - e.percentage <= valueIndex },
+    )[0];
+    const selected = this.randomFromSeed(seed, 3);
     const selection = [
-      `${address}_${count}_0_${selectedIndex === 0 ? bonus.value : 0}`,
-      `${address}_${count}_1_${selectedIndex === 1 ? bonus.value : 0}`,
-      `${address}_${count}_2_${selectedIndex === 2 ? bonus.value : 0}`,
+      `${address}_${count}_0_${selected === 0 ? reward.value : 0}`,
+      `${address}_${count}_1_${selected === 1 ? reward.value : 0}`,
+      `${address}_${count}_2_${selected === 2 ? reward.value : 0}`,
     ];
     const signature = selection
       .map((e) => Buffer.from(e))
-      .map((e) => nacl.sign(e, kp.secretKey));
-    const hash = signature.map((e) => nacl.hash(e));
-    return { signature, hash };
+      .map((e) => naclSign(e, kp.secretKey));
+    const hash = signature.map((e) => naclHash(e));
+    return {
+      selection,
+      signature,
+      hash,
+      count,
+      reward,
+      selected,
+      pubkey: kp.publicKey,
+    };
   }
 
   randomFromSeed(seed: Uint8Array, length: number) {
-    const hash = nacl.hash(seed);
+    const hash = naclHash(seed);
     const index = hash.reduce((prev, current) => {
       return (prev + current) % length;
     });
