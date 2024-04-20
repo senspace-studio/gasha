@@ -24,6 +24,9 @@ import { AllowlistModule } from './allowlist/allowlist.module';
 import { OgpModule } from './ogp/ogp.module';
 import { ScorecardEntity } from 'src/entities/scorecard';
 import { OfficialNFTDataEntity } from 'src/entities/officialnft_data.entity';
+import { WIHCountEntity } from 'src/entities/wih_count.entity';
+import { WIHModule } from './wih/wih.module';
+import { SyndicateModule } from './syndicate/syndicate.module';
 
 @Module({
   imports: [
@@ -42,6 +45,7 @@ import { OfficialNFTDataEntity } from 'src/entities/officialnft_data.entity';
         LogicEntity,
         ScorecardEntity,
         OfficialNFTDataEntity,
+        WIHCountEntity,
       ],
       synchronize: true,
     }),
@@ -53,6 +57,8 @@ import { OfficialNFTDataEntity } from 'src/entities/officialnft_data.entity';
     CronModule,
     AllowlistModule,
     OgpModule,
+    SyndicateModule,
+    WIHModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -26,6 +26,7 @@
     "@nestjs/schedule": "^4.0.1",
     "@nestjs/typeorm": "^10.0.2",
     "@neynar/nodejs-sdk": "^1.12.0",
+    "@syndicateio/syndicate-node": "^0.0.449",
     "@zoralabs/zdk": "^2.4.0",
     "helmet": "^7.1.0",
     "mysql2": "^3.9.2",
@@ -33,6 +34,7 @@
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
     "sharp": "^0.32.6",
+    "tweetnacl": "^1.0.3",
     "typeorm": "^0.3.20",
     "viem": "^2.8.9"
   },
