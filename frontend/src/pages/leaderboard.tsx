@@ -16,14 +16,7 @@ import { useState } from "react"
 import { useAccount } from "wagmi"
 
 const Leaderboard: NextPage = () => {
-  const {
-    myPoints,
-    totalPoints,
-    leaderboard,
-    fixedLeaderboard,
-    fixedTotal,
-    fiexedMyPoints,
-  } = useLeaderboard()
+  const { myPoints, totalPoints, leaderboard } = useLeaderboard()
   const { address } = useAccount()
   const [page, setPage] = useState(1)
 
@@ -63,17 +56,17 @@ const Leaderboard: NextPage = () => {
         {address && (
           <LeaderboardListItem
             address={address}
-            points={fiexedMyPoints}
-            totalPoints={fixedTotal}
+            points={myPoints}
+            totalPoints={totalPoints}
             backgroundColor="blue.300"
           />
         )}
-        {fixedLeaderboard?.map((item, i) => (
+        {leaderboard?.data.map((item, i) => (
           <LeaderboardListItem
             key={i}
             address={item.address}
             points={Number(item.points)}
-            totalPoints={fixedTotal}
+            totalPoints={totalPoints}
             backgroundColor={
               page === 1 && i === 0 ? "yellow.400" : "yellow.300"
             }
