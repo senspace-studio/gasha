@@ -1,29 +1,30 @@
-import { ethers } from 'hardhat'
+import { ethers } from "hardhat"
 import {
+  ERC20Minter__factory,
   ZoraCreator1155FactoryImpl,
   ZoraCreator1155Impl,
   ZoraCreatorMerkleMinterStrategy__factory,
-} from '../../typechain-types'
-import { keccak256, maxUint64, zeroAddress } from 'viem'
-import { AbiCoder } from 'ethers'
-import MerkleTree from 'merkletreejs'
+} from "../../typechain-types"
+import { keccak256, maxUint64, zeroAddress } from "viem"
+import { AbiCoder } from "ethers"
+import MerkleTree from "merkletreejs"
 
 export const deployZoraCreatorERC1155Factory = async (adminAddress: string) => {
   const zoraProtocolRewardsFactory = await ethers.getContractFactory(
-    'ProtocolRewards'
+    "ProtocolRewards"
   )
   const zoraProtocolRewards = await zoraProtocolRewardsFactory.deploy()
   await zoraProtocolRewards.waitForDeployment()
 
   const zoraCreator1155AttributionFactory = await ethers.getContractFactory(
-    'DelegatedTokenCreation'
+    "DelegatedTokenCreation"
   )
   const zoraCreator1155Attribution =
     await zoraCreator1155AttributionFactory.deploy()
   await zoraCreator1155Attribution.waitForDeployment()
 
   const zoraCreator1155ImplFactory = await ethers.getContractFactory(
-    'ZoraCreator1155Impl',
+    "ZoraCreator1155Impl",
     {
       libraries: {
         DelegatedTokenCreation: await zoraCreator1155Attribution.getAddress(),
@@ -38,24 +39,24 @@ export const deployZoraCreatorERC1155Factory = async (adminAddress: string) => {
   await zoraCreator1155Impl.waitForDeployment()
 
   const merkelMinterFactory = await ethers.getContractFactory(
-    'ZoraCreatorMerkleMinterStrategy'
+    "ZoraCreatorMerkleMinterStrategy"
   )
   const merkelMinter = await merkelMinterFactory.deploy()
   await merkelMinter.waitForDeployment()
 
   const fixedPriceMinterFactory = await ethers.getContractFactory(
-    'ZoraCreatorFixedPriceSaleStrategy'
+    "ZoraCreatorFixedPriceSaleStrategy"
   )
   const fixedPriceMinter = await fixedPriceMinterFactory.deploy()
   await fixedPriceMinter.waitForDeployment()
 
   const redeemMinterFactory = await ethers.getContractFactory(
-    'ZoraCreatorRedeemMinterFactory'
+    "ZoraCreatorRedeemMinterFactory"
   )
   const redeemMinter = await redeemMinterFactory.deploy()
   await redeemMinter.waitForDeployment()
 
-  const factory = await ethers.getContractFactory('ZoraCreator1155FactoryImpl')
+  const factory = await ethers.getContractFactory("ZoraCreator1155FactoryImpl")
   const zoraCreatorERC1155Factory = await factory.deploy(
     await zoraCreator1155Impl.getAddress(),
     await merkelMinter.getAddress(),
@@ -82,7 +83,7 @@ export const createZoraCreator1155 = async (
 ) => {
   const tx = await factory.createContract(
     ipfsBaseURI,
-    'The Ball',
+    "The Ball",
     {
       royaltyMintSchedule: 0,
       royaltyBPS: 0,
@@ -122,7 +123,7 @@ export const generateMerkleTree = (leaves: [string, number, number][]) => {
   const hashedLeaves = leaves.map((v) =>
     keccak256(
       new AbiCoder().encode(
-        ['address', 'uint256', 'uint256'],
+        ["address", "uint256", "uint256"],
         v
       ) as `0x${string}`
     )
@@ -132,6 +133,35 @@ export const generateMerkleTree = (leaves: [string, number, number][]) => {
   })
 
   return merkleTree
+}
+
+export const callSaleForERC20Minter = async (
+  zoraCreator1155: ZoraCreator1155Impl,
+  minterAddress: string,
+  pricePerToken: bigint,
+  fundsRecipientAddress: string,
+  currency: string,
+  tokenId: number
+) => {
+  const values = [
+    tokenId,
+    {
+      saleStart: 0,
+      saleEnd: maxUint64,
+      maxTokensPerAddress: maxUint64,
+      pricePerToken,
+      fundsRecipient: fundsRecipientAddress,
+      currency,
+    },
+  ] as any
+
+  const setSaleData = ERC20Minter__factory.createInterface().encodeFunctionData(
+    "setSale" as any,
+    values
+  )
+
+  const tx = await zoraCreator1155.callSale(tokenId, minterAddress, setSaleData)
+  await tx.wait()
 }
 
 export const callSaleForMerkleMinter = async (
@@ -153,10 +183,19 @@ export const callSaleForMerkleMinter = async (
 
   const setSaleData =
     ZoraCreatorMerkleMinterStrategy__factory.createInterface().encodeFunctionData(
-      'setSale' as any,
+      "setSale" as any,
       values
     )
 
   const tx = await zoraCreator1155.callSale(tokenId, minterAddress, setSaleData)
   await tx.wait()
+}
+
+export const deployERC20Minter = async (zoraRewardRecipientAddress: string) => {
+  const factory = await ethers.getContractFactory("ERC20Minter")
+
+  const erc20Minter = await factory.deploy(zoraRewardRecipientAddress)
+  await erc20Minter.waitForDeployment()
+
+  return erc20Minter
 }

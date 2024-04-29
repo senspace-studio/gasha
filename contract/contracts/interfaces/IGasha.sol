@@ -48,9 +48,7 @@ interface IGasha {
     // *** Functions Section ****
     // ***********************
 
-    function spin(uint256 quantity) external payable;
-
-    function setMinterArguments(bytes memory _minterArguments) external;
+    function spin(uint256 quantity) external;
 
     function setAvailableTime(uint64 _startTime, uint64 _endTime) external;
 

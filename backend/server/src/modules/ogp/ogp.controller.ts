@@ -86,7 +86,7 @@ export class OgpController {
         BigInt(event.common),
         BigInt(event.rare),
         BigInt(event.special),
-        BigInt(event.timestamp),
+        Number(event.timestamp),
       );
       items.find((item) => item.rareness === 'common').points += Number(
         calclated.common.points,
@@ -147,7 +147,7 @@ export class OgpController {
       BigInt(rareness.common),
       BigInt(rareness.rare),
       BigInt(rareness.special),
-      BigInt(result.date * 1000),
+      result.date * 1000,
     );
 
     const totalPoints =
