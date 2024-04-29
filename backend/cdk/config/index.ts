@@ -21,6 +21,8 @@ export interface Config {
 
   adminPrivateKey: string
   chainId: string
+
+  updateScoreIntervalMinutes: string
 }
 
 export function getConfig(stage: string): Config {

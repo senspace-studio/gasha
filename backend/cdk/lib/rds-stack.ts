@@ -1,9 +1,9 @@
-import { Stack, StackProps } from 'aws-cdk-lib'
-import { Construct } from 'constructs'
-import { SecurityGroup } from '../construct/sg'
-import * as ec2 from 'aws-cdk-lib/aws-ec2'
-import { Config } from '../config'
-import { Rds } from '../construct/rds'
+import { Stack, StackProps } from "aws-cdk-lib"
+import { Construct } from "constructs"
+import { SecurityGroup } from "../construct/sg"
+import * as ec2 from "aws-cdk-lib/aws-ec2"
+import { Config } from "../config"
+import { Rds } from "../construct/rds"
 
 interface AppProps {
   vpc: ec2.Vpc
@@ -26,7 +26,7 @@ export class GashaRdsStack extends Stack {
 
     const { appRunnerSecurityGroup, dbSecurityGroup } = new SecurityGroup(
       this,
-      'SecurityGroup',
+      `SecurityGroup-${id}`,
       {
         vpc,
         config,
@@ -34,7 +34,7 @@ export class GashaRdsStack extends Stack {
       }
     )
 
-    new Rds(this, 'Rds', {
+    new Rds(this, `Rds-${id}`, {
       vpc,
       dbSecurityGroup,
       config,

@@ -18,7 +18,7 @@ const main = async () => {
   // const contracts = await deployZoraCreatorERC1155Factory(adminAddress)
 
   // const zoraCreator1155Factory = await ethers.getContractAt(
-  //   'ZoraCreator1155FactoryImpl',
+  //   "ZoraCreator1155FactoryImpl",
   //   await contracts.zoraCreatorERC1155Factory.getAddress()
   // )
 
@@ -109,6 +109,7 @@ const main = async () => {
   )
 
   console.log("ERC20 test deployed to:", await ERC20Token.getAddress())
+  console.log("ERC20Minter deployed to:", await ERC20Minter.getAddress())
   console.log(
     "ZoraCreator1155 deployed to:",
     await ZoraCreator1155.getAddress()
