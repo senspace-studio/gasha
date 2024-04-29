@@ -1,12 +1,19 @@
-import { GashaAbi } from '@/abi/gasha'
-import { ZoraProtocolRewardsAbi } from '@/abi/protocolRewards'
-import { ZoraCreator1155Abi } from '@/abi/zoraCreator1155'
+import { ERC20ABI } from "@/abi/erc20"
+import { GashaAbi } from "@/abi/gasha"
+import { ZoraProtocolRewardsAbi } from "@/abi/protocolRewards"
+import { ZoraCreator1155Abi } from "@/abi/zoraCreator1155"
 import {
+  ERC20_ADDRESS,
   GASHA_ADDRESS,
   ZORA_CREATOR_ERC1155_ADDRESS,
   ZORA_PROTOCOL_REWARDS_ADDRESS,
-} from '@/config'
+} from "@/config"
 import {
+  ERC20ReadArgs,
+  ERC20ReadFunctionName,
+  ERC20ReadFunctionReturnType,
+  ERC20WriteFunctionName,
+  ERC20WriteParams,
   GashaReadArgs,
   GashaReadFunctionName,
   GashaWriteFunctionName,
@@ -17,9 +24,9 @@ import {
   ZoraProtocolRewardsFunctionReturnType,
   ZoraProtocolRewardsReadArgs,
   ZoraProtocolRewardsReadFunctionName,
-} from '@/contract'
-import { useCallback } from 'react'
-import { useReadContract, useReadContracts, useWriteContract } from 'wagmi'
+} from "@/contract"
+import { useCallback } from "react"
+import { useReadContract, useReadContracts, useWriteContract } from "wagmi"
 
 export const useMultiReadGashaContract = (
   params: {
@@ -45,7 +52,7 @@ export const useWriteGashaContract = <T extends GashaWriteFunctionName>(
   const writeResult = useWriteContract()
 
   const sendTx = useCallback(
-    async (args: GashaWriteParams<T>['args'], value?: bigint) => {
+    async (args: GashaWriteParams<T>["args"], value?: bigint) => {
       try {
         return await writeResult.writeContractAsync({
           abi: GashaAbi,
@@ -117,4 +124,44 @@ export const useMultiReadProtocolRewardsContract = (
   })
 
   return readResult
+}
+
+export const useReadERC20Contract = <T extends ERC20ReadFunctionName>(
+  functionName: T,
+  args: ERC20ReadArgs<T> extends readonly [] | undefined ? [] : ERC20ReadArgs<T>
+) => {
+  const readResult = useReadContract({
+    abi: ERC20ABI,
+    address: ERC20_ADDRESS,
+    functionName: functionName,
+    args: args,
+  } as any)
+
+  return readResult as ERC20ReadFunctionReturnType<T>
+}
+
+export const useWriteERC20Contract = <T extends ERC20WriteFunctionName>(
+  functionName: T
+) => {
+  const writeResult = useWriteContract()
+
+  const sendTx = useCallback(
+    async (args: ERC20WriteParams<T>["args"], value?: bigint) => {
+      try {
+        return await writeResult.writeContractAsync({
+          abi: ERC20ABI,
+          address: ERC20_ADDRESS,
+          functionName,
+          args,
+          value,
+        } as any)
+      } catch (error: any) {
+        console.error(error)
+        throw Error(error.message)
+      }
+    },
+    [writeResult]
+  )
+
+  return { sendTx, ...writeResult }
 }
