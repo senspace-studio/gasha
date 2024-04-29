@@ -1,20 +1,20 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from "react"
 import {
   useMultiReadGashaContract,
   useMultiReadZoraCreator1155Contract,
   useWriteGashaContract,
-} from './useContract'
-import { TransactionReceipt, parseEther, parseEventLogs } from 'viem'
-import { getTransactionReceipt } from '@wagmi/core'
-import { GashaAbi } from '@/abi/gasha'
-import { useAccount, useConfig } from 'wagmi'
-import { useRouter } from 'next/router'
-import { toast } from 'react-toastify'
-import { ipfs2http } from '@/lib/ipfs2http'
-import { gashaAPI, gashaAxios } from '@/lib/gashaAPI'
-import { ResultItem, ResultPoint } from '@/gasha'
-import { useSwitchChain } from './useChain'
-import { captureException } from '@sentry/nextjs'
+} from "./useContract"
+import { TransactionReceipt, parseEther, parseEventLogs } from "viem"
+import { getTransactionReceipt } from "@wagmi/core"
+import { GashaAbi } from "@/abi/gasha"
+import { useAccount, useConfig } from "wagmi"
+import { useRouter } from "next/router"
+import { toast } from "react-toastify"
+import { ipfs2http } from "@/lib/ipfs2http"
+import { gashaAPI, gashaAxios } from "@/lib/gashaAPI"
+import { ResultItem, ResultPoint } from "@/gasha"
+import { useSwitchChain } from "./useChain"
+import { captureException } from "@sentry/nextjs"
 
 enum RarenessLabel {
   Common = 0,
@@ -23,9 +23,9 @@ enum RarenessLabel {
 }
 
 export const rarenessLabel: Record<number, string> = {
-  [RarenessLabel.Common]: 'common',
-  [RarenessLabel.Rare]: 'rare',
-  [RarenessLabel.Special]: 'special',
+  [RarenessLabel.Common]: "common",
+  [RarenessLabel.Rare]: "rare",
+  [RarenessLabel.Special]: "special",
 }
 
 export const useSpinGasha = () => {
@@ -34,7 +34,7 @@ export const useSpinGasha = () => {
     isPending,
     data: txHash,
     reset,
-  } = useWriteGashaContract<'spin'>('spin')
+  } = useWriteGashaContract<"spin">("spin")
   const config = useConfig()
   const [receipt, setReceipt] = useState<TransactionReceipt>()
   const { seriesItems } = useSeriesItems()
@@ -46,7 +46,7 @@ export const useSpinGasha = () => {
   const spinGasha = useCallback(
     async (quantity: number) => {
       if (!address) {
-        toast.error('Please connect your wallet')
+        toast.error("Please connect your wallet")
         return
       }
 
@@ -61,11 +61,12 @@ export const useSpinGasha = () => {
             )
           )
         } catch (error: any) {
-          if (error.message.includes('insufficient funds')) {
-            toast.error('Insufficient funds. Base ETH is required to spin.')
+          if (error.message.includes("insufficient funds")) {
+            toast.error("Insufficient funds. Base ETH is required to spin.")
           } else {
             captureException(error)
-            toast.error('Failed to spin the gasha')
+            console.log(error)
+            toast.error("Failed to spin the gasha")
           }
         }
       } else {
@@ -80,8 +81,8 @@ export const useSpinGasha = () => {
       if (txHash) {
         try {
           const _receipt = await getTransactionReceipt(config, { hash: txHash })
-          if (_receipt.status === 'reverted') {
-            toast.error('Transaction reverted. Please try again.')
+          if (_receipt.status === "reverted") {
+            toast.error("Transaction reverted. Please try again.")
             reset()
             clearInterval(fetchReceipt)
           } else if (_receipt?.logs.length > 0) {
@@ -96,10 +97,10 @@ export const useSpinGasha = () => {
   }, [txHash])
 
   const result = useMemo(() => {
-    if (receipt && receipt.status === 'success') {
+    if (receipt && receipt.status === "success") {
       const topics = parseEventLogs({
         abi: GashaAbi,
-        eventName: 'Spin',
+        eventName: "Spin",
         logs: receipt.logs,
       })
       return topics[0]?.args.ids.map((id: bigint, index) => {
@@ -129,9 +130,9 @@ export const useSpinGasha = () => {
 
 export const useSeriesItems = () => {
   const readResult = useMultiReadGashaContract(
-    new Array(10).fill('').map((_, i) => {
+    new Array(10).fill("").map((_, i) => {
       return {
-        functionName: 'series',
+        functionName: "series",
         args: [BigInt(i)],
       }
     })
@@ -139,7 +140,7 @@ export const useSeriesItems = () => {
 
   const seriesItems = useMemo(() => {
     return readResult.data
-      ?.filter((item) => item.status === 'success')
+      ?.filter((item) => item.status === "success")
       .map((item) => {
         const result: [bigint, number, bigint] = item.result as any
         return {
@@ -164,7 +165,7 @@ export const useResultData = () => {
   const [scorecardShareId, setScorecardShareId] = useState<number>()
 
   const { data } = useMultiReadZoraCreator1155Contract(
-    gotTokenIds.map((id) => ({ functionName: 'uri', args: [BigInt(id)] }))
+    gotTokenIds.map((id) => ({ functionName: "uri", args: [BigInt(id)] }))
   )
 
   const resultData = useMemo(() => {
@@ -191,20 +192,20 @@ export const useResultData = () => {
           )
           const query = Object.entries(rareness)
             .map(([key, value]) => `${key}=${value}`)
-            .join('&')
+            .join("&")
           const points = await (
             await gashaAPI(`/points/${address}/result/?${query}`, {
-              method: 'GET',
+              method: "GET",
             })
           ).json()
           setGotPoints(points)
-          const { data } = await gashaAxios.post('/ogp/save-result', {
+          const { data } = await gashaAxios.post("/ogp/save-result", {
             address,
             result: resultData,
           })
           setScorecardShareId(data.id)
         } catch (error) {
-          toast.error('Failed to calc points, please retry')
+          toast.error("Failed to calc points, please retry")
         }
       }
     }

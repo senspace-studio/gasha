@@ -3,18 +3,18 @@ pragma solidity ^0.8.17;
 
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
+import "./zora/interfaces/IERC20Minter.sol";
 import "./zora/interfaces/IZoraCreator1155.sol";
 import "./interfaces/IGasha.sol";
-import "hardhat/console.sol";
 
 contract Gasha is IGasha, OwnableUpgradeable, PausableUpgradeable {
-    IZoraCreator1155 public ZoraCreator1155;
+    address public zora1155Creator;
 
-    IMinter1155 public MerkleMinter;
+    address public currency;
 
     address public mintReferral;
 
-    bytes internal minterArguments;
+    IERC20Minter public ERC20Minter;
 
     SeriesItem[] public series;
 
@@ -28,9 +28,6 @@ contract Gasha is IGasha, OwnableUpgradeable, PausableUpgradeable {
 
     modifier isAvailableTime() {
         uint256 currentTime = block.timestamp;
-        console.log("currentTime: %d", currentTime);
-        console.log("startTime: %d", startTime);
-        console.log("endTime: %d", endTime);
         require(
             startTime <= currentTime && currentTime <= endTime,
             "Gasha: not available now"
@@ -40,27 +37,28 @@ contract Gasha is IGasha, OwnableUpgradeable, PausableUpgradeable {
 
     function initialize(
         address _initialOwner,
-        address _zoraCreator1155,
-        address _merkleMinter,
+        address _zora1155Creator,
+        address _currency,
         address _mintReferral,
+        address _erc20Minter,
         uint256 _initialSeed,
         uint256 _unitPrice
     ) public initializer {
         __Ownable_init();
         __Pausable_init();
         transferOwnership(_initialOwner);
-        ZoraCreator1155 = IZoraCreator1155(_zoraCreator1155);
-        MerkleMinter = IMinter1155(_merkleMinter);
+        zora1155Creator = _zora1155Creator;
+        currency = _currency;
         mintReferral = _mintReferral;
+        ERC20Minter = IERC20Minter(_erc20Minter);
         seed = _initialSeed;
         unitPrice = _unitPrice;
     }
 
     function spin(
         uint256 quantity
-    ) external payable isAvailableTime whenNotPaused {
+    ) external isAvailableTime whenNotPaused {
         require(quantity > 0 && quantity < 1000, "Gasha: quantity is invalid");
-        require(msg.value >= unitPrice * quantity, "Gasha: insufficient funds");
 
         SeriesItem[] memory activeSeriesItem = activeSeriesItems();
         uint256[] memory ids = new uint256[](activeSeriesItem.length);
@@ -70,8 +68,12 @@ contract Gasha is IGasha, OwnableUpgradeable, PausableUpgradeable {
             quantities[i] = 0;
         }
 
+        uint256 totalWeight = _totalWeight();
+
+        require(totalWeight > 0, "Gasha: total weight is 0");
+
         for (uint256 i = 0; i < quantity; i++) {
-            SeriesItem memory item = _pickRandomBall(i);
+            SeriesItem memory item = _pickRandomBall(totalWeight, i);
             for (uint256 j = 0; j < activeSeriesItem.length; j++) {
                 if (activeSeriesItem[j].tokenId == item.tokenId) {
                     quantities[j]++;
@@ -80,7 +82,7 @@ contract Gasha is IGasha, OwnableUpgradeable, PausableUpgradeable {
             }
         }
 
-        _mintAndTransfer(msg.sender, ids, quantities);
+        _mintBatch(msg.sender, ids, quantities);
 
         emit Spin(msg.sender, ids, quantities);
     }
@@ -99,51 +101,41 @@ contract Gasha is IGasha, OwnableUpgradeable, PausableUpgradeable {
             "Gasha: insufficient funds"
         );
 
-        _mintAndTransfer(to, ids, quantities);
+        _mintBatch(to, ids, quantities);
 
         emit Spin(to, ids, quantities);
     }
 
-    function _mintAndTransfer(
+    function _mintBatch(
         address to,
         uint256[] memory ids,
         uint256[] memory quantities
     ) private {
         for (uint256 i = 0; i < ids.length; i++) {
             if (quantities[i] > 0) {
-                ZoraCreator1155.mintWithRewards{
-                    value: unitPrice * quantities[i]
-                }(
-                    MerkleMinter,
-                    ids[i],
+                ERC20Minter.mint(
+                    to,
                     quantities[i],
-                    minterArguments,
-                    mintReferral
+                    zora1155Creator,
+                    ids[i],
+                    unitPrice * quantities[i],
+                    currency,
+                    mintReferral,
+                    ""
                 );
             }
         }
-
-        ZoraCreator1155.safeBatchTransferFrom(
-            address(this),
-            to,
-            ids,
-            quantities,
-            ""
-        );
     }
 
     function _pickRandomBall(
+        uint256 totalWeight,
         uint256 salt
     ) internal view returns (SeriesItem memory item) {
-        uint256 totalWeight = 0;
         SeriesItem[] memory seriesItem = activeSeriesItems();
-        for (uint256 i = 0; i < seriesItem.length; i++) {
-            totalWeight += seriesItem[i].weight;
-        }
 
         uint256 randomNum = uint256(
             keccak256(
-                abi.encodePacked(block.timestamp, block.difficulty, seed - salt)
+                abi.encodePacked(block.timestamp, block.difficulty, salt)
             )
         ) % totalWeight;
 
@@ -155,7 +147,14 @@ contract Gasha is IGasha, OwnableUpgradeable, PausableUpgradeable {
             }
         }
 
-        revert("Gasha: failed to pick a random ball");
+        return seriesItem[0];
+    }
+
+    function _totalWeight() internal view returns (uint256 totalWeight) {
+        SeriesItem[] memory seriesItem = activeSeriesItems();
+        for (uint256 i = 0; i < seriesItem.length; i++) {
+            totalWeight += series[i].weight;
+        }
     }
 
     function activeSeriesItems() public view returns (SeriesItem[] memory) {
@@ -225,8 +224,6 @@ contract Gasha is IGasha, OwnableUpgradeable, PausableUpgradeable {
         startTime = _startTime;
         endTime = _endTime;
 
-        console.log("startTime: %d", startTime);
-        console.log("endTime: %d", endTime);
         emit SetAvailableTime(_startTime, _endTime);
     }
 
@@ -236,12 +233,6 @@ contract Gasha is IGasha, OwnableUpgradeable, PausableUpgradeable {
         } else {
             _pause();
         }
-    }
-
-    function setMinterArguments(
-        bytes memory _minterArguments
-    ) external onlyOwner {
-        minterArguments = _minterArguments;
     }
 
     function onERC1155Received(

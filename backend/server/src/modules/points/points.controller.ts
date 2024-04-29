@@ -74,7 +74,7 @@ export class PointsController {
       BigInt(common || 0),
       BigInt(rare || 0),
       BigInt(special || 0),
-      BigInt(new Date().getTime()),
+      new Date().getTime() / 1000,
     );
     return {
       address,

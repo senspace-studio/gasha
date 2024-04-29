@@ -219,10 +219,9 @@ export class PointsService {
     common: bigint,
     rare: bigint,
     special: bigint,
-    date: bigint,
+    date: number,
   ): Promise<PointCalcResponse> {
-    const logic = await this.getLogicByDate(Number(date) / 1e3);
-    console.log(Number(date) / 1e3, logic);
+    const logic = await this.getLogicByDate(date);
     if (!logic) {
       return {
         common: { amount: common, points: 0n },
