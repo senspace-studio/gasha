@@ -40,6 +40,11 @@
       "address": "0x90D7eeAd91A64aF5EcC0c45D3Dff5b3d4744208b",
       "txHash": "0x0b63e44e4d79ad6d365558a2a4314632ce944891c988c791421fcbdc182f60ba",
       "kind": "transparent"
+    },
+    {
+      "address": "0x0d7229c132A09a40d7044732B1bC29f4b6765Deb",
+      "txHash": "0xed31ee50fe08f9e9b0cea7860904d7600b50f73a386f51cda69680b3ce03ec6c",
+      "kind": "transparent"
     }
   ],
   "impls": {
@@ -645,6 +650,222 @@
               {
                 "label": "rareness",
                 "type": "t_enum(Rareness)3421",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "weight",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "isActive",
+                "type": "t_bool",
+                "offset": 0,
+                "slot": "3"
+              }
+            ],
+            "numberOfBytes": "128"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint64": {
+            "label": "uint64",
+            "numberOfBytes": "8"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        },
+        "namespaces": {}
+      }
+    },
+    "81eb1735270c416f42b811adbe2bd0c60085fc9426ea4cdfb98ea066fe879b6d": {
+      "address": "0x59C60f6D8303f3a037024394161aD8a811Ec8Fc1",
+      "txHash": "0x7923760f9e79c648f26c6bdd796d71b9e8d022fa0adeadb03f85206d89b01d5d",
+      "layout": {
+        "solcVersion": "0.8.17",
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:63",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:68"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ContextUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol:40"
+          },
+          {
+            "label": "_owner",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_address",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:22"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "52",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:94"
+          },
+          {
+            "label": "_paused",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_bool",
+            "contract": "PausableUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol:29"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "102",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "PausableUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol:116"
+          },
+          {
+            "label": "zora1155Creator",
+            "offset": 0,
+            "slot": "151",
+            "type": "t_address",
+            "contract": "Gasha",
+            "src": "contracts/Gasha.sol:11"
+          },
+          {
+            "label": "currency",
+            "offset": 0,
+            "slot": "152",
+            "type": "t_address",
+            "contract": "Gasha",
+            "src": "contracts/Gasha.sol:13"
+          },
+          {
+            "label": "mintReferral",
+            "offset": 0,
+            "slot": "153",
+            "type": "t_address",
+            "contract": "Gasha",
+            "src": "contracts/Gasha.sol:15"
+          },
+          {
+            "label": "ERC20Minter",
+            "offset": 0,
+            "slot": "154",
+            "type": "t_contract(IERC20Minter)14968",
+            "contract": "Gasha",
+            "src": "contracts/Gasha.sol:17"
+          },
+          {
+            "label": "series",
+            "offset": 0,
+            "slot": "155",
+            "type": "t_array(t_struct(SeriesItem)11910_storage)dyn_storage",
+            "contract": "Gasha",
+            "src": "contracts/Gasha.sol:19"
+          },
+          {
+            "label": "seed",
+            "offset": 0,
+            "slot": "156",
+            "type": "t_uint256",
+            "contract": "Gasha",
+            "src": "contracts/Gasha.sol:21"
+          },
+          {
+            "label": "unitPrice",
+            "offset": 0,
+            "slot": "157",
+            "type": "t_uint256",
+            "contract": "Gasha",
+            "src": "contracts/Gasha.sol:23"
+          },
+          {
+            "label": "startTime",
+            "offset": 0,
+            "slot": "158",
+            "type": "t_uint64",
+            "contract": "Gasha",
+            "src": "contracts/Gasha.sol:25"
+          },
+          {
+            "label": "endTime",
+            "offset": 8,
+            "slot": "158",
+            "type": "t_uint64",
+            "contract": "Gasha",
+            "src": "contracts/Gasha.sol:27"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_struct(SeriesItem)11910_storage)dyn_storage": {
+            "label": "struct IGasha.SeriesItem[]",
+            "numberOfBytes": "32"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_contract(IERC20Minter)14968": {
+            "label": "contract IERC20Minter",
+            "numberOfBytes": "20"
+          },
+          "t_enum(Rareness)11900": {
+            "label": "enum IGasha.Rareness",
+            "members": [
+              "Common",
+              "Rare",
+              "Special"
+            ],
+            "numberOfBytes": "1"
+          },
+          "t_struct(SeriesItem)11910_storage": {
+            "label": "struct IGasha.SeriesItem",
+            "members": [
+              {
+                "label": "tokenId",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "rareness",
+                "type": "t_enum(Rareness)11900",
                 "offset": 0,
                 "slot": "1"
               },
