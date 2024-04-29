@@ -1,4 +1,4 @@
-import { AddIcon, MinusIcon } from '@chakra-ui/icons'
+import { AddIcon, MinusIcon } from "@chakra-ui/icons"
 import {
   Box,
   Flex,
@@ -12,20 +12,53 @@ import {
   Spinner,
   Text,
   VStack,
-} from '@chakra-ui/react'
-import { FC, useCallback, useState } from 'react'
-import { SpinButton } from './SpinButton'
-import { useSpinGasha } from '@/hooks/useGasha'
+} from "@chakra-ui/react"
+import { FC, useCallback, useEffect, useMemo, useState } from "react"
+import { SpinButton } from "./SpinButton"
+import { useSpinGasha } from "@/hooks/useGasha"
+import { useAllowance } from "@/hooks/useERC20"
+import { formatEther, parseEther } from "viem"
+import { ERC20_MINTER_ADDRESS, UNIT_PRICE } from "@/config"
 
 export const SpinModule: FC = () => {
   const [quantity, setQuantity] = useState(1)
 
-  const { spinGasha, isPending, txHash } = useSpinGasha()
+  const { spinGasha, isPending: isPendingSpin, txHash } = useSpinGasha()
+  const {
+    allowance,
+    approve,
+    receipt,
+    isPending: isPendingApprove,
+    isSuccess: isSuccessApprove,
+    refetch,
+  } = useAllowance()
+
+  const isPending = useMemo(() => {
+    return isPendingSpin || isPendingApprove || (isSuccessApprove && !receipt)
+  }, [isPendingSpin, isPendingApprove, receipt, isSuccessApprove])
+
+  useEffect(() => {
+    if (isSuccessApprove && receipt) {
+      refetch()
+    }
+  }, [isSuccessApprove, receipt])
 
   const handleSpin = useCallback(async () => {
     if (isPending) return
     await spinGasha(quantity)
-  }, [spinGasha, isPending])
+  }, [spinGasha, isPending, quantity, receipt])
+
+  const handleApprove = useCallback(async () => {
+    if (isPending) return
+    await approve(parseEther(String(UNIT_PRICE * quantity)))
+  }, [approve, isPending, quantity])
+
+  const isSufficientAllowance = useMemo(() => {
+    return (
+      isSuccessApprove ||
+      (allowance && Number(formatEther(allowance)) >= quantity * UNIT_PRICE)
+    )
+  }, [quantity, allowance, isSuccessApprove])
 
   return (
     <>
@@ -58,8 +91,8 @@ export const SpinModule: FC = () => {
               fontFamily="stolzl, sans-serif"
               fontWeight="bold"
               _focusVisible={{
-                border: 'none',
-                borderBottom: '2px black solid',
+                border: "none",
+                borderBottom: "2px black solid",
               }}
             />
             <NumberIncrementStepper
@@ -68,8 +101,18 @@ export const SpinModule: FC = () => {
             />
           </NumberInput>
         </HStack>
-        <SpinButton onClick={handleSpin} minW="150px" disabled={isPending}>
-          {isPending ? <Spinner color="yellow.400" /> : 'SPIN'}
+        <SpinButton
+          onClick={isSufficientAllowance ? handleSpin : handleApprove}
+          minW="150px"
+          disabled={isPending}
+        >
+          {isPending ? (
+            <Spinner color="yellow.400" />
+          ) : isSufficientAllowance ? (
+            "SPIN"
+          ) : (
+            "APPROVE"
+          )}
         </SpinButton>
       </VStack>
       {txHash && (

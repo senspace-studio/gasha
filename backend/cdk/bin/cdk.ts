@@ -1,21 +1,22 @@
 #!/usr/bin/env node
-import 'source-map-support/register'
-import { GashaInitStack } from '../lib/init-stack'
-import * as cdk from 'aws-cdk-lib'
-import { getConfig } from '../config'
-import { GashaAppStack } from '../lib/app-stack'
-import { GashaRdsStack } from '../lib/rds-stack'
+import "source-map-support/register"
+import { GashaInitStack } from "../lib/init-stack"
+import * as cdk from "aws-cdk-lib"
+import { getConfig } from "../config"
+import { GashaAppStack } from "../lib/app-stack"
+import { GashaRdsStack } from "../lib/rds-stack"
 
 const app = new cdk.App()
 
-const stages = ['test', 'main-stg', 'main']
-const stage = app.node.tryGetContext('stage')
+const stages = ["test", "main-stg", "main"]
+const stage = app.node.tryGetContext("stage")
 if (!stages.includes(stage)) {
-  throw new Error(`stage must be one of ${stages.join(', ')}`)
+  throw new Error(`stage must be one of ${stages.join(", ")}`)
 }
 
 const config = getConfig(stage)
-const serviceName = 'Gasha'
+const vpcName = "Gasha"
+const serviceName = "Gasha747"
 
 const env = {
   account: config.aws.accountId,
@@ -24,11 +25,11 @@ const env = {
 
 const { vpc, ec2BastionSecurityGroup } = new GashaInitStack(
   app,
-  `${serviceName}InitStack`,
+  `${vpcName}InitStack`,
   {
-    description: 'Gasha Init Stack',
+    description: "Gasha Init Stack",
     tags: {
-      service: serviceName,
+      service: vpcName,
     },
     env,
   }
@@ -38,7 +39,7 @@ const { appRunnerSecurityGroup } = new GashaRdsStack(
   app,
   `${stage}${serviceName}RdsStack`,
   {
-    description: 'Gasha RDS Stack',
+    description: "Gasha RDS Stack",
     tags: {
       service: serviceName,
       environment: stage,
@@ -56,7 +57,7 @@ new GashaAppStack(
   app,
   `${stage}${serviceName}AppStack`,
   {
-    description: 'Gasha AppRunner Stack',
+    description: "Gasha AppRunner Stack",
     tags: {
       service: serviceName,
       environment: stage,

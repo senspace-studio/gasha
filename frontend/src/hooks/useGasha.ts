@@ -2,9 +2,15 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import {
   useMultiReadGashaContract,
   useMultiReadZoraCreator1155Contract,
+  useReadERC20Contract,
   useWriteGashaContract,
 } from "./useContract"
-import { TransactionReceipt, parseEther, parseEventLogs } from "viem"
+import {
+  TransactionReceipt,
+  formatEther,
+  parseEther,
+  parseEventLogs,
+} from "viem"
 import { getTransactionReceipt } from "@wagmi/core"
 import { GashaAbi } from "@/abi/gasha"
 import { useAccount, useConfig } from "wagmi"
@@ -15,6 +21,8 @@ import { gashaAPI, gashaAxios } from "@/lib/gashaAPI"
 import { ResultItem, ResultPoint } from "@/gasha"
 import { useSwitchChain } from "./useChain"
 import { captureException } from "@sentry/nextjs"
+import { useAllowance } from "./useERC20"
+import { UNIT_PRICE } from "@/config"
 
 enum RarenessLabel {
   Common = 0,
@@ -42,6 +50,7 @@ export const useSpinGasha = () => {
   const router = useRouter()
   const { address, chainId } = useAccount()
   const { handleSwitchChain, switched } = useSwitchChain()
+  const { allowance } = useAllowance()
 
   const spinGasha = useCallback(
     async (quantity: number) => {
@@ -50,19 +59,20 @@ export const useSpinGasha = () => {
         return
       }
 
+      if (
+        !allowance ||
+        Number(formatEther(allowance)) < quantity * UNIT_PRICE
+      ) {
+        toast.error("Please approve the contract to spend your Token")
+        return
+      }
+
       if (chainId === Number(process.env.NEXT_PUBLIC_CHAIN_ID) || switched) {
         try {
-          await sendTx(
-            [BigInt(quantity)],
-            parseEther(
-              String(
-                Number(quantity) * Number(process.env.NEXT_PUBLIC_UNIT_PRICE)
-              )
-            )
-          )
+          await sendTx([BigInt(quantity)])
         } catch (error: any) {
-          if (error.message.includes("insufficient funds")) {
-            toast.error("Insufficient funds. Base ETH is required to spin.")
+          if (error.message.includes("transfer amount exceeds balance")) {
+            toast.error("Insufficient funds. Token is required to spin.")
           } else {
             captureException(error)
             console.log(error)
@@ -73,7 +83,7 @@ export const useSpinGasha = () => {
         handleSwitchChain()
       }
     },
-    [sendTx, chainId, address, switched]
+    [sendTx, chainId, address, switched, allowance]
   )
 
   useEffect(() => {
@@ -125,7 +135,7 @@ export const useSpinGasha = () => {
     }
   }, [result, txHash])
 
-  return { spinGasha, isPending, result, points, txHash }
+  return { spinGasha, isPending, result, points, txHash, reset }
 }
 
 export const useSeriesItems = () => {

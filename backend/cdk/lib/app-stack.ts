@@ -1,8 +1,8 @@
-import * as cdk from 'aws-cdk-lib'
-import * as ec2 from 'aws-cdk-lib/aws-ec2'
-import { AppRunner } from '../construct/apprunner'
-import { Construct } from 'constructs'
-import { Config } from '../config'
+import * as cdk from "aws-cdk-lib"
+import * as ec2 from "aws-cdk-lib/aws-ec2"
+import { AppRunner } from "../construct/apprunner"
+import { Construct } from "constructs"
+import { Config } from "../config"
 
 interface AppProps {
   vpc: ec2.Vpc
@@ -21,7 +21,7 @@ export class GashaAppStack extends cdk.Stack {
 
     const { vpc, config, appRunnerSecurityGroup } = appProps
 
-    new AppRunner(this, 'AppRunner', {
+    new AppRunner(this, `AppRunner-${id}`, {
       vpc,
       appRunnerSecurityGroup,
       config,
