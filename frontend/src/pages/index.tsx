@@ -1,24 +1,22 @@
-import { BasicCount } from '@/components/uiparts/BasicCount'
-import { SpinModule } from '@/components/uiparts/SpinModule'
-import { useCurrentMints, useRemainingTime } from '@/hooks/useCount'
-import { useBalanceOfRewards } from '@/hooks/useZoraCreatorERC1155'
-import { Box, Container, VStack } from '@chakra-ui/react'
-import Image from 'next/image'
+import { BasicCount } from "@/components/uiparts/BasicCount"
+import { SpinModule } from "@/components/uiparts/SpinModule"
+import { useCurrentMints, useRemainingTime } from "@/hooks/useCount"
+import { Box, Container, VStack } from "@chakra-ui/react"
+import Image from "next/image"
 
 export default function Home() {
   const currentMints = useCurrentMints()
   const remainingTime = useRemainingTime()
-  const totalRewards = useBalanceOfRewards()
 
   return (
     <>
-      <Box height={['330px', '320px']} position="relative">
+      <Box height={["330px", "320px"]} position="relative">
         <Box
           position="absolute"
           right={0}
           left={0}
           margin="0 auto"
-          marginTop={['35px', '-10px']}
+          marginTop={["35px", "-10px"]}
           maxW="95%"
           width={[450, 400]}
           zIndex={1}
@@ -29,7 +27,7 @@ export default function Home() {
             width="716"
             height="793"
             style={{
-              width: '100%',
+              width: "100%",
             }}
           />
         </Box>
@@ -38,7 +36,7 @@ export default function Home() {
           right={0}
           left={0}
           margin="0 auto"
-          marginTop={['20px', '0px']}
+          marginTop={["20px", "0px"]}
           maxW="90%"
           width={[300]}
           zIndex={1}
@@ -49,7 +47,7 @@ export default function Home() {
             width="1169"
             height="1590"
             style={{
-              width: '100%',
+              width: "100%",
             }}
           />
         </Box>
@@ -58,8 +56,8 @@ export default function Home() {
         <Container pt="140px">
           <SpinModule />
 
-          <VStack mt={['40px', '40px']} pb={10} gap={5}>
-            <BasicCount number={'9.496'} unit="ETH" label="Total Rewards" />
+          <VStack mt={["40px", "40px"]} pb={10} gap={5}>
+            <BasicCount number={0} unit="$CRASH" label="Total Rewards" />
             <BasicCount
               number={currentMints.mints}
               unit="MINTS"

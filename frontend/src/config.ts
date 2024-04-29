@@ -9,5 +9,10 @@ export const ZORA_PROTOCOL_REWARDS_ADDRESS = process.env
   .NEXT_PUBLIC_ZORA_PROTOCOL_REWARDS_ADDRESS as `0x${string}`
 export const POOL_WALLET_ADDRESS = process.env
   .NEXT_PUBLIC_ZORA_PROTOCOL_REWARDS_POOL_ADDRESS! as `0x${string}`
+export const ERC20_ADDRESS = process.env
+  .NEXT_PUBLIC_ERC20_ADDRESS! as `0x${string}`
+export const ERC20_MINTER_ADDRESS = process.env
+  .NEXT_PUBLIC_ERC20_MINTER_ADDRESS! as `0x${string}`
 export const WALLETCONNECT_PROJECT_ID =
   process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID
+export const UNIT_PRICE = Number(process.env.NEXT_PUBLIC_UNIT_PRICE)
