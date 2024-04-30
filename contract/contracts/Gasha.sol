@@ -92,16 +92,8 @@ contract Gasha is IGasha, OwnableUpgradeable, PausableUpgradeable {
         uint256[] memory ids,
         uint256[] memory quantities
     ) external payable onlyOwner {
-        uint256 totalQuantity = 0;
-        for (uint256 i = 0; i < quantities.length; i++) {
-            totalQuantity += quantities[i];
-        }
-        require(
-            msg.value >= unitPrice * totalQuantity,
-            "Gasha: insufficient funds"
-        );
-
-        _mintBatch(to, ids, quantities);
+        IZoraCreator1155 zoraCreator = IZoraCreator1155(zora1155Creator);
+        zoraCreator.adminMintBatch(to, ids, quantities, "");
 
         emit Spin(to, ids, quantities);
     }
