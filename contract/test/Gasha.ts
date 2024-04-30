@@ -28,11 +28,14 @@ describe("Gasha", () => {
   let ERC20Minter: ERC20Minter
   let ZoraProtocolRewards: ProtocolRewards
   let admin: SignerWithAddress
-  let fundRecipient: SignerWithAddress
+  let poolWallet: SignerWithAddress
+  let senspaceWallet: SignerWithAddress
+  let _747Wallet: SignerWithAddress
   let user: SignerWithAddress
 
   before(async () => {
-    ;[admin, fundRecipient, user] = await ethers.getSigners()
+    ;[admin, poolWallet, senspaceWallet, _747Wallet, user] =
+      await ethers.getSigners()
 
     const contracts = await deployZoraCreatorERC1155Factory(admin.address)
     ZoraCreator1155Factory = contracts.zoraCreatorERC1155Factory
@@ -40,12 +43,12 @@ describe("Gasha", () => {
 
     ERC20Token = await (await ethers.getContractFactory("ERC20Test")).deploy()
     await ERC20Token.waitForDeployment()
-    ERC20Minter = await deployERC20Minter(fundRecipient.address)
+    ERC20Minter = await deployERC20Minter(poolWallet.address)
 
     const address = await createZoraCreator1155(
       ZoraCreator1155Factory,
       admin.address,
-      fundRecipient.address,
+      poolWallet.address,
       "https://zora.co"
     )
     ZoraCreator1155 = await ethers.getContractAt(
@@ -57,16 +60,16 @@ describe("Gasha", () => {
       admin.address,
       await ZoraCreator1155.getAddress(),
       await ERC20Token.getAddress(),
-      fundRecipient.address,
+      senspaceWallet.address,
       await ERC20Minter.getAddress(),
-      100
+      74747
     )
 
     for (const tokenId of [1, 2, 3]) {
       let tx = await ZoraCreator1155.setupNewTokenWithCreateReferral(
         `https://zora.co/${tokenId}`,
         100000,
-        fundRecipient.address
+        _747Wallet.address
       )
       await tx.wait()
       await addPermission(
@@ -74,17 +77,18 @@ describe("Gasha", () => {
         tokenId,
         await ERC20Minter.getAddress()
       )
+      await addPermission(ZoraCreator1155, tokenId, await Gasha.getAddress())
       await callSaleForERC20Minter(
         ZoraCreator1155,
         await ERC20Minter.getAddress(),
-        parseEther("100"),
-        fundRecipient.address,
+        parseEther("74747"),
+        poolWallet.address,
         await ERC20Token.getAddress(),
         tokenId
       )
     }
 
-    ERC20Token.mint(user.address, parseEther("10000"))
+    await ERC20Token.mint(user.address, parseEther("10000000"))
   })
 
   it("should add series item", async () => {
@@ -144,14 +148,45 @@ describe("Gasha", () => {
   })
 
   it("shoud spin", async () => {
-    const beforeERC20Balance = await ERC20Token.balanceOf(user.address)
-    console.log("beforeERC20Balance", formatEther(beforeERC20Balance))
+    const beforeUserERC20Balance = Number(
+      formatEther(await ERC20Token.balanceOf(user.address))
+    )
+    const beforePoolERC20Balance = Number(
+      formatEther(await ERC20Token.balanceOf(poolWallet.address))
+    )
+    const beforeSenspaceERC20Balance = Number(
+      formatEther(await ERC20Token.balanceOf(senspaceWallet.address))
+    )
+    const before747ERC20Balance = Number(
+      formatEther(await ERC20Token.balanceOf(_747Wallet.address))
+    )
+    expect(beforeUserERC20Balance).to.equal(10000000)
+    expect(beforePoolERC20Balance).to.equal(0)
+    expect(beforeSenspaceERC20Balance).to.equal(0)
+    expect(before747ERC20Balance).to.equal(0)
 
     const amount = 5
     await expect(Gasha.connect(user).spin(amount)).emit(Gasha, "Spin")
 
-    const afterERC20Balance = await ERC20Token.balanceOf(user.address)
-    console.log("afterERC20Balance", formatEther(afterERC20Balance))
+    const afterUserERC20Balance = Number(
+      formatEther(await ERC20Token.balanceOf(user.address))
+    )
+    const afterPoolERC20Balance = Number(
+      formatEther(await ERC20Token.balanceOf(poolWallet.address))
+    )
+    const afterSenspaceERC20Balance = Number(
+      formatEther(await ERC20Token.balanceOf(senspaceWallet.address))
+    )
+    const after747ERC20Balance = Number(
+      formatEther(await ERC20Token.balanceOf(_747Wallet.address))
+    )
+
+    expect(afterUserERC20Balance).to.equal(
+      beforeUserERC20Balance - amount * 74747
+    )
+    expect(afterPoolERC20Balance).to.equal(amount * 74747 * 0.9)
+    expect(afterSenspaceERC20Balance).to.equal(amount * 74747 * 0.05)
+    expect(after747ERC20Balance).to.equal(amount * 74747 * 0.05)
   })
 
   it("should get active items", async () => {
@@ -180,9 +215,8 @@ describe("Gasha", () => {
     expect(activeItems[0].weight).to.equal(800)
   })
 
-  // it("should drop by owner", async () => {
-  //   await Gasha.dropByOwner(fundRecipient.address, [1], [1], {
-  //     value: parseEther("0.000777"),
-  //   })
-  // })
+  it("should drop by owner", async () => {
+    await ERC20Token.approve(await ERC20Minter.getAddress(), parseEther("1600"))
+    await Gasha.dropByOwner(poolWallet.address, [1, 2, 3], [10, 5, 1])
+  })
 })
