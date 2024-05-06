@@ -44,8 +44,8 @@ export default function Home() {
           <Image
             src="/img/747gacha_1.png" 
             alt="gasha machine"
-            width="1169"
-            height="1590"
+            width="800"
+            height="1487.32"
             style={{
               width: "100%",
             }}
