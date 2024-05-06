@@ -37,15 +37,15 @@ export default function Home() {
           left={0}
           margin="0 auto"
           marginTop={["20px", "0px"]}
-          maxW="90%"
+          maxW="100%"
           width={[300]}
           zIndex={1}
         >
           <Image
             src="/img/747gacha_1.png" 
             alt="gasha machine"
-            width="800"
-            height="1487.32"
+            width="578"
+            height="1076"
             style={{
               width: "100%",
             }}
