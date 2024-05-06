@@ -64,7 +64,7 @@ const Rules: NextPage = () => {
       <Text mb={3}>Prize Pool Split</Text>
       <UnorderedList mb={6}>
         <ListItem>72% First place</ListItem>
-        <ListItem>9% Second place (two winners)</ListItem>
+        <ListItem>8% Second place (two winners)</ListItem>
         <ListItem>5% to $CRASH LP</ListItem>
         <ListItem>5% to Senspace</ListItem>
       </UnorderedList>
