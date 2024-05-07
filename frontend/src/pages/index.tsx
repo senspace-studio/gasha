@@ -55,10 +55,10 @@ export default function Home() {
           zIndex={1}
         >
           <Image
-            src="/img/747gacha_1.png"
+            src="/img/gasha_machine.png"
             alt="gasha machine"
-            width="578"
-            height="1076"
+            width="1169"
+            height="1590"
             style={{
               width: "100%",
             }}
