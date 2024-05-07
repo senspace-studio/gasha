@@ -16,7 +16,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
-        <title>The Ball</title>
+        <title>The Ball: $CRASH Edition by Senspace & 747 Airlines</title>
       </Head>
 
       <Web3ModalProvider>
