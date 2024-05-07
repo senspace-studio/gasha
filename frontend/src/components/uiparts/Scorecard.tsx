@@ -13,6 +13,7 @@ import { StolzlText } from "./StolzlText"
 import { useAccount } from "wagmi"
 import { ResultItem, ResultPoint } from "@/gasha"
 import Image from "next/image"
+import { ABCGravityVariableText } from "./ABCGravityVariableText"
 
 type Props = {
   points?: ResultPoint
@@ -36,14 +37,14 @@ const ScoreCardItem: FC<ItemProps> = ({ points, items, rareness }) => {
           height="18"
         />
         <Grid lineHeight={1} textAlign="left" fontWeight={500}>
-          <StolzlText fontSize="lg">
+          <ABCGravityVariableText fontSize="lg">
             <Box as="span" minW="50px" display="inline-block">
               {points}
             </Box>
-            <StolzlText as="span" fontSize="10px">
+            <Box as="span" fontSize="10px">
               $BALL
-            </StolzlText>
-          </StolzlText>
+            </Box>
+          </ABCGravityVariableText>
         </Grid>
       </Flex>
       <HStack gap={1}>
@@ -101,18 +102,22 @@ export const Scorecard: FC<Props> = ({ points, items }) => {
           <Flex alignItems="end" height="140px" py={3} px={4}>
             <Box>
               <Text fontSize="4xl" color="blue.400" mb={-3}>
-                <StolzlText fontWeight={700} fontSize="32px">
+                <ABCGravityVariableText fontWeight={700} fontSize="32px">
                   {totalPoints}
-                </StolzlText>
+                </ABCGravityVariableText>
               </Text>
               <Text
                 fontSize={Number(totalPoints) > 9999 ? "sm" : "md"}
                 color="blue.400"
                 mb={0}
               >
-                <StolzlText fontWeight={500} color="blue.400" ml={1}>
+                <ABCGravityVariableText
+                  fontWeight={500}
+                  color="blue.400"
+                  ml={1}
+                >
                   $HIGHBALL
-                </StolzlText>
+                </ABCGravityVariableText>
               </Text>
               <Text fontSize="sm" ml={1}>
                 <StolzlText fontWeight={500}>

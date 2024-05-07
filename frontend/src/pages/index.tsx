@@ -66,13 +66,14 @@ export default function Home() {
         </Box>
       </Box>
       <Box
-        top={["0px", "-120px"]}
+        top={["0px", "-160px"]}
         position="relative"
         backgroundColor={["yellow.400", "transparent"]}
       >
         <Container
           p="25px"
           pt={["140px", "25px"]}
+          mb={[0, -10]}
           backgroundColor="yellow.400"
           borderRadius="25px"
         >

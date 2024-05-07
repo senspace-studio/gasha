@@ -1,12 +1,13 @@
-import { Button, ButtonProps, ComponentWithAs } from '@chakra-ui/react'
-import { FC, ReactNode } from 'react'
-import { StolzlText } from './StolzlText'
+import { Button, ButtonProps, ComponentWithAs } from "@chakra-ui/react"
+import { FC, ReactNode } from "react"
+import { StolzlText } from "./StolzlText"
+import { ABCGravityVariableText } from "./ABCGravityVariableText"
 
 interface Props extends ButtonProps {
   children: ReactNode
 }
 
-export const SpinButton: ComponentWithAs<'button', Props> = ({
+export const SpinButton: ComponentWithAs<"button", Props> = ({
   children,
   ...props
 }) => {
@@ -23,7 +24,9 @@ export const SpinButton: ComponentWithAs<'button', Props> = ({
       border="2px solid black"
       borderBottom="4px solid black"
     >
-      <StolzlText fontWeight={700}>{children}</StolzlText>
+      <ABCGravityVariableText fontWeight={700} fontStyle="italic">
+        {children}
+      </ABCGravityVariableText>
     </Button>
   )
 }
