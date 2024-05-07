@@ -1,3 +1,4 @@
+import { ABCGravityVariableText } from "@/components/uiparts/ABCGravityVariableText"
 import { LeaderboardListItem } from "@/components/uiparts/LeaderboardListItem"
 import { StolzlText } from "@/components/uiparts/StolzlText"
 import { useLeaderboard } from "@/hooks/useLeaderboard"
@@ -31,7 +32,7 @@ const Leaderboard: NextPage = () => {
         mb={10}
         fontSize="4xl"
       >
-        Leaderboard
+        <ABCGravityVariableText>Leaderboard</ABCGravityVariableText>
       </Heading>
 
       <Flex
