@@ -49,9 +49,9 @@ export default function Home() {
           right={0}
           left={0}
           margin="0 auto"
-          marginTop={["20px", "80px"]}
+          marginTop={["20px", "30px"]}
           maxW="90%"
-          width={[300]}
+          width={[300, 350]}
           zIndex={1}
         >
           <Image
@@ -66,7 +66,7 @@ export default function Home() {
         </Box>
       </Box>
       <Box
-        top={["0px", "-160px"]}
+        top={["0px", "-140px"]}
         position="relative"
         backgroundColor={["yellow.400", "transparent"]}
       >
