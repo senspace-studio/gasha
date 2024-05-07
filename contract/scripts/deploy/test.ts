@@ -33,7 +33,7 @@ const main = async () => {
     zoraCreator1155Factory,
     adminAddress,
     poolWalletAddress,
-    "ipfs://QmWdGS5HgfGjbXX851xzCd2f5WFnNxK4NjpmDnUCiY8EXz"
+    "ipfs://QmPEC76Dg3Erz8Ja5oVCLs7QxDYnKeC16FrcmMiJWK9uDM"
   )
 
   const ZoraCreator1155 = await ethers.getContractAt(
@@ -58,7 +58,7 @@ const main = async () => {
 
   for (const tokenId of [1, 2, 3]) {
     let tx = await ZoraCreator1155.setupNewTokenWithCreateReferral(
-      `ipfs://QmQM3UFhUVocoKgVrdvXf1UxtYyGVnNnnrZYkePknv6R63/${tokenId}.json`,
+      `ipfs://Qmc8frt5vFVs7mcctbWRCmvZpEBzLWKWqVpCp4mt81Fggx/${tokenId}.json`,
       100000,
       _747WalletAddress
     )

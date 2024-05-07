@@ -4,9 +4,9 @@ import {
   ListItem,
   Text,
   UnorderedList,
-} from '@chakra-ui/layout'
-import { NextPage } from 'next'
-import Link from 'next/link'
+} from "@chakra-ui/layout"
+import { NextPage } from "next"
+import Link from "next/link"
 
 const Rules: NextPage = () => {
   return (
@@ -27,19 +27,19 @@ const Rules: NextPage = () => {
         Tokyo.
       </Text>
 
-      <Text mb={3}>Draw NFTs from “The Ball” and get $BALL!</Text>
+      <Text mb={3}>Draw NFTs from “The Ball” and get $HIGHBALL!</Text>
       <UnorderedList mb={6}>
-        <ListItem>Common NFT = 200 $BALL</ListItem>
-        <ListItem>Rare NFT = 400 $BALL</ListItem>
-        <ListItem>Special NFT = 800 $BALL</ListItem>
+        <ListItem>Common NFT = 200 $HIGHBALL</ListItem>
+        <ListItem>Rare NFT = 400 $HIGHBALL</ListItem>
+        <ListItem>Special NFT = 800 $HIGHBALL</ListItem>
       </UnorderedList>
 
       <Text mb={6}>
-        $BALL are centralized, offchain points though a decentralized token may
-        be issued at a later date.
+        $HIGHBALL are centralized, offchain points though a decentralized token
+        may be issued at a later date.
       </Text>
 
-      <Text mb={3}>Your $BALL</Text>
+      <Text mb={3}>Your $HIGHBALL</Text>
       <UnorderedList mb={6}>
         <ListItem>Probability of winning prize pool</ListItem>
         <ListItem>Eligibility for exclusive NFT Drops</ListItem>
@@ -62,8 +62,8 @@ const Rules: NextPage = () => {
           Winner to be selected at random (methodology to be made public)
         </ListItem>
         <ListItem>
-          $BALL leaderboard (including $BALL generated to date) will go live
-          shortly
+          $HIGHBALL leaderboard (including $HIGHBALL generated to date) will go
+          live shortly
         </ListItem>
       </UnorderedList>
 
@@ -75,9 +75,9 @@ const Rules: NextPage = () => {
         <ListItem>5% to operating team</ListItem>
       </UnorderedList>
 
-      <Text mb={3}>Other ways to get $BALL</Text>
+      <Text mb={3}>Other ways to get $HIGHBALL</Text>
       <UnorderedList mb={6}>
-        <ListItem>Mint official NFTs = 200 $BALL</ListItem>
+        <ListItem>Mint official NFTs = 200 $HIGHBALL</ListItem>
         <ListItem>
           Approved art in What’s in the Ball Friends and Family Collection
           (submit via DM @renstern.eth on Warpcast) = 30 randomly picked NFTs
@@ -104,7 +104,9 @@ const Rules: NextPage = () => {
       </Text>
 
       <Text mb={6}>
-        It is very unlikely that you will win the prize pool and you should not play the game for that purpose. The “What’s in the Ball” project is made for entertainment purposes only and you should play for fun.
+        It is very unlikely that you will win the prize pool and you should not
+        play the game for that purpose. The “What’s in the Ball” project is made
+        for entertainment purposes only and you should play for fun.
       </Text>
 
       <Text>
