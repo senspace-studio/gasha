@@ -6,21 +6,22 @@ import {
   Heading,
   HStack,
   Spinner,
-} from '@chakra-ui/react'
-import { FC, useCallback, useState } from 'react'
-import { Swiper, SwiperSlide } from 'swiper/react'
-import { Swiper as _Swiper } from 'swiper'
-import { Autoplay } from 'swiper/modules'
-import 'swiper/css'
-import { StolzlText } from './StolzlText'
-import { Scorecard } from './Scorecard'
-import { useResultData } from '@/hooks/useGasha'
-import Image from 'next/image'
-import { PrevIcon } from './icons/PrevIcon'
-import { NextIcon } from './icons/NextIcon'
-import { FarcasterIcon } from './icons/FarcasterIcon'
-import { XIcon } from './icons/XIcon'
-import { generateWarpcastCompose, generateXCompose } from '@/lib/warpcast'
+} from "@chakra-ui/react"
+import { FC, useCallback, useState } from "react"
+import { Swiper, SwiperSlide } from "swiper/react"
+import { Swiper as _Swiper } from "swiper"
+import { Autoplay } from "swiper/modules"
+import "swiper/css"
+import { StolzlText } from "./StolzlText"
+import { Scorecard } from "./Scorecard"
+import { useResultData } from "@/hooks/useGasha"
+import Image from "next/image"
+import { PrevIcon } from "./icons/PrevIcon"
+import { NextIcon } from "./icons/NextIcon"
+import { FarcasterIcon } from "./icons/FarcasterIcon"
+import { XIcon } from "./icons/XIcon"
+import { generateWarpcastCompose, generateXCompose } from "@/lib/warpcast"
+import { ABCGravityVariableText } from "./ABCGravityVariableText"
 
 export const ResultGallery: FC = () => {
   const [swiper, setSwiper] = useState<_Swiper>()
@@ -38,7 +39,7 @@ export const ResultGallery: FC = () => {
 
     console.log(link)
 
-    window.open(link, '_blank')
+    window.open(link, "_blank")
   }, [gotItems, scorecardShareId, currentIndex])
 
   const shareOnX = useCallback(() => {
@@ -49,13 +50,13 @@ export const ResultGallery: FC = () => {
       address: scorecardShareId?.toString(),
     })
 
-    window.open(link, '_blank')
+    window.open(link, "_blank")
   }, [gotItems, scorecardShareId, currentIndex])
 
   return gotItems ? (
     <Container display="flex" justifyContent="center" flexWrap="wrap">
       <Grid
-        gridTemplateColumns={'40px 280px 40px'}
+        gridTemplateColumns={"40px 280px 40px"}
         alignItems="center"
         columnGap={2}
       >
@@ -96,11 +97,11 @@ export const ResultGallery: FC = () => {
                   <Heading
                     textAlign="center"
                     color="blue.400"
-                    fontFamily="freight-big-pro, serif"
                     fontWeight={400}
-                    fontSize="36px"
+                    fontSize="32px"
+                    lineHeight={1.1}
                   >
-                    {item.name}
+                    <ABCGravityVariableText>{item.name}</ABCGravityVariableText>
                   </Heading>
                   <Heading
                     textAlign="center"
@@ -111,9 +112,9 @@ export const ResultGallery: FC = () => {
                     border="1px solid"
                     borderColor="blue.400"
                   >
-                    <StolzlText fontWeight={400}>
+                    <ABCGravityVariableText fontWeight={400}>
                       {item.rareness.toUpperCase()}
-                    </StolzlText>
+                    </ABCGravityVariableText>
                   </Heading>
                 </Flex>
               </SwiperSlide>
@@ -136,11 +137,10 @@ export const ResultGallery: FC = () => {
                 <Heading
                   textAlign="center"
                   color="blue.400"
-                  fontFamily="freight-big-pro, serif"
                   fontWeight={400}
                   fontSize="36px"
                 >
-                  Scorecard
+                  <ABCGravityVariableText>Scorecard</ABCGravityVariableText>
                 </Heading>
               </Flex>
             </SwiperSlide>

@@ -7,12 +7,13 @@ import {
   HStack,
   Text,
   VStack,
-} from '@chakra-ui/react'
-import { FC, useMemo } from 'react'
-import { StolzlText } from './StolzlText'
-import { useAccount } from 'wagmi'
-import { ResultItem, ResultPoint } from '@/gasha'
-import Image from 'next/image'
+} from "@chakra-ui/react"
+import { FC, useMemo } from "react"
+import { StolzlText } from "./StolzlText"
+import { useAccount } from "wagmi"
+import { ResultItem, ResultPoint } from "@/gasha"
+import Image from "next/image"
+import { ABCGravityVariableText } from "./ABCGravityVariableText"
 
 type Props = {
   points?: ResultPoint
@@ -36,14 +37,14 @@ const ScoreCardItem: FC<ItemProps> = ({ points, items, rareness }) => {
           height="18"
         />
         <Grid lineHeight={1} textAlign="left" fontWeight={500}>
-          <StolzlText fontSize="lg">
+          <ABCGravityVariableText fontSize="lg">
             <Box as="span" minW="50px" display="inline-block">
               {points}
             </Box>
-            <StolzlText as="span" fontSize="10px">
+            <Box as="span" fontSize="10px">
               $BALL
-            </StolzlText>
-          </StolzlText>
+            </Box>
+          </ABCGravityVariableText>
         </Grid>
       </Flex>
       <HStack gap={1}>
@@ -69,15 +70,15 @@ export const Scorecard: FC<Props> = ({ points, items }) => {
   const { address } = useAccount()
 
   const specialItems = useMemo(() => {
-    return items?.filter((item) => item.rareness === 'special') || []
+    return items?.filter((item) => item.rareness === "special") || []
   }, [items])
 
   const rareItems = useMemo(() => {
-    return items?.filter((item) => item.rareness === 'rare') || []
+    return items?.filter((item) => item.rareness === "rare") || []
   }, [items])
 
   const commonItems = useMemo(() => {
-    return items?.filter((item) => item.rareness === 'common') || []
+    return items?.filter((item) => item.rareness === "common") || []
   }, [items])
 
   const totalPoints = useMemo(() => {
@@ -85,7 +86,7 @@ export const Scorecard: FC<Props> = ({ points, items }) => {
       ? Number(points?.common.points) +
           Number(points?.rare.points) +
           Number(points?.special.points)
-      : 'XXX'
+      : "XXX"
   }, [points])
 
   return (
@@ -101,22 +102,26 @@ export const Scorecard: FC<Props> = ({ points, items }) => {
           <Flex alignItems="end" height="140px" py={3} px={4}>
             <Box>
               <Text fontSize="4xl" color="blue.400" mb={-3}>
-                <StolzlText fontWeight={700} fontSize="32px">
+                <ABCGravityVariableText fontWeight={700} fontSize="32px">
                   {totalPoints}
-                </StolzlText>
+                </ABCGravityVariableText>
               </Text>
               <Text
-                fontSize={Number(totalPoints) > 9999 ? 'sm' : 'md'}
+                fontSize={Number(totalPoints) > 9999 ? "sm" : "md"}
                 color="blue.400"
                 mb={0}
               >
-                <StolzlText fontWeight={500} color="blue.400" ml={1}>
-                  $BALL
-                </StolzlText>
+                <ABCGravityVariableText
+                  fontWeight={500}
+                  color="blue.400"
+                  ml={1}
+                >
+                  $HIGHBALL
+                </ABCGravityVariableText>
               </Text>
               <Text fontSize="sm" ml={1}>
                 <StolzlText fontWeight={500}>
-                  {address && address.slice(0, 4) + '...' + address.slice(-3)}
+                  {address && address.slice(0, 4) + "..." + address.slice(-3)}
                 </StolzlText>
               </Text>
             </Box>

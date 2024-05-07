@@ -1,6 +1,7 @@
-import { Box, Text } from '@chakra-ui/react'
-import { FC } from 'react'
-import { StolzlText } from './StolzlText'
+import { Box, Text } from "@chakra-ui/react"
+import { FC } from "react"
+import { StolzlText } from "./StolzlText"
+import { ABCGravityVariableText } from "./ABCGravityVariableText"
 
 type Props = {
   number: string | number
@@ -35,9 +36,13 @@ export const BasicCount: FC<Props> = ({ number, unit, label }) => {
         py={5}
         minH="55px"
       >
-        <StolzlText fontWeight={500}>{number}</StolzlText>
+        <ABCGravityVariableText fontWeight={500}>
+          {number}
+        </ABCGravityVariableText>
         <Text fontSize="md">
-          <StolzlText fontWeight={500}>{unit}</StolzlText>
+          <ABCGravityVariableText fontWeight={500}>
+            {unit}
+          </ABCGravityVariableText>
         </Text>
       </Box>
     </Box>
