@@ -50,7 +50,7 @@ export const SpinModule: FC = () => {
 
   const handleApprove = useCallback(async () => {
     if (isPending) return
-    await approve(parseEther(String(UNIT_PRICE * quantity)))
+    await approve(parseEther(String(UNIT_PRICE * quantity * 10)))
   }, [approve, isPending, quantity])
 
   const isSufficientAllowance = useMemo(() => {

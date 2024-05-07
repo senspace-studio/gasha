@@ -7,12 +7,12 @@ import {
   HStack,
   Text,
   VStack,
-} from '@chakra-ui/react'
-import { FC, useMemo } from 'react'
-import { StolzlText } from './StolzlText'
-import { useAccount } from 'wagmi'
-import { ResultItem, ResultPoint } from '@/gasha'
-import Image from 'next/image'
+} from "@chakra-ui/react"
+import { FC, useMemo } from "react"
+import { StolzlText } from "./StolzlText"
+import { useAccount } from "wagmi"
+import { ResultItem, ResultPoint } from "@/gasha"
+import Image from "next/image"
 
 type Props = {
   points?: ResultPoint
@@ -69,15 +69,15 @@ export const Scorecard: FC<Props> = ({ points, items }) => {
   const { address } = useAccount()
 
   const specialItems = useMemo(() => {
-    return items?.filter((item) => item.rareness === 'special') || []
+    return items?.filter((item) => item.rareness === "special") || []
   }, [items])
 
   const rareItems = useMemo(() => {
-    return items?.filter((item) => item.rareness === 'rare') || []
+    return items?.filter((item) => item.rareness === "rare") || []
   }, [items])
 
   const commonItems = useMemo(() => {
-    return items?.filter((item) => item.rareness === 'common') || []
+    return items?.filter((item) => item.rareness === "common") || []
   }, [items])
 
   const totalPoints = useMemo(() => {
@@ -85,7 +85,7 @@ export const Scorecard: FC<Props> = ({ points, items }) => {
       ? Number(points?.common.points) +
           Number(points?.rare.points) +
           Number(points?.special.points)
-      : 'XXX'
+      : "XXX"
   }, [points])
 
   return (
@@ -106,17 +106,17 @@ export const Scorecard: FC<Props> = ({ points, items }) => {
                 </StolzlText>
               </Text>
               <Text
-                fontSize={Number(totalPoints) > 9999 ? 'sm' : 'md'}
+                fontSize={Number(totalPoints) > 9999 ? "sm" : "md"}
                 color="blue.400"
                 mb={0}
               >
                 <StolzlText fontWeight={500} color="blue.400" ml={1}>
-                  $BALL
+                  $HIGHBALL
                 </StolzlText>
               </Text>
               <Text fontSize="sm" ml={1}>
                 <StolzlText fontWeight={500}>
-                  {address && address.slice(0, 4) + '...' + address.slice(-3)}
+                  {address && address.slice(0, 4) + "..." + address.slice(-3)}
                 </StolzlText>
               </Text>
             </Box>

@@ -1,6 +1,7 @@
 {
-  "name": "Coco Shrooms",
-  "image": "ipfs://QmRSpXx2PbjT5BJTuxY94NEfzhripuyvF4BYP3nmcXoBpF/1.png",
+  "name": "747 Fleet Plane",
+  "description": "The frontier toward the skies are graced with the winged bird in the sky. We are 747.",
+  "image": "ipfs://QmUBHZXyF2HxJ9TKA7qBavzJYjv3EhV3xeAzVDQMzz9FQS/1.png",
   "traits": {
     "Rarity": "Common"
   }

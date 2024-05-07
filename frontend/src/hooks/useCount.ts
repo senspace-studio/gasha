@@ -1,5 +1,10 @@
 import { gashaAPI } from "@/lib/gashaAPI"
 import { useEffect, useState } from "react"
+import {
+  useMultiReadZoraCreator1155Contract,
+  useReadERC20Contract,
+} from "./useContract"
+import { POOL_WALLET_ADDRESS } from "@/config"
 
 export const useRemainingTime = () => {
   const [time, setTime] = useState("XX:XX:XX:XX")
@@ -46,4 +51,10 @@ export const useCurrentMints = () => {
   }, [])
 
   return { mints }
+}
+
+export const useCurrentRewards = () => {
+  const readResult = useReadERC20Contract("balanceOf", [POOL_WALLET_ADDRESS])
+
+  return readResult
 }
