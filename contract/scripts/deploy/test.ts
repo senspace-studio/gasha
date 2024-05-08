@@ -2,14 +2,11 @@ import { ethers } from "hardhat"
 import {
   addPermission,
   callSaleForERC20Minter,
-  callSaleForMerkleMinter,
   createZoraCreator1155,
   deployERC20Minter,
-  deployZoraCreatorERC1155Factory,
-  generateMerkleTree,
 } from "../helper/zora"
 import { deployGashaContract } from "../helper/gasha"
-import { parseEther, zeroAddress } from "viem"
+import { parseEther } from "viem"
 
 const main = async () => {
   const adminAddress = "0x807C69F16456F92ab2bFc9De8f14AF31051f9678"
