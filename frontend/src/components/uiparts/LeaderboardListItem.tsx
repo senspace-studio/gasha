@@ -1,6 +1,7 @@
-import { Box, Flex, Text } from '@chakra-ui/react'
-import { FC, useMemo } from 'react'
-import { StolzlText } from './StolzlText'
+import { Box, Flex, Text } from "@chakra-ui/react"
+import { FC, useMemo } from "react"
+import { StolzlText } from "./StolzlText"
+import { ABCGravityVariableText } from "./ABCGravityVariableText"
 
 type Props = {
   backgroundColor?: string
@@ -10,7 +11,7 @@ type Props = {
 }
 
 export const LeaderboardListItem: FC<Props> = ({
-  backgroundColor = 'yellow.300',
+  backgroundColor = "yellow.300",
   address,
   totalPoints,
   points,
@@ -32,16 +33,16 @@ export const LeaderboardListItem: FC<Props> = ({
       borderRadius={10}
       backgroundColor={backgroundColor}
     >
-      <Box>
-        <StolzlText fontWeight={500}>
-          {address?.slice(0, 6)}...{address?.slice(-4)}
-        </StolzlText>
+      <Box fontWeight="black">
+        {address?.slice(0, 6)}...{address?.slice(-4)}
       </Box>
       <Box textAlign="right" lineHeight="1.3">
         <Text fontSize="2xl">
-          <StolzlText fontWeight={500}>{points?.toLocaleString()}</StolzlText>
+          <ABCGravityVariableText fontWeight={500}>
+            {points?.toLocaleString()}
+          </ABCGravityVariableText>
         </Text>
-        <Text fontSize="xs">
+        <Text fontSize="xs" fontWeight="black">
           <StolzlText fontWeight={500}>WIN RATE {winnigRate}%</StolzlText>
         </Text>
       </Box>

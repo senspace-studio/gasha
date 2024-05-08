@@ -36,7 +36,7 @@ const Leaderboard: NextPage = () => {
       </Heading>
 
       <Flex
-        color="yellow.400"
+        color="#FBD916"
         fontSize="sm"
         pt={3}
         pb={2}

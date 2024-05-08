@@ -32,7 +32,17 @@ const links = [
     path: "https://drive.google.com/drive/folders/1cF1POI3XiuPB5sqGyvL_KIO08o8lQQ0d?usp=drive_link",
     name: (
       <>
-        Brand Assets
+        Brand Assets (ball)
+        <ExternalLinkIcon ml={3} fontSize="3xl" />
+      </>
+    ),
+    target: "_blank",
+  },
+  {
+    path: "https://www.figma.com/file/rhERSNCi69g01k8yjo4ksb/747-Airlines-Brand-%2B-Meme?type=design&node-id=0-1&mode=design&t=nKCmCB1WZbFF7Czh-0",
+    name: (
+      <>
+        Brand Assets (747)
         <ExternalLinkIcon ml={3} fontSize="3xl" />
       </>
     ),
@@ -90,7 +100,7 @@ export const Header: FC = () => {
       <Drawer
         placement={"left"}
         finalFocusRef={btnRef}
-        size={"sm"}
+        size={"md"}
         isOpen={isOpen}
         onClose={onClose}
       >
@@ -99,7 +109,7 @@ export const Header: FC = () => {
           backgroundColor="yellow.400"
           borderRadius="0 40px 40px 0"
         >
-          <DrawerHeader padding={0} pl="24px">
+          <DrawerHeader padding={0} pl={["6px", "24px"]}>
             <Flex
               h={["80px", "128px"]}
               align="center"
@@ -112,7 +122,7 @@ export const Header: FC = () => {
               </Button>
             </Flex>
           </DrawerHeader>
-          <DrawerBody pl="40px" pt={"30px"}>
+          <DrawerBody pl={["20px", "40px"]} pt={"30px"}>
             <Stack spacing={3} align="stretch" marginBottom={"33px"}>
               {links.map((link) => (
                 <Link
@@ -120,7 +130,7 @@ export const Header: FC = () => {
                   href={link.path}
                   target={link.target || "_self"}
                 >
-                  <Text fontSize="4xl" color="blue.400" whiteSpace={"nowrap"}>
+                  <Text fontSize="3xl" color="blue.400" whiteSpace={"nowrap"}>
                     <ABCGravityVariableText fontWeight={500}>
                       {link.name}
                     </ABCGravityVariableText>

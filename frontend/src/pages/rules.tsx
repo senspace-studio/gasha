@@ -1,3 +1,4 @@
+import { ABCGravityVariableText } from "@/components/uiparts/ABCGravityVariableText"
 import {
   Container,
   Heading,
@@ -11,15 +12,8 @@ import Link from "next/link"
 const Rules: NextPage = () => {
   return (
     <Container color="yellow.400" maxW="xl" mb={10} fontSize="sm">
-      <Heading
-        textAlign="center"
-        fontFamily="stolzl, sans-serif"
-        fontWeight={500}
-        mt={5}
-        mb={8}
-        fontSize="4xl"
-      >
-        Rules
+      <Heading textAlign="center" fontWeight={500} mt={5} mb={8} fontSize="4xl">
+        <ABCGravityVariableText>Rules</ABCGravityVariableText>
       </Heading>
 
       <Text mb={6}>
