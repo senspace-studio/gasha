@@ -22,8 +22,7 @@ export const ABCGravityVariableText: ComponentWithAs<"p", Props> = ({
       {...rest}
       fontFamily="ABCGravityVariable, sans-serif"
       as="span"
-      pt={isApple ? "0px" : 1}
-      pb={isApple ? (Number(fontWeight) > 600 ? "6px" : "2px") : 0}
+      pt={1}
     >
       {children}
     </Text>

@@ -1,9 +1,9 @@
-import { FC, ReactNode } from 'react'
-import { Header } from './Header'
-import { Box, Center, Container, Flex, Text } from '@chakra-ui/react'
-import { FarcasterIcon } from '../uiparts/icons/FarcasterIcon'
-import { XIcon } from '../uiparts/icons/XIcon'
-import Link from 'next/link'
+import { FC, ReactNode } from "react"
+import { Header } from "./Header"
+import { Box, Center, Container, Flex, Text } from "@chakra-ui/react"
+import { FarcasterIcon } from "../uiparts/icons/FarcasterIcon"
+import { XIcon } from "../uiparts/icons/XIcon"
+import Link from "next/link"
 
 type Props = {
   children: ReactNode
@@ -12,7 +12,7 @@ type Props = {
 export const DefaultLayout: FC<Props> = ({ children }) => {
   const socialLinks: any[] = [
     {
-      path: 'https://warpcast.com/~/channel/ball',
+      path: "https://warpcast.com/~/channel/ball",
       icon: <FarcasterIcon fontSize="24px" />,
     },
   ]

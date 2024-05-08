@@ -16,7 +16,7 @@ const ResultPage: NextPage = () => {
   }, [asPath])
 
   return (
-    <Box backgroundColor="yellow.400">
+    <Box backgroundColor="yellow.400" minH="calc(100vh - 140px)">
       <Box textAlign="center" color="blue.400" pt={8}>
         <Heading as="h2" fontWeight={500} mb={[1, 3]} fontSize="32px">
           <ABCGravityVariableText fontStyle="italic">
