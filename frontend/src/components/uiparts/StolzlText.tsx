@@ -22,7 +22,7 @@ export const StolzlText: ComponentWithAs<"p", Props> = ({
       {...rest}
       fontFamily="stolzl, sans-serif"
       as="span"
-      pt={isApple ? "4px" : 1}
+      pt={isApple ? "0px" : 1}
       pb={isApple ? (Number(fontWeight) > 600 ? "6px" : "2px") : 0}
     >
       {children}
