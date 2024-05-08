@@ -32,7 +32,7 @@ export class Rds extends Construct {
 
     new rds.DatabaseInstance(scope, "Gasha-DB", {
       engine: rds.DatabaseInstanceEngine.mysql({
-        version: rds.MysqlEngineVersion.VER_8_0_28,
+        version: rds.MysqlEngineVersion.VER_8_0_36,
       }),
       instanceType: ec2.InstanceType.of(
         ec2.InstanceClass.T3,

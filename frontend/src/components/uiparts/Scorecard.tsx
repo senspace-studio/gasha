@@ -28,7 +28,7 @@ type ItemProps = {
 
 const ScoreCardItem: FC<ItemProps> = ({ points, items, rareness }) => {
   return (
-    <Grid gridTemplateColumns="135px 1fr" mx={1} px={4}>
+    <Grid gridTemplateColumns="170px 1fr" mx={1} px={4}>
       <Flex gap={2} alignItems="center">
         <Image
           alt=""

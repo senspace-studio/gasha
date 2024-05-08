@@ -83,7 +83,7 @@ export const createZoraCreator1155 = async (
 ) => {
   const tx = await factory.createContract(
     ipfsBaseURI,
-    "The Ball",
+    "The Ball $CRASH Edition",
     {
       royaltyMintSchedule: 0,
       royaltyBPS: 0,
@@ -97,7 +97,11 @@ export const createZoraCreator1155 = async (
   await new Promise((resolve) => setTimeout(resolve, 15000))
 
   // check tx emit event Created with tx hash
-  const events = await factory.queryFilter(factory.filters.SetupNewContract)
+  const events = await factory.queryFilter(
+    factory.filters.SetupNewContract,
+    Number(recipt?.blockNumber) - 10,
+    Number(recipt?.blockNumber) + 3
+  )
   const contractAddress = events.find((e) => e.transactionHash === recipt?.hash)
     ?.args[0]
 
