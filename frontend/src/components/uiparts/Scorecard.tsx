@@ -42,7 +42,7 @@ const ScoreCardItem: FC<ItemProps> = ({ points, items, rareness }) => {
               {points}
             </Box>
             <Box as="span" fontSize="10px">
-              $BALL
+              $HIGHBALL
             </Box>
           </ABCGravityVariableText>
         </Grid>
