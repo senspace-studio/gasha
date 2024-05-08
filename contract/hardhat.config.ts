@@ -41,7 +41,7 @@ const config: HardhatUserConfig = {
     },
     base: {
       accounts: [process.env.MAIN_PRIVATE_KEY!],
-      url: "https://base-mainnet.g.alchemy.com/v2/3UkpGe2fpUEY91zV9ff2Bup-Bk2RTOnY",
+      url: "https://base-mainnet.g.alchemy.com/v2/g_CE71w28-Tik82Z-oWN4XfVxDoTZshZ",
     },
   },
   etherscan: {

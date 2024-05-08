@@ -30,6 +30,10 @@ const main = async () => {
     "ipfs://QmPEC76Dg3Erz8Ja5oVCLs7QxDYnKeC16FrcmMiJWK9uDM"
   )
 
+  if (!zoraCreator1155Address) {
+    throw new Error("ZoraCreator1155 deployment failed")
+  }
+
   const ZoraCreator1155 = await ethers.getContractAt(
     "ZoraCreator1155Impl",
     zoraCreator1155Address!

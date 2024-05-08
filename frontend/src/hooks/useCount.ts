@@ -13,7 +13,7 @@ export const useRemainingTime = () => {
     // intervalを使って1秒ごとにtimeを更新する. timeは2024-03-30までの残り時間をDD:HH:MM:SSの形式で表示する
     const interval = setInterval(() => {
       const now = new Date()
-      const target = new Date(1719300400 * 1000)
+      const target = new Date(1715587200 * 1000)
       const diff = target.getTime() - now.getTime()
       const days = Math.floor(diff / (1000 * 60 * 60 * 24))
       const hours = Math.floor(
