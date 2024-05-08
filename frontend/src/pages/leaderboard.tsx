@@ -26,14 +26,17 @@ const Leaderboard: NextPage = () => {
       <Heading
         textAlign="center"
         color="yellow.400"
-        fontFamily="stolzl, sans-serif"
         fontWeight={500}
         mt={5}
-        mb={10}
+        mb={2}
         fontSize="4xl"
       >
         <ABCGravityVariableText>Leaderboard</ABCGravityVariableText>
       </Heading>
+
+      <Text textAlign="center" color="yellow.400" fontWeight={500} mb={10}>
+        Leaderboard updates every 15 minutes.
+      </Text>
 
       <Flex
         color="#FBD916"
