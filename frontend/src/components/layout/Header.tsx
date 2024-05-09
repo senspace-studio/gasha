@@ -84,17 +84,36 @@ export const Header: FC = () => {
             <Image alt="logo" src="/img/logo.png" width="35" height="35" />
           </Link>
         </Flex>
-        <Button
-          onClick={() => open()}
-          backgroundColor="yellow.300"
-          borderRadius="full"
-        >
-          <StolzlText fontWeight={500}>
-            {address
-              ? `${address?.slice(0, 5)}...${address?.slice(-4)}`
-              : "Connect Wallet"}
-          </StolzlText>
-        </Button>
+        <Flex gap={2}>
+          <Button
+            onClick={() => {
+              window.open(
+                "https://app.uniswap.org/explore/tokens/base/0x621e87af48115122cd96209f820fe0445c2ea90e",
+                "_blank"
+              )
+            }}
+            backgroundColor="yellow.300"
+            borderRadius="full"
+            size={["sm", "md"]}
+          >
+            <StolzlText fontWeight={500}>
+              Buy $CRASH
+              <ExternalLinkIcon ml={1} mb={1} fontSize="md" />
+            </StolzlText>
+          </Button>
+          <Button
+            onClick={() => open()}
+            backgroundColor="yellow.300"
+            borderRadius="full"
+            size={["sm", "md"]}
+          >
+            <StolzlText fontWeight={500}>
+              {address
+                ? `${address?.slice(0, 4)}...${address?.slice(-3)}`
+                : "Connect Wallet"}
+            </StolzlText>
+          </Button>
+        </Flex>
       </HStack>
 
       <Drawer
