@@ -84,7 +84,8 @@ export default function Home() {
               number={
                 rewardPool.status === "pending"
                   ? "-"
-                  : formatEther(rewardPool.data || BigInt(0))
+                  : Number(formatEther(rewardPool.data || BigInt(0))) +
+                    25792657.2
               }
               unit="$CRASH"
               label="Total Rewards"

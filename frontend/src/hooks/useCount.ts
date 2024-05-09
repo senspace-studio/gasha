@@ -1,5 +1,5 @@
 import { gashaAPI } from "@/lib/gashaAPI"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import {
   useMultiReadZoraCreator1155Contract,
   useReadERC20Contract,
