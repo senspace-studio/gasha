@@ -1,8 +1,8 @@
-import { gashaAPI } from '@/lib/gashaAPI'
-import { useEffect, useState } from 'react'
+import { gashaAPI } from "@/lib/gashaAPI"
+import { useEffect, useState } from "react"
 
 export const useRemainingTime = () => {
-  const [time, setTime] = useState('XX:XX:XX:XX')
+  const [time, setTime] = useState("XX:XX:XX:XX")
 
   useEffect(() => {
     // intervalを使って1秒ごとにtimeを更新する. timeは2024-03-30までの残り時間をDD:HH:MM:SSの形式で表示する
@@ -24,7 +24,7 @@ export const useRemainingTime = () => {
           `${days}:${formattedHours}:${formattedMinutes}:${formattedSeconds}`
         )
       } else {
-        setTime('END')
+        setTime("END")
       }
     }, 1000)
 
@@ -39,8 +39,15 @@ export const useCurrentMints = () => {
 
   useEffect(() => {
     const getMints = async () => {
-      const res = await (await gashaAPI('/points/total')).json()
-      setMints(res.nfts)
+      const res = {
+        id: 0,
+        points: "7486800",
+        events: "3357",
+        nfts: "15789",
+        latestBlockNumber: "14293964",
+        isRunning: true,
+      }
+      setMints(Number(res.nfts))
     }
     getMints()
   }, [])
